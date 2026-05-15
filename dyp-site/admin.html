@@ -1,0 +1,455 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DYP Admin — Order Dashboard</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#1d1d1f;--white:#f5f5f7;--gray:#6e6e73;--light:#fbfbfd;--mid:#e8e8ed;
+  --blue:#0071e3;--blue-h:#0077ed;--surface:#fff;
+  --green:#28cd41;--orange:#ff9500;--red:#ff3b30;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
+}
+body{font-family:var(--font);background:#f5f5f7;color:var(--black);-webkit-font-smoothing:antialiased;min-height:100vh}
+
+/* SIDEBAR NAV */
+.sidebar{position:fixed;top:0;left:0;bottom:0;width:220px;background:var(--black);display:flex;flex-direction:column;z-index:100}
+.sb-logo{padding:20px 20px 16px;border-bottom:1px solid rgba(255,255,255,0.08)}
+.sb-logo-mark{font-size:1.2rem;font-weight:700;color:#fff;letter-spacing:-0.01em}
+.sb-logo-sub{font-size:0.65rem;color:rgba(255,255,255,0.35);margin-top:1px;letter-spacing:0.05em}
+.sb-section{padding:16px 12px 8px;font-size:0.62rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.3)}
+.sb-link{display:flex;align-items:center;gap:10px;padding:9px 12px;border-radius:8px;font-size:0.82rem;color:rgba(255,255,255,0.55);cursor:pointer;transition:all 0.15s;margin:1px 8px;text-decoration:none}
+.sb-link:hover{background:rgba(255,255,255,0.06);color:rgba(255,255,255,0.85)}
+.sb-link.active{background:rgba(255,255,255,0.1);color:#fff}
+.sb-icon{font-size:0.9rem;width:18px;text-align:center;flex-shrink:0}
+.sb-badge{margin-left:auto;background:var(--blue);color:#fff;font-size:0.6rem;font-weight:700;padding:2px 7px;border-radius:980px}
+.sb-bottom{margin-top:auto;padding:16px 8px;border-top:1px solid rgba(255,255,255,0.08)}
+.sb-user{display:flex;align-items:center;gap:10px;padding:8px;border-radius:8px;cursor:pointer;transition:background 0.15s}
+.sb-user:hover{background:rgba(255,255,255,0.06)}
+.sb-avatar{width:30px;height:30px;border-radius:50%;background:var(--blue);display:flex;align-items:center;justify-content:center;font-size:0.7rem;font-weight:700;color:#fff;flex-shrink:0}
+.sb-uname{font-size:0.78rem;color:rgba(255,255,255,0.7);font-weight:500}
+.sb-urole{font-size:0.65rem;color:rgba(255,255,255,0.3)}
+
+/* MAIN */
+.main{margin-left:220px;min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:rgba(251,251,253,0.92);backdrop-filter:blur(20px);border-bottom:1px solid var(--mid);padding:0 32px;height:52px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:50}
+.topbar-title{font-size:1rem;font-weight:600;letter-spacing:-0.01em}
+.topbar-actions{display:flex;align-items:center;gap:12px}
+.tb-btn{padding:6px 14px;background:var(--blue);color:#fff;border:none;border-radius:8px;font-size:0.78rem;cursor:pointer;font-family:var(--font);transition:background 0.2s}
+.tb-btn:hover{background:var(--blue-h)}
+.tb-search{display:flex;align-items:center;gap:8px;background:#fff;border:1px solid var(--mid);border-radius:8px;padding:6px 12px}
+.tb-search input{border:none;outline:none;font-family:var(--font);font-size:0.8rem;background:transparent;width:180px;color:var(--black)}
+.tb-search input::placeholder{color:var(--mid)}
+
+/* CONTENT */
+.content{padding:28px 32px;flex:1}
+
+/* STAT CARDS */
+.stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:24px}
+.stat-card{background:#fff;border-radius:14px;padding:18px 20px;border:1px solid var(--mid)}
+.stat-label{font-size:0.72rem;color:var(--gray);margin-bottom:6px;font-weight:500}
+.stat-num{font-size:1.8rem;font-weight:700;letter-spacing:-0.025em;color:var(--black);line-height:1}
+.stat-sub{font-size:0.72rem;color:var(--gray);margin-top:5px}
+.stat-sub.green{color:var(--green)}
+.stat-sub.orange{color:var(--orange)}
+
+/* FILTER TABS */
+.filter-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+.filter-tabs{display:flex;gap:4px;background:#fff;border:1px solid var(--mid);border-radius:10px;padding:3px}
+.ftab{padding:5px 14px;border-radius:7px;font-size:0.78rem;color:var(--gray);cursor:pointer;transition:all 0.15s;white-space:nowrap;font-family:var(--font);border:none;background:transparent}
+.ftab.active{background:var(--black);color:#fff}
+.ftab:hover:not(.active){background:var(--light)}
+.filter-right{display:flex;gap:8px}
+.sort-sel{padding:6px 10px;background:#fff;border:1px solid var(--mid);border-radius:8px;font-size:0.78rem;font-family:var(--font);color:var(--black);cursor:pointer;outline:none}
+
+/* ORDER TABLE */
+.orders-card{background:#fff;border-radius:14px;border:1px solid var(--mid);overflow:hidden}
+.orders-card table{width:100%;border-collapse:collapse}
+.orders-card thead th{padding:11px 16px;text-align:left;font-size:0.68rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray);border-bottom:1px solid var(--mid);background:#fbfbfd;white-space:nowrap}
+.orders-card tbody tr{transition:background 0.1s;cursor:pointer}
+.orders-card tbody tr:hover{background:#f9f9fb}
+.orders-card tbody td{padding:14px 16px;font-size:0.82rem;border-bottom:1px solid var(--mid);vertical-align:middle}
+.orders-card tbody tr:last-child td{border-bottom:none}
+
+/* STATUS BADGES */
+.badge{display:inline-block;padding:3px 10px;border-radius:980px;font-size:0.68rem;font-weight:600;white-space:nowrap}
+.badge-new{background:rgba(0,113,227,0.1);color:var(--blue)}
+.badge-review{background:rgba(255,149,0,0.1);color:var(--orange)}
+.badge-dispatched{background:rgba(40,205,65,0.1);color:#1a9e30}
+.badge-closed{background:rgba(110,110,115,0.12);color:var(--gray)}
+
+/* ORDER DRAWER */
+.drawer-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.3);z-index:200;opacity:0;pointer-events:none;transition:opacity 0.25s}
+.drawer-overlay.open{opacity:1;pointer-events:all}
+.drawer{position:fixed;top:0;right:-520px;bottom:0;width:500px;background:#fff;z-index:201;overflow-y:auto;transition:right 0.3s cubic-bezier(0.4,0,0.2,1);box-shadow:-4px 0 24px rgba(0,0,0,0.1)}
+.drawer.open{right:0}
+.drawer-header{padding:20px 24px;border-bottom:1px solid var(--mid);display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;background:#fff;z-index:2}
+.drawer-title{font-size:1rem;font-weight:600;letter-spacing:-0.01em}
+.drawer-close{background:none;border:none;font-size:1.2rem;cursor:pointer;color:var(--gray);padding:4px;border-radius:6px;transition:background 0.15s}
+.drawer-close:hover{background:var(--light)}
+.drawer-body{padding:24px}
+.d-section{margin-bottom:24px}
+.d-section h3{font-size:0.68rem;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--mid)}
+.d-row{display:flex;justify-content:space-between;align-items:flex-start;padding:7px 0}
+.d-key{font-size:0.78rem;color:var(--gray)}
+.d-val{font-size:0.78rem;font-weight:500;color:var(--black);text-align:right;max-width:260px}
+.status-select{width:100%;padding:10px 12px;border:1.5px solid var(--mid);border-radius:10px;font-size:0.85rem;font-family:var(--font);color:var(--black);background:#fff;cursor:pointer;outline:none;transition:border-color 0.15s}
+.status-select:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,0.1)}
+.d-notes{width:100%;padding:10px 12px;border:1.5px solid var(--mid);border-radius:10px;font-size:0.82rem;font-family:var(--font);color:var(--black);resize:vertical;min-height:80px;outline:none;line-height:1.5;transition:border-color 0.15s}
+.d-notes:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,0.1)}
+.d-actions{display:flex;gap:8px;margin-top:20px}
+.d-btn-primary{flex:1;padding:10px;background:var(--blue);color:#fff;border:none;border-radius:10px;font-size:0.85rem;font-weight:500;cursor:pointer;font-family:var(--font);transition:background 0.2s}
+.d-btn-primary:hover{background:var(--blue-h)}
+.d-btn-ghost{flex:1;padding:10px;background:transparent;color:var(--gray);border:1px solid var(--mid);border-radius:10px;font-size:0.85rem;cursor:pointer;font-family:var(--font);transition:all 0.15s}
+.d-btn-ghost:hover{border-color:var(--red);color:var(--red)}
+
+/* DESIGN PREVIEW IN DRAWER */
+.design-prev-wrap{background:var(--light);border-radius:10px;padding:16px;display:flex;align-items:center;gap:16px}
+.design-swatch{width:60px;height:80px;border-radius:8px;flex-shrink:0}
+.design-info h4{font-size:0.85rem;font-weight:600;margin-bottom:4px}
+.design-info p{font-size:0.75rem;color:var(--gray);line-height:1.4}
+
+/* EMPTY STATE */
+.empty{text-align:center;padding:60px 20px;color:var(--gray)}
+.empty-icon{font-size:2.5rem;margin-bottom:12px;opacity:0.4}
+.empty p{font-size:0.875rem}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--black);color:#fff;padding:12px 18px;border-radius:12px;font-size:0.8rem;z-index:9999;transform:translateY(60px);opacity:0;transition:all 0.3s;max-width:260px}
+.toast.show{transform:translateY(0);opacity:1}
+
+@media(max-width:900px){.sidebar{width:60px}.sb-link span:not(.sb-icon){display:none}.sb-logo-sub,.sb-section,.sb-uname,.sb-urole,.sb-badge{display:none}.main{margin-left:60px}.stats{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="sb-logo">
+    <div class="sb-logo-mark">DYP</div>
+    <div class="sb-logo-sub">Admin Dashboard</div>
+  </div>
+  <div class="sb-section">Main</div>
+  <a class="sb-link active" href="admin.html"><span class="sb-icon">📦</span><span>Orders</span><span class="sb-badge" id="new-badge">3</span></a>
+  <a class="sb-link" href="#"><span class="sb-icon">📊</span><span>Analytics</span></a>
+  <a class="sb-link" href="#"><span class="sb-icon">🎨</span><span>Designs</span></a>
+  <div class="sb-section">Manage</div>
+  <a class="sb-link" href="#"><span class="sb-icon">📁</span><span>Products</span></a>
+  <a class="sb-link" href="#"><span class="sb-icon">👥</span><span>Customers</span></a>
+  <a class="sb-link" href="#"><span class="sb-icon">⚙️</span><span>Settings</span></a>
+  <div class="sb-section">Site</div>
+  <a class="sb-link" href="index.html" target="_blank"><span class="sb-icon">🌐</span><span>View Site</span></a>
+  <div class="sb-bottom">
+    <div class="sb-user">
+      <div class="sb-avatar">AD</div>
+      <div><div class="sb-uname">Admin</div><div class="sb-urole">DYP Team</div></div>
+    </div>
+  </div>
+</div>
+
+<!-- MAIN -->
+<div class="main">
+  <div class="topbar">
+    <div class="topbar-title">Orders</div>
+    <div class="topbar-actions">
+      <div class="tb-search">
+        <span style="color:var(--mid);font-size:0.8rem">🔍</span>
+        <input type="text" placeholder="Search orders, brands..." oninput="filterOrders(this.value)" id="search-input"/>
+      </div>
+      <button class="tb-btn" onclick="exportCSV()">↓ Export CSV</button>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <!-- STATS -->
+    <div class="stats">
+      <div class="stat-card">
+        <div class="stat-label">Total Orders</div>
+        <div class="stat-num" id="stat-total">8</div>
+        <div class="stat-sub green">↑ 3 this week</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Awaiting Review</div>
+        <div class="stat-num" id="stat-new" style="color:var(--blue)">3</div>
+        <div class="stat-sub orange">Needs attention</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Samples Dispatched</div>
+        <div class="stat-num" id="stat-dispatched" style="color:var(--green)">3</div>
+        <div class="stat-sub green">This month</div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-label">Closed / Converted</div>
+        <div class="stat-num" id="stat-closed">2</div>
+        <div class="stat-sub">All time</div>
+      </div>
+    </div>
+
+    <!-- FILTERS -->
+    <div class="filter-row">
+      <div class="filter-tabs">
+        <button class="ftab active" onclick="setFilter('all',this)">All Orders</button>
+        <button class="ftab" onclick="setFilter('new',this)">New</button>
+        <button class="ftab" onclick="setFilter('review',this)">In Review</button>
+        <button class="ftab" onclick="setFilter('dispatched',this)">Dispatched</button>
+        <button class="ftab" onclick="setFilter('closed',this)">Closed</button>
+      </div>
+      <div class="filter-right">
+        <select class="sort-sel" onchange="sortOrders(this.value)">
+          <option value="newest">Newest first</option>
+          <option value="oldest">Oldest first</option>
+          <option value="brand">Brand name</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ORDERS TABLE -->
+    <div class="orders-card">
+      <table>
+        <thead>
+          <tr>
+            <th>Order Ref</th>
+            <th>Brand</th>
+            <th>Business</th>
+            <th>Product</th>
+            <th>Design</th>
+            <th>Qty (est.)</th>
+            <th>Date</th>
+            <th>Status</th>
+          </tr>
+        </thead>
+        <tbody id="orders-tbody">
+        </tbody>
+      </table>
+      <div class="empty" id="empty-state" style="display:none">
+        <div class="empty-icon">📭</div>
+        <p>No orders match your filter.</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- DRAWER OVERLAY -->
+<div class="drawer-overlay" id="drawer-overlay" onclick="closeDrawer()"></div>
+
+<!-- DRAWER -->
+<div class="drawer" id="drawer">
+  <div class="drawer-header">
+    <div class="drawer-title" id="d-title">Order Detail</div>
+    <button class="drawer-close" onclick="closeDrawer()">✕</button>
+  </div>
+  <div class="drawer-body" id="d-body">
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"></div>
+
+<script>
+// ─── MOCK DATA ────────────────────────────────────────────
+const ORDERS = [
+  {id:'DYP-A1B2C',brand:'Aura Wellness',biz:'Aura Health Pvt Ltd',contact:'Priya Menon',email:'priya@aurawellness.in',phone:'+91 98765 43210',product:'Still Water Bottle',size:'500ml',design:'Premium',qty:2000,date:'2026-05-14',status:'new',notes:'',logo:true},
+  {id:'DYP-D4E5F',brand:'Verde Natural',biz:'Verde Organics',contact:'James Kurian',email:'james@verde.co',phone:'+91 87654 32109',product:'Still Water Bottle',size:'750ml',design:'Natural',qty:1000,date:'2026-05-13',status:'review',notes:'Customer requested matte finish if possible.',logo:true},
+  {id:'DYP-G7H8I',brand:'Flux Energy',biz:'Flux Beverages Ltd',contact:'Sneha Nair',email:'sneha@fluxenergy.in',phone:'+91 76543 21098',product:'Slim Can',size:'330ml',design:'Bold',qty:5000,date:'2026-05-12',status:'new',notes:'',logo:false},
+  {id:'DYP-J1K2L',brand:'Zen Hotels',biz:'Zen Hospitality Group',contact:'Arjun Pillai',email:'arjun@zenhotels.com',phone:'+91 65432 10987',product:'Still Water Bottle',size:'250ml',design:'Minimal',qty:10000,date:'2026-05-10',status:'dispatched',notes:'Bulk order for all properties. Sample sent to Cochin office.',logo:true},
+  {id:'DYP-M3N4O',brand:'PeakFit',biz:'PeakFit Sports Nutrition',contact:'Rohit Sharma',email:'rohit@peakfit.in',phone:'+91 54321 09876',product:'Standard Can',size:'355ml',design:'Bold',qty:3000,date:'2026-05-09',status:'dispatched',notes:'Customer happy with sample. Confirmed bulk quote.',logo:true},
+  {id:'DYP-P5Q6R',brand:'Elara Sparkling',biz:'Elara Drinks Co',contact:'Meera Thomas',email:'meera@elaradrinks.com',phone:'+91 43210 98765',product:'Sparkling Bottle',size:'330ml',design:'Premium',qty:1500,date:'2026-05-07',status:'dispatched',notes:'',logo:false},
+  {id:'DYP-S7T8U',brand:'CloudSip',biz:'CloudSip Technologies',contact:'Anand Krishnan',email:'anand@cloudsip.io',phone:'+91 32109 87654',product:'Slim Can',size:'250ml',design:'Minimal',qty:2000,date:'2026-05-03',status:'closed',notes:'Converted to bulk order of 20,000 units.',logo:true},
+  {id:'DYP-V9W0X',brand:'TerraFlow',biz:'TerraFlow Natural Springs',contact:'Divya Ramesh',email:'divya@terraflow.in',phone:'+91 21098 76543',product:'Still Water Bottle',size:'1L',design:'Natural',qty:800,date:'2026-04-28',status:'closed',notes:'Sample approved. Awaiting bulk PO.',logo:true},
+];
+
+let currentFilter = 'all';
+let currentSearch = '';
+let currentSort   = 'newest';
+let openOrderId   = null;
+
+const STATUS_LABELS = {new:'New',review:'In Review',dispatched:'Sample Dispatched',closed:'Closed'};
+const STATUS_BADGE  = {new:'badge-new',review:'badge-review',dispatched:'badge-dispatched',closed:'badge-closed'};
+const DESIGN_BG     = {Minimal:'linear-gradient(145deg,#0c0c18,#14142a)',Bold:'linear-gradient(145deg,#1a0010,#300020)',Premium:'linear-gradient(145deg,#100c00,#201800)',Natural:'linear-gradient(145deg,#081408,#102010)'};
+
+// ─── RENDER ───────────────────────────────────────────────
+function renderOrders() {
+  let list = [...ORDERS];
+
+  // Filter
+  if(currentFilter !== 'all') list = list.filter(o=>o.status===currentFilter);
+
+  // Search
+  if(currentSearch) {
+    const q = currentSearch.toLowerCase();
+    list = list.filter(o=>
+      o.brand.toLowerCase().includes(q)||
+      o.biz.toLowerCase().includes(q)||
+      o.id.toLowerCase().includes(q)||
+      o.contact.toLowerCase().includes(q)
+    );
+  }
+
+  // Sort
+  if(currentSort==='newest') list.sort((a,b)=>b.date.localeCompare(a.date));
+  else if(currentSort==='oldest') list.sort((a,b)=>a.date.localeCompare(b.date));
+  else if(currentSort==='brand') list.sort((a,b)=>a.brand.localeCompare(b.brand));
+
+  const tbody = document.getElementById('orders-tbody');
+  const empty = document.getElementById('empty-state');
+
+  if(!list.length){ tbody.innerHTML=''; empty.style.display='block'; return; }
+  empty.style.display='none';
+
+  tbody.innerHTML = list.map(o=>`
+    <tr onclick="openDrawer('${o.id}')">
+      <td><span style="font-size:0.75rem;font-family:monospace;color:var(--gray)">${o.id}</span></td>
+      <td><strong style="font-size:0.85rem">${o.brand}</strong></td>
+      <td style="color:var(--gray)">${o.biz}</td>
+      <td>${o.product} · ${o.size}</td>
+      <td><span style="display:inline-flex;align-items:center;gap:5px"><span style="width:10px;height:14px;border-radius:3px;background:${DESIGN_BG[o.design]||'#eee'};flex-shrink:0"></span>${o.design}</span></td>
+      <td>${o.qty.toLocaleString()}</td>
+      <td style="color:var(--gray);white-space:nowrap">${formatDate(o.date)}</td>
+      <td><span class="badge ${STATUS_BADGE[o.status]}">${STATUS_LABELS[o.status]}</span></td>
+    </tr>
+  `).join('');
+}
+
+function formatDate(d) {
+  return new Date(d).toLocaleDateString('en-IN',{day:'numeric',month:'short',year:'numeric'});
+}
+
+// ─── STATS ────────────────────────────────────────────────
+function updateStats() {
+  document.getElementById('stat-total').textContent       = ORDERS.length;
+  document.getElementById('stat-new').textContent         = ORDERS.filter(o=>o.status==='new').length;
+  document.getElementById('stat-dispatched').textContent  = ORDERS.filter(o=>o.status==='dispatched').length;
+  document.getElementById('stat-closed').textContent      = ORDERS.filter(o=>o.status==='closed').length;
+  document.getElementById('new-badge').textContent        = ORDERS.filter(o=>o.status==='new').length;
+}
+
+// ─── FILTER ───────────────────────────────────────────────
+function setFilter(f, el) {
+  currentFilter = f;
+  document.querySelectorAll('.ftab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  renderOrders();
+}
+
+function filterOrders(q) {
+  currentSearch = q;
+  renderOrders();
+}
+
+function sortOrders(v) {
+  currentSort = v;
+  renderOrders();
+}
+
+// ─── DRAWER ───────────────────────────────────────────────
+function openDrawer(id) {
+  const o = ORDERS.find(x=>x.id===id);
+  if(!o) return;
+  openOrderId = id;
+  document.getElementById('d-title').textContent = o.brand+' — '+o.id;
+  document.getElementById('d-body').innerHTML = `
+    <div class="d-section">
+      <h3>Customer</h3>
+      <div class="d-row"><div class="d-key">Business</div><div class="d-val">${o.biz}</div></div>
+      <div class="d-row"><div class="d-key">Contact</div><div class="d-val">${o.contact}</div></div>
+      <div class="d-row"><div class="d-key">Email</div><div class="d-val"><a href="mailto:${o.email}" style="color:var(--blue);text-decoration:none">${o.email}</a></div></div>
+      <div class="d-row"><div class="d-key">Phone</div><div class="d-val">${o.phone}</div></div>
+    </div>
+    <div class="d-section">
+      <h3>Order Details</h3>
+      <div class="d-row"><div class="d-key">Reference</div><div class="d-val" style="font-family:monospace;font-size:0.75rem">${o.id}</div></div>
+      <div class="d-row"><div class="d-key">Product</div><div class="d-val">${o.product}</div></div>
+      <div class="d-row"><div class="d-key">Size</div><div class="d-val">${o.size}</div></div>
+      <div class="d-row"><div class="d-key">Est. Quantity</div><div class="d-val">${o.qty.toLocaleString()} units</div></div>
+      <div class="d-row"><div class="d-key">Submitted</div><div class="d-val">${formatDate(o.date)}</div></div>
+      <div class="d-row"><div class="d-key">Logo Uploaded</div><div class="d-val">${o.logo?'<span style="color:var(--green)">✓ Yes</span>':'<span style="color:var(--gray)">No</span>'}</div></div>
+    </div>
+    <div class="d-section">
+      <h3>Label Design</h3>
+      <div class="design-prev-wrap">
+        <div class="design-swatch" style="background:${DESIGN_BG[o.design]||'#eee'}"></div>
+        <div class="design-info">
+          <h4>${o.design} Style</h4>
+          <p>Brand name: <strong>${o.brand}</strong></p>
+          <p style="margin-top:4px;font-size:0.72rem;color:var(--mid)">Click "Download Design" to get the label file</p>
+          <a href="#" style="display:inline-block;margin-top:8px;font-size:0.75rem;color:var(--blue);text-decoration:none" onclick="toastMsg('Design file ready for download.')">↓ Download Design File</a>
+        </div>
+      </div>
+    </div>
+    <div class="d-section">
+      <h3>Update Status</h3>
+      <select class="status-select" id="drawer-status" onchange="previewStatus(this.value)">
+        <option value="new"${o.status==='new'?' selected':''}>New</option>
+        <option value="review"${o.status==='review'?' selected':''}>In Review</option>
+        <option value="dispatched"${o.status==='dispatched'?' selected':''}>Sample Dispatched</option>
+        <option value="closed"${o.status==='closed'?' selected':''}>Closed</option>
+      </select>
+    </div>
+    <div class="d-section">
+      <h3>Internal Notes</h3>
+      <textarea class="d-notes" id="drawer-notes" placeholder="Add notes about this order, sample feedback, etc...">${o.notes||''}</textarea>
+    </div>
+    <div class="d-actions">
+      <button class="d-btn-primary" onclick="saveOrder()">Save Changes</button>
+      <button class="d-btn-ghost" onclick="if(confirm('Archive this order?'))toastMsg('Order archived.')">Archive</button>
+    </div>
+  `;
+  document.getElementById('drawer').classList.add('open');
+  document.getElementById('drawer-overlay').classList.add('open');
+}
+
+function closeDrawer() {
+  document.getElementById('drawer').classList.remove('open');
+  document.getElementById('drawer-overlay').classList.remove('open');
+  openOrderId = null;
+}
+
+function saveOrder() {
+  const o = ORDERS.find(x=>x.id===openOrderId);
+  if(!o) return;
+  const newStatus = document.getElementById('drawer-status').value;
+  const newNotes  = document.getElementById('drawer-notes').value;
+  o.status = newStatus;
+  o.notes  = newNotes;
+  renderOrders();
+  updateStats();
+  toastMsg('Order updated — status set to '+STATUS_LABELS[newStatus]+'.');
+  closeDrawer();
+}
+
+function previewStatus(v) {
+  // Could preview badge change
+}
+
+// ─── EXPORT ───────────────────────────────────────────────
+function exportCSV() {
+  const headers = ['Order Ref','Brand','Business','Contact','Email','Product','Size','Design','Qty','Date','Status','Notes'];
+  const rows = ORDERS.map(o=>[o.id,o.brand,o.biz,o.contact,o.email,o.product,o.size,o.design,o.qty,o.date,STATUS_LABELS[o.status],o.notes].map(v=>`"${String(v).replace(/"/g,'""')}"`).join(','));
+  const csv = [headers.join(','),...rows].join('\n');
+  const blob = new Blob([csv],{type:'text/csv'});
+  const url  = URL.createObjectURL(blob);
+  const a    = document.createElement('a');
+  a.href=url; a.download='dyp-orders.csv'; a.click();
+  URL.revokeObjectURL(url);
+  toastMsg('CSV exported — '+ORDERS.length+' orders downloaded.');
+}
+
+// ─── TOAST ────────────────────────────────────────────────
+let toastT;
+function toastMsg(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastT);
+  toastT = setTimeout(()=>t.classList.remove('show'), 3000);
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+renderOrders();
+updateStats();
+</script>
+</body>
+</html>
