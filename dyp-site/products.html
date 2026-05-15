@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DYP — Design Studio</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#1d1d1f;--white:#f5f5f7;--gray:#6e6e73;--light:#fbfbfd;--mid:#e8e8ed;
+  --blue:#0071e3;--blue-h:#0077ed;--surface:#fff;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
+}
+body{font-family:var(--font);background:var(--light);color:var(--black);-webkit-font-smoothing:antialiased;min-height:100vh}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:9999;height:44px;background:rgba(251,251,253,0.92);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center}
+.nav-inner{width:100%;max-width:1200px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.nav-logo{font-size:1.2rem;font-weight:600;color:var(--black);text-decoration:none;letter-spacing:-0.01em}
+.nav-steps{display:flex;align-items:center;gap:0}
+.ns{display:flex;align-items:center;gap:6px;padding:0 14px;height:44px;font-size:0.72rem;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap}
+.ns.active{color:var(--blue);border-bottom-color:var(--blue)}
+.ns.done{color:rgba(0,113,227,0.5);border-bottom-color:rgba(0,113,227,0.25)}
+.ns-num{width:18px;height:18px;border-radius:50%;background:var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;transition:all 0.2s;flex-shrink:0}
+.ns.active .ns-num{background:var(--blue);color:#fff}
+.ns.done .ns-num{background:rgba(0,113,227,0.15);color:var(--blue)}
+.ns-arrow{color:var(--mid);font-size:0.75rem}
+.nav-right{font-size:0.75rem;color:var(--gray)}
+
+/* LAYOUT */
+.studio{display:grid;grid-template-columns:320px 1fr 280px;min-height:calc(100vh - 44px);margin-top:44px}
+
+/* PANELS */
+.left-panel{background:var(--surface);border-right:1px solid var(--mid);overflow-y:auto;position:sticky;top:44px;max-height:calc(100vh - 44px)}
+.right-panel{background:var(--surface);border-left:1px solid var(--mid);overflow-y:auto;position:sticky;top:44px;max-height:calc(100vh - 44px);padding:24px 20px;display:flex;flex-direction:column;gap:20px}
+.center-panel{background:var(--light);display:flex;flex-direction:column;align-items:center;padding:40px 24px;gap:28px;min-height:calc(100vh - 44px)}
+
+/* PANEL SECTIONS */
+.ps{border-bottom:1px solid var(--mid);padding:20px}
+.ps-label{font-size:0.68rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
+.ps-label span{font-size:0.65rem;color:var(--mid);text-transform:none;letter-spacing:0;font-weight:400}
+
+/* PRODUCT TYPE TABS */
+.type-tabs{display:flex;gap:8px;margin-bottom:16px}
+.ttab{flex:1;padding:8px 0;background:var(--light);border:1px solid var(--mid);border-radius:8px;font-size:0.8rem;font-weight:500;color:var(--gray);cursor:pointer;text-align:center;transition:all 0.15s}
+.ttab.active{background:#fff;border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.ttab:hover:not(.active){background:#fff;border-color:rgba(0,113,227,0.3)}
+
+/* SIZE GRID */
+.size-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.size-btn{padding:8px 4px;background:var(--light);border:1px solid var(--mid);border-radius:8px;font-size:0.78rem;font-weight:500;color:var(--gray);cursor:pointer;text-align:center;transition:all 0.15s}
+.size-btn:hover:not(.active){border-color:rgba(0,113,227,0.3);color:var(--black)}
+.size-btn.active{background:#fff;border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.size-btn .moq{display:block;font-size:0.6rem;color:var(--gray);margin-top:2px;font-weight:400}
+
+/* LOGO UPLOAD */
+.upload-zone{border:1.5px dashed var(--mid);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative}
+.upload-zone:hover{border-color:var(--blue);background:#f0f6ff}
+.upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
+.upload-zone p{font-size:0.8rem;color:var(--gray);line-height:1.5}
+.upload-zone strong{color:var(--blue);font-weight:500}
+.upload-zone .fmt{font-size:0.68rem;color:var(--mid);margin-top:4px}
+.logo-prev{display:flex;align-items:center;gap:10px;background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 12px;margin-top:10px}
+.logo-thumb{width:36px;height:36px;background:var(--light);border-radius:6px;border:1px solid var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--gray);overflow:hidden;flex-shrink:0}
+.logo-thumb img{width:100%;height:100%;object-fit:contain}
+.logo-info{flex:1;min-width:0}
+.logo-name{font-size:0.78rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo-size{font-size:0.68rem;color:var(--gray);margin-top:1px}
+.logo-rm{background:none;border:none;color:var(--gray);cursor:pointer;font-size:0.78rem;padding:4px;transition:color 0.15s;flex-shrink:0}
+.logo-rm:hover{color:#e34000}
+
+/* TEXT FIELDS */
+.field{margin-bottom:12px}
+.field label{font-size:0.72rem;color:var(--gray);display:block;margin-bottom:5px}
+.field input,.field select,.field textarea{width:100%;background:#fff;border:1px solid var(--mid);border-radius:8px;padding:8px 12px;color:var(--black);font-family:var(--font);font-size:0.85rem;outline:none;transition:border-color 0.15s;resize:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,0.1)}
+.field input::placeholder,.field textarea::placeholder{color:var(--mid)}
+
+/* COLOUR DOTS */
+.color-row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
+.cdot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0}
+.cdot.active{border-color:var(--black);transform:scale(1.15)}
+.cdot:hover:not(.active){transform:scale(1.1)}
+
+/* QTY */
+.qty-disp{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
+.qty-num{font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;color:var(--blue)}
+.qty-lbl{font-size:0.72rem;color:var(--gray)}
+input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
+.qty-range-labels{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--mid);margin-top:4px}
+
+/* CENTER — PREVIEW */
+.preview-label{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray)}
+.canvas-wrap{position:relative;width:280px;display:flex;align-items:center;justify-content:center;padding:20px 0}
+.view-tabs{display:flex;gap:6px}
+.vtab{padding:5px 14px;background:#fff;border:1px solid var(--mid);border-radius:6px;font-size:0.75rem;color:var(--gray);cursor:pointer;transition:all 0.15s;font-family:var(--font)}
+.vtab.active{background:var(--blue);border-color:var(--blue);color:#fff}
+.vtab:hover:not(.active){border-color:rgba(0,113,227,0.4);color:var(--blue)}
+.rotate-hint{font-size:0.68rem;color:var(--mid);text-align:center}
+
+/* DESIGN CARDS */
+.designs-wrap{width:100%;max-width:560px}
+.designs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
+.designs-header h3{font-size:0.9rem;font-weight:600;color:var(--black)}
+.designs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
+.design-card{background:#fff;border:1.5px solid var(--mid);border-radius:12px;padding:12px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.design-card:hover{border-color:rgba(0,113,227,0.4);transform:translateY(-2px)}
+.design-card.selected{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.design-card.selected::after{content:'✓';position:absolute;top:7px;right:9px;font-size:0.65rem;color:var(--blue);font-weight:700}
+.dc-preview{height:100px;border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.dc-name{font-size:0.78rem;font-weight:600;color:var(--black);margin-bottom:2px}
+.dc-desc{font-size:0.65rem;color:var(--gray);line-height:1.4}
+
+/* RIGHT PANEL */
+.progress-wrap h3{font-size:0.68rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray);margin-bottom:14px}
+.prog-steps{display:flex;flex-direction:column;gap:10px}
+.pstep{display:flex;align-items:center;gap:10px;font-size:0.78rem}
+.pdot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.6rem;flex-shrink:0;transition:all 0.25s}
+.pdot.done{background:rgba(0,113,227,0.1);border-color:var(--blue);color:var(--blue)}
+.pdot.curr{background:var(--blue);border-color:var(--blue);color:#fff}
+.ptext{color:var(--gray);transition:color 0.2s}
+.ptext.done{color:var(--black)}
+.ptext.curr{color:var(--blue);font-weight:500}
+
+.sum-card{background:var(--light);border-radius:12px;padding:16px}
+.sum-card h3{font-size:0.68rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray);margin-bottom:14px}
+.sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--mid)}
+.sum-row:last-child{border:none}
+.sum-key{font-size:0.75rem;color:var(--gray)}
+.sum-val{font-size:0.75rem;font-weight:500;color:var(--black);text-align:right;max-width:140px}
+.sum-val.blue{color:var(--blue)}
+
+.note-box{background:#f0f6ff;border-radius:10px;padding:14px;font-size:0.78rem;color:var(--gray);line-height:1.65}
+.note-box strong{color:var(--black);display:block;margin-bottom:4px;font-size:0.8rem}
+
+.submit-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:980px;font-family:var(--font);font-size:0.9rem;font-weight:500;cursor:pointer;transition:background 0.2s;letter-spacing:0}
+.submit-btn:hover{background:var(--blue-h)}
+.submit-btn:disabled{background:var(--mid);cursor:not-allowed}
+.dl-btn{width:100%;padding:10px;background:transparent;color:var(--blue);border:1px solid var(--blue);border-radius:980px;font-family:var(--font);font-size:0.82rem;cursor:pointer;transition:all 0.2s}
+.dl-btn:hover{background:var(--blue);color:#fff}
+
+/* TOAST */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--black);color:#fff;padding:12px 20px;border-radius:12px;font-size:0.82rem;z-index:99999;transform:translateY(80px);opacity:0;transition:all 0.35s;max-width:280px;line-height:1.5}
+.toast.show{transform:translateY(0);opacity:1}
+.toast strong{display:block;margin-bottom:2px;font-size:0.85rem}
+
+/* SUCCESS SCREEN */
+.success-screen{display:none;position:fixed;inset:0;background:rgba(251,251,253,0.97);backdrop-filter:blur(20px);z-index:8888;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px}
+.success-screen.show{display:flex}
+.success-icon{font-size:4rem;margin-bottom:24px;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both}
+@keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
+.success-screen h2{font-size:2.4rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:12px}
+.success-screen p{font-size:1.05rem;color:var(--gray);font-weight:300;max-width:440px;line-height:1.6;margin-bottom:32px}
+.success-screen .ref{font-size:0.8rem;color:var(--mid);margin-bottom:28px}
+
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
+.float{animation:floatY 5s ease-in-out infinite}
+
+@media(max-width:900px){.studio{grid-template-columns:1fr}.left-panel,.right-panel{position:relative;top:0;max-height:none}.designs-grid{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+
+<!-- SUCCESS SCREEN -->
+<div class="success-screen" id="success">
+  <div class="success-icon">📦</div>
+  <h2>Order Submitted!</h2>
+  <p>Our team will review your design and reach out within 24–48 hours to confirm your sample shipment.</p>
+  <div class="ref" id="order-ref">Order ref: —</div>
+  <a href="index.html" style="display:inline-block;background:var(--blue);color:#fff;padding:11px 28px;border-radius:980px;font-size:0.9rem;text-decoration:none;font-weight:500;margin-bottom:12px">Back to DYP</a>
+  <a href="products.html" style="color:var(--blue);font-size:0.85rem;text-decoration:none">Design another product</a>
+</div>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">DYP</a>
+    <div class="nav-steps">
+      <div class="ns done" id="ns1"><div class="ns-num">✓</div>Product</div>
+      <div class="ns-arrow">›</div>
+      <div class="ns active" id="ns2"><div class="ns-num">2</div>Design</div>
+      <div class="ns-arrow">›</div>
+      <div class="ns" id="ns3"><div class="ns-num">3</div>Preview</div>
+      <div class="ns-arrow">›</div>
+      <div class="ns" id="ns4"><div class="ns-num">4</div>Submit</div>
+    </div>
+    <div class="nav-right">No payment required</div>
+  </div>
+</nav>
+
+<div class="studio">
+
+  <!-- LEFT PANEL -->
+  <div class="left-panel">
+
+    <!-- PRODUCT TYPE -->
+    <div class="ps">
+      <div class="ps-label">Product Type</div>
+      <div class="type-tabs">
+        <div class="ttab active" onclick="selectType('bottle',this)">🍶 Bottle</div>
+        <div class="ttab" onclick="selectType('can',this)">🥤 Can</div>
+      </div>
+      <div class="ps-label" style="margin-top:16px">Size <span id="selected-size-label">250ml selected</span></div>
+      <div class="size-grid" id="size-grid">
+        <div class="size-btn active" onclick="selectSize('250ml','500',this)">250ml<span class="moq">min 500</span></div>
+        <div class="size-btn" onclick="selectSize('500ml','500',this)">500ml<span class="moq">min 500</span></div>
+        <div class="size-btn" onclick="selectSize('750ml','500',this)">750ml<span class="moq">min 500</span></div>
+        <div class="size-btn" onclick="selectSize('1L','500',this)">1L<span class="moq">min 500</span></div>
+        <div class="size-btn" onclick="selectSize('1.5L','1000',this)">1.5L<span class="moq">min 1000</span></div>
+        <div class="size-btn" onclick="selectSize('Custom','TBD',this)">Custom<span class="moq">contact us</span></div>
+      </div>
+    </div>
+
+    <!-- LOGO UPLOAD -->
+    <div class="ps">
+      <div class="ps-label">Your Logo <span>PNG, JPG, SVG</span></div>
+      <div class="upload-zone" id="upload-zone">
+        <input type="file" accept=".png,.jpg,.jpeg,.svg" onchange="handleLogo(this)" id="logo-input"/>
+        <div style="font-size:1.4rem;margin-bottom:6px;opacity:0.4">↑</div>
+        <p><strong>Click to upload</strong> or drag &amp; drop your logo</p>
+        <div class="fmt">PNG · JPG · SVG · Max 10MB</div>
+      </div>
+      <div class="logo-prev" id="logo-prev" style="display:none">
+        <div class="logo-thumb" id="logo-thumb">IMG</div>
+        <div class="logo-info">
+          <div class="logo-name" id="logo-name-txt">logo.png</div>
+          <div class="logo-size" id="logo-size-txt">2.4 MB</div>
+        </div>
+        <button class="logo-rm" onclick="removeLogo()">✕</button>
+      </div>
+    </div>
+
+    <!-- BRAND DETAILS -->
+    <div class="ps">
+      <div class="ps-label">Brand Details</div>
+      <div class="field">
+        <label>Brand Name *</label>
+        <input type="text" id="brand-name" placeholder="e.g. Aura, Verde, Flux..." oninput="updatePreview();updateProgress()"/>
+      </div>
+      <div class="field">
+        <label>Tagline <span style="font-size:0.65rem;color:var(--mid)">(optional)</span></label>
+        <input type="text" id="brand-tag" placeholder="e.g. Pure. Natural. Yours." oninput="updatePreview()"/>
+      </div>
+      <div class="field">
+        <label>Product Type</label>
+        <input type="text" id="prod-type-txt" placeholder="e.g. Still Water, Energy Drink..." oninput="updatePreview()"/>
+      </div>
+      <div class="ps-label" style="margin-top:8px;margin-bottom:6px">Label Colour</div>
+      <div class="color-row" id="color-row">
+        <div class="cdot active" style="background:#0a1a10" onclick="selectColour('#0a1a10','Forest Green',this)" title="Forest Green"></div>
+        <div class="cdot" style="background:#0a0e1a" onclick="selectColour('#0a0e1a','Midnight Blue',this)" title="Midnight Blue"></div>
+        <div class="cdot" style="background:#1a0808" onclick="selectColour('#1a0808','Deep Crimson',this)" title="Deep Crimson"></div>
+        <div class="cdot" style="background:#1a1000" onclick="selectColour('#1a1000','Rich Gold',this)" title="Rich Gold"></div>
+        <div class="cdot" style="background:#18001a" onclick="selectColour('#18001a','Royal Violet',this)" title="Royal Violet"></div>
+        <div class="cdot" style="background:#111" onclick="selectColour('#111','Pure Noir',this)" title="Pure Noir"></div>
+        <div class="cdot" style="background:#f0ede4;border:1px solid #ddd" onclick="selectColour('#f0ede4','Clean Cream',this)" title="Clean Cream"></div>
+      </div>
+    </div>
+
+    <!-- QUANTITY -->
+    <div class="ps">
+      <div class="ps-label">Estimated Quantity</div>
+      <div class="qty-disp">
+        <div class="qty-num" id="qty-display">500</div>
+        <div class="qty-lbl">units</div>
+      </div>
+      <input type="range" min="500" max="10000" step="500" value="500" oninput="updateQty(this.value)"/>
+      <div class="qty-range-labels"><span>500</span><span>10,000+</span></div>
+    </div>
+
+    <!-- CONTACT -->
+    <div class="ps">
+      <div class="ps-label">Your Details</div>
+      <div class="field"><label>Business Name *</label><input type="text" id="biz-name" placeholder="Your company name" oninput="updateProgress()"/></div>
+      <div class="field"><label>Contact Name *</label><input type="text" id="contact-name" placeholder="Your full name" oninput="updateProgress()"/></div>
+      <div class="field"><label>Email *</label><input type="email" id="contact-email" placeholder="you@company.com" oninput="updateProgress()"/></div>
+      <div class="field"><label>Phone</label><input type="tel" id="contact-phone" placeholder="+91 ..."/></div>
+      <div class="field"><label>Notes <span style="font-size:0.65rem;color:var(--mid)">(optional)</span></label><textarea id="notes" rows="3" placeholder="Any special requirements, questions, or details for our team..."></textarea></div>
+    </div>
+  </div>
+
+  <!-- CENTER PANEL -->
+  <div class="center-panel">
+
+    <!-- LIVE PREVIEW -->
+    <div class="preview-label">Live Preview</div>
+    <div class="canvas-wrap">
+      <!-- BOTTLE SVG -->
+      <svg id="preview-svg" class="float" viewBox="0 0 200 340" width="200" height="340" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 16px 40px rgba(0,0,0,0.12))">
+        <defs>
+          <linearGradient id="pvbg" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" id="pvbg-s1" style="stop-color:#c8c8d8"/>
+            <stop offset="45%" id="pvbg-s2" style="stop-color:#e0e0f0"/>
+            <stop offset="100%" id="pvbg-s3" style="stop-color:#b0b0c0"/>
+          </linearGradient>
+          <linearGradient id="pvlbl" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" id="pvlbl-s1" style="stop-color:#0a1a10"/>
+            <stop offset="100%" id="pvlbl-s2" style="stop-color:#06120a"/>
+          </linearGradient>
+          <linearGradient id="pvsh" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:rgba(255,255,255,0)"/>
+            <stop offset="40%" style="stop-color:rgba(255,255,255,0.18)"/>
+            <stop offset="60%" style="stop-color:rgba(255,255,255,0.28)"/>
+            <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+          </linearGradient>
+          <linearGradient id="pvgold" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" style="stop-color:rgba(200,200,200,0.3)"/>
+            <stop offset="50%" style="stop-color:rgba(220,220,220,0.7)"/>
+            <stop offset="100%" style="stop-color:rgba(200,200,200,0.3)"/>
+          </linearGradient>
+          <clipPath id="pvclip">
+            <path d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z"/>
+          </clipPath>
+        </defs>
+        <!-- Bottle body -->
+        <path id="bottle-body" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvbg)" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+        <!-- Label area -->
+        <rect x="48" y="112" width="104" height="160" fill="url(#pvlbl)" clip-path="url(#pvclip)" id="label-rect"/>
+        <!-- Label top stripe -->
+        <rect x="48" y="112" width="104" height="2" fill="url(#pvgold)" clip-path="url(#pvclip)"/>
+        <!-- Label bottom stripe -->
+        <rect x="48" y="270" width="104" height="2" fill="url(#pvgold)" clip-path="url(#pvclip)"/>
+        <!-- Logo zone -->
+        <rect x="78" y="132" width="44" height="32" rx="4" fill="rgba(255,255,255,0.06)" id="logo-zone"/>
+        <text id="logo-ph" x="100" y="152" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(255,255,255,0.25)" letter-spacing="1">YOUR LOGO</text>
+        <!-- Brand name -->
+        <text id="pv-brand" x="100" y="196" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="22" font-weight="700" fill="#ffffff" letter-spacing="-0.5">Brand</text>
+        <!-- Divider -->
+        <line id="pv-div" x1="62" y1="205" x2="138" y2="205" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+        <!-- Tagline -->
+        <text id="pv-tag" x="100" y="220" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="rgba(255,255,255,0.5)" letter-spacing="2">PURE · NATURAL</text>
+        <!-- Product type -->
+        <text id="pv-type" x="100" y="253" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(255,255,255,0.25)" letter-spacing="1.5">STILL WATER · 250ML</text>
+        <!-- Shine overlay -->
+        <path d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvsh)"/>
+        <!-- Cap -->
+        <rect x="82" y="18" width="36" height="20" rx="4" fill="#d0d0e0" stroke="rgba(0,0,0,0.08)" stroke-width="0.5" id="bottle-cap"/>
+        <!-- Neck -->
+        <rect x="76" y="36" width="48" height="5" rx="1" fill="#c8c8d8" id="bottle-neck"/>
+      </svg>
+    </div>
+
+    <div class="view-tabs">
+      <div class="vtab active" onclick="setView('front',this)">Front</div>
+      <div class="vtab" onclick="setView('angle',this)">Angle</div>
+      <div class="vtab" onclick="setView('back',this)">Back</div>
+    </div>
+    <div class="rotate-hint">Click a view to rotate your product</div>
+
+    <!-- DESIGN CARDS -->
+    <div class="designs-wrap">
+      <div class="designs-header">
+        <h3>Choose a Label Design</h3>
+        <span style="font-size:0.72rem;color:var(--gray)">4 styles · tap to apply</span>
+      </div>
+      <div class="designs-grid" id="designs-grid">
+        <!-- Rendered by JS -->
+      </div>
+    </div>
+  </div>
+
+  <!-- RIGHT PANEL -->
+  <div class="right-panel">
+
+    <!-- PROGRESS -->
+    <div class="progress-wrap">
+      <h3>Your Progress</h3>
+      <div class="prog-steps">
+        <div class="pstep"><div class="pdot done" id="pd1">✓</div><div class="ptext done" id="pt1">Product selected</div></div>
+        <div class="pstep"><div class="pdot" id="pd2">2</div><div class="ptext" id="pt2">Upload your logo</div></div>
+        <div class="pstep"><div class="pdot curr" id="pd3">3</div><div class="ptext curr" id="pt3">Add brand details</div></div>
+        <div class="pstep"><div class="pdot" id="pd4">4</div><div class="ptext" id="pt4">Choose a design</div></div>
+        <div class="pstep"><div class="pdot" id="pd5">5</div><div class="ptext" id="pt5">Your contact details</div></div>
+        <div class="pstep"><div class="pdot" id="pd6">6</div><div class="ptext" id="pt6">Submit order</div></div>
+      </div>
+    </div>
+
+    <!-- ORDER SUMMARY -->
+    <div class="sum-card">
+      <h3>Order Summary</h3>
+      <div class="sum-row"><div class="sum-key">Product</div><div class="sum-val blue" id="sum-product">Still Water Bottle</div></div>
+      <div class="sum-row"><div class="sum-key">Size</div><div class="sum-val" id="sum-size">250ml</div></div>
+      <div class="sum-row"><div class="sum-key">Qty (est.)</div><div class="sum-val" id="sum-qty">500 units</div></div>
+      <div class="sum-row"><div class="sum-key">Design</div><div class="sum-val" id="sum-design">— not chosen</div></div>
+      <div class="sum-row"><div class="sum-key">Logo</div><div class="sum-val" id="sum-logo">— not uploaded</div></div>
+      <div class="sum-row"><div class="sum-key">Payment</div><div class="sum-val blue">Sample first</div></div>
+    </div>
+
+    <div class="note-box">
+      <strong>How this works</strong>
+      No payment today. Submit your design — our team reviews it and ships you a physical sample within days.
+    </div>
+
+    <button class="dl-btn" onclick="downloadMockup()">↓ Download Mockup PNG</button>
+    <button class="submit-btn" id="submit-btn" onclick="submitOrder()">Request Your Sample →</button>
+    <p style="font-size:0.68rem;color:var(--mid);text-align:center;line-height:1.5">Our team will contact you within 24–48 hours to confirm your order details.</p>
+  </div>
+</div>
+
+<!-- TOAST -->
+<div class="toast" id="toast"><strong id="toast-title"></strong><span id="toast-msg"></span></div>
+
+<script>
+// ─── STATE ───────────────────────────────────────────────
+const S = {
+  type:'bottle', size:'250ml', moq:'500',
+  brandName:'', tagline:'', prodType:'',
+  colour:'#0a1a10', colourName:'Forest Green',
+  qty:500,
+  logoUploaded:false, logoName:'',
+  designIdx:null,
+  bizName:'', contactName:'', email:'',
+};
+
+// Parse URL params (from homepage quick links)
+const params = new URLSearchParams(location.search);
+if(params.get('type')) S.type = params.get('type');
+if(params.get('size')) S.size = params.get('size');
+
+// ─── DESIGN DEFINITIONS ──────────────────────────────────
+const DESIGNS = [
+  {
+    name:'Minimal',
+    desc:'Clean, generous space',
+    bg:'linear-gradient(145deg,#0c0c18,#14142a)',
+    accent:'rgba(255,255,255,0.7)',
+    accentLine:'rgba(255,255,255,0.15)',
+    labelFn:(name,tag)=>`
+      <text x="100" y="185" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="18" font-weight="300" fill="#ffffff" letter-spacing="4">${name.toUpperCase()}</text>
+      <line x1="62" y1="195" x2="138" y2="195" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
+      <text x="100" y="212" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(255,255,255,0.4)" letter-spacing="2">${tag.toUpperCase()}</text>
+    `
+  },
+  {
+    name:'Bold',
+    desc:'High contrast, strong type',
+    bg:'linear-gradient(145deg,#1a0010,#300020)',
+    accent:'#ff3b86',
+    accentLine:'rgba(255,59,134,0.4)',
+    labelFn:(name,tag)=>`
+      <text x="100" y="180" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="28" font-weight="800" fill="#ff3b86" letter-spacing="-1">${name}</text>
+      <rect x="60" y="186" width="80" height="3" fill="#ff3b86" opacity="0.6"/>
+      <text x="100" y="210" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">${tag.toUpperCase()}</text>
+    `
+  },
+  {
+    name:'Premium',
+    desc:'Refined, editorial feel',
+    bg:'linear-gradient(145deg,#100c00,#201800)',
+    accent:'#c9a84c',
+    accentLine:'rgba(201,168,76,0.3)',
+    labelFn:(name,tag)=>`
+      <text x="100" y="170" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" font-weight="500" fill="rgba(201,168,76,0.8)" letter-spacing="4">${name.toUpperCase()}</text>
+      <line x1="70" y1="178" x2="130" y2="178" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>
+      <text x="100" y="200" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#f5e6b8" letter-spacing="-0.5">${tag || 'Pure.'}</text>
+      <line x1="70" y1="210" x2="130" y2="210" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>
+    `
+  },
+  {
+    name:'Natural',
+    desc:'Organic, earth tones',
+    bg:'linear-gradient(145deg,#081408,#102010)',
+    accent:'#5cb85c',
+    accentLine:'rgba(92,184,92,0.3)',
+    labelFn:(name,tag)=>`
+      <ellipse cx="100" cy="180" rx="34" ry="34" fill="rgba(92,184,92,0.08)" stroke="rgba(92,184,92,0.2)" stroke-width="1"/>
+      <text x="100" y="176" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#7dc87d" letter-spacing="-0.3">${name.slice(0,6)}</text>
+      <text x="100" y="192" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(125,200,125,0.6)" letter-spacing="1">${tag.toUpperCase().slice(0,14)}</text>
+    `
+  },
+];
+
+// ─── TOAST ───────────────────────────────────────────────
+let toastTimer;
+function toast(title, msg) {
+  const t = document.getElementById('toast');
+  document.getElementById('toast-title').textContent = title;
+  document.getElementById('toast-msg').textContent = msg;
+  t.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
+}
+
+// ─── PRODUCT TYPE ─────────────────────────────────────────
+function selectType(type, el) {
+  S.type = type;
+  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const bSizes = [['250ml','500'],['500ml','500'],['750ml','500'],['1L','500'],['1.5L','1000'],['Custom','TBD']];
+  const cSizes = [['150ml','1000'],['250ml','1000'],['330ml','1000'],['355ml','1000'],['500ml','1000'],['Custom','TBD']];
+  const sizes = type === 'bottle' ? bSizes : cSizes;
+  const grid = document.getElementById('size-grid');
+  grid.innerHTML = sizes.map((s,i)=>`<div class="size-btn${i===0?' active':''}" onclick="selectSize('${s[0]}','${s[1]}',this)">${s[0]}<span class="moq">min ${s[1]}</span></div>`).join('');
+  selectSize(sizes[0][0], sizes[0][1], grid.firstChild);
+  document.getElementById('sum-product').textContent = type==='bottle'?'Still Water Bottle':'Can';
+  renderProductSVG();
+}
+
+// ─── SIZE ─────────────────────────────────────────────────
+function selectSize(size, moq, el) {
+  S.size = size; S.moq = moq;
+  document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
+  if(el) el.classList.add('active');
+  document.getElementById('selected-size-label').textContent = size+' selected';
+  document.getElementById('sum-size').textContent = size;
+  updatePreview();
+}
+
+// ─── LOGO ─────────────────────────────────────────────────
+function handleLogo(input) {
+  if(!input.files[0]) return;
+  const f = input.files[0];
+  S.logoUploaded = true; S.logoName = f.name;
+  document.getElementById('logo-prev').style.display = 'flex';
+  document.getElementById('logo-name-txt').textContent = f.name;
+  document.getElementById('logo-size-txt').textContent = (f.size/1024/1024).toFixed(1)+' MB · '+f.name.split('.').pop().toUpperCase();
+  document.getElementById('sum-logo').textContent = '✓ Uploaded';
+  document.getElementById('logo-ph').style.display = 'none';
+  const reader = new FileReader();
+  reader.onload = e => {
+    const thumb = document.getElementById('logo-thumb');
+    thumb.innerHTML = `<img src="${e.target.result}" alt="logo"/>`;
+  };
+  reader.readAsDataURL(f);
+  updateProgress();
+  toast('Logo uploaded ✓', f.name+' added to your design.');
+}
+
+function removeLogo() {
+  S.logoUploaded = false;
+  document.getElementById('logo-prev').style.display = 'none';
+  document.getElementById('sum-logo').textContent = '— not uploaded';
+  document.getElementById('logo-ph').style.display = 'block';
+  document.getElementById('logo-input').value = '';
+  updateProgress();
+}
+
+// ─── COLOUR ───────────────────────────────────────────────
+function selectColour(hex, name, el) {
+  S.colour = hex; S.colourName = name;
+  document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('pvlbl-s1').style.stopColor = hex;
+  document.getElementById('pvlbl-s2').style.stopColor = darken(hex, 0.6);
+}
+function darken(hex, factor) {
+  const n = parseInt(hex.replace('#',''),16);
+  const r = Math.round(((n>>16)&255)*factor);
+  const g = Math.round(((n>>8)&255)*factor);
+  const b = Math.round((n&255)*factor);
+  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
+}
+
+// ─── PREVIEW ──────────────────────────────────────────────
+function updatePreview() {
+  S.brandName = document.getElementById('brand-name').value;
+  S.tagline   = document.getElementById('brand-tag').value;
+  S.prodType  = document.getElementById('prod-type-txt').value;
+
+  const name = S.brandName || 'Brand';
+  const tag  = S.tagline   || 'Pure · Natural';
+  const type = S.prodType  || (S.type==='bottle'?'Still Water':'Beverage');
+
+  document.getElementById('pv-brand').textContent = name;
+  document.getElementById('pv-tag').textContent   = tag.toUpperCase();
+  document.getElementById('pv-type').textContent  = type.toUpperCase()+' · '+S.size.toUpperCase();
+
+  // If a design is selected, re-apply it
+  if(S.designIdx !== null) applyDesign(S.designIdx);
+
+  updateProgress();
+}
+
+function renderProductSVG() {
+  // Could swap between bottle/can SVG shapes — for now bottle always
+  updatePreview();
+}
+
+// ─── DESIGNS ──────────────────────────────────────────────
+function renderDesignCards() {
+  const grid = document.getElementById('designs-grid');
+  grid.innerHTML = DESIGNS.map((d,i)=>`
+    <div class="design-card${S.designIdx===i?' selected':''}" onclick="selectDesign(${i})" id="dc-${i}">
+      <div class="dc-preview" style="background:${d.bg}">
+        <div style="text-align:center;padding:8px;width:100%">
+          <div style="font-size:0.55rem;color:${d.accent};letter-spacing:2px;margin-bottom:3px;font-weight:600">${(S.brandName||'BRAND').toUpperCase().slice(0,10)}</div>
+          <div style="width:28px;height:0.5px;background:${d.accentLine};margin:0 auto 4px"></div>
+          <div style="font-size:0.5rem;color:rgba(255,255,255,0.3);letter-spacing:1px">${S.size}</div>
+        </div>
+      </div>
+      <div class="dc-name">${d.name}</div>
+      <div class="dc-desc">${d.desc}</div>
+    </div>
+  `).join('');
+}
+
+function selectDesign(idx) {
+  S.designIdx = idx;
+  applyDesign(idx);
+  renderDesignCards();
+  document.getElementById('sum-design').textContent = DESIGNS[idx].name+' style';
+  updateProgress();
+  toast('Design applied', DESIGNS[idx].name+' style applied to your preview.');
+}
+
+function applyDesign(idx) {
+  const d = DESIGNS[idx];
+  const name = S.brandName || 'Brand';
+  const tag  = S.tagline   || 'Pure · Natural';
+  // Update label colour to match design base
+  document.getElementById('pvlbl-s1').style.stopColor = d.bg.includes('gradient') ? extractFirstColor(d.bg) : d.bg;
+  document.getElementById('pvlbl-s2').style.stopColor = darken(extractFirstColor(d.bg),0.7);
+  // Re-render internal label text via existing elements
+  document.getElementById('pv-brand').textContent = name;
+  document.getElementById('pv-tag').textContent   = tag.toUpperCase();
+}
+
+function extractFirstColor(gradient) {
+  const m = gradient.match(/#[0-9a-fA-F]{3,6}/);
+  return m ? m[0] : '#0a1a10';
+}
+
+// ─── QTY ──────────────────────────────────────────────────
+function updateQty(v) {
+  S.qty = parseInt(v);
+  document.getElementById('qty-display').textContent = parseInt(v).toLocaleString();
+  document.getElementById('sum-qty').textContent = parseInt(v).toLocaleString()+' units';
+}
+
+// ─── VIEWS ────────────────────────────────────────────────
+function setView(v, el) {
+  document.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
+  el.classList.add('active');
+  const svg = document.getElementById('preview-svg');
+  const transforms = {front:'', angle:'perspective(600px) rotateY(18deg)', back:'scaleX(-1)'};
+  svg.style.transform = transforms[v];
+  svg.style.transition = 'transform 0.5s ease';
+}
+
+// ─── PROGRESS ─────────────────────────────────────────────
+function updateProgress() {
+  const checks = [
+    true,
+    S.logoUploaded,
+    !!(document.getElementById('brand-name').value),
+    S.designIdx !== null,
+    !!(document.getElementById('biz-name').value && document.getElementById('contact-name').value && document.getElementById('contact-email').value),
+    false
+  ];
+  checks.forEach((done,i)=>{
+    const dot  = document.getElementById('pd'+(i+1));
+    const text = document.getElementById('pt'+(i+1));
+    const nextPending = !done && checks.slice(0,i).every(Boolean);
+    if(done){ dot.className='pdot done'; dot.textContent='✓'; text.className='ptext done'; }
+    else if(nextPending){ dot.className='pdot curr'; dot.textContent=i+1; text.className='ptext curr'; }
+    else{ dot.className='pdot'; dot.textContent=i+1; text.className='ptext'; }
+  });
+  // Update nav steps
+  const step = checks.filter(Boolean).length;
+  if(step>=2){ document.getElementById('ns3').className='ns done'; document.getElementById('ns3').querySelector('.ns-num').textContent='✓'; }
+  if(step>=4){ document.getElementById('ns2').className='ns done'; document.getElementById('ns2').querySelector('.ns-num').textContent='✓'; }
+}
+
+// ─── DOWNLOAD ─────────────────────────────────────────────
+function downloadMockup() {
+  toast('Mockup ready', 'Your branded product mockup has been prepared for download.');
+}
+
+// ─── SUBMIT ───────────────────────────────────────────────
+function submitOrder() {
+  const name  = document.getElementById('brand-name').value.trim();
+  const biz   = document.getElementById('biz-name').value.trim();
+  const cname = document.getElementById('contact-name').value.trim();
+  const email = document.getElementById('contact-email').value.trim();
+
+  if(!name)  { toast('Missing info', 'Please add your brand name.'); return; }
+  if(!biz)   { toast('Missing info', 'Please add your business name.'); return; }
+  if(!cname) { toast('Missing info', 'Please add your contact name.'); return; }
+  if(!email) { toast('Missing info', 'Please add your email address.'); return; }
+  if(S.designIdx === null){ toast('No design chosen', 'Please select one of the 4 label designs.'); return; }
+
+  const ref = 'DYP-'+Date.now().toString(36).toUpperCase();
+  document.getElementById('order-ref').textContent = 'Order reference: '+ref;
+  document.getElementById('success').classList.add('show');
+
+  // Mark step 4 done
+  document.getElementById('ns4').className='ns done';
+  document.getElementById('ns4').querySelector('.ns-num').textContent='✓';
+}
+
+// ─── INIT ─────────────────────────────────────────────────
+renderDesignCards();
+
+// Apply initial URL params
+if(params.get('type')==='can') {
+  selectType('can', document.querySelectorAll('.ttab')[1]);
+} else if(params.get('size')) {
+  // Highlight matching size
+  document.querySelectorAll('.size-btn').forEach(b=>{
+    if(b.textContent.trim().startsWith(params.get('size'))){
+      b.click();
+    }
+  });
+}
+</script>
+</body>
+</html>

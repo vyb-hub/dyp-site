@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DYP — Design Your Packaging</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#1d1d1f;--white:#f5f5f7;--gray:#6e6e73;--light:#fbfbfd;--mid:#e8e8ed;
+  --blue:#0071e3;--blue-h:#0077ed;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
+}
+html{scroll-behavior:smooth}
+body{font-family:var(--font);background:var(--light);color:var(--black);overflow-x:hidden;-webkit-font-smoothing:antialiased}
+
+/* NAV */
+nav{position:fixed;top:0;left:0;right:0;z-index:9999;height:44px;background:rgba(251,251,253,0.85);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center}
+.nav-inner{width:100%;max-width:980px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.nav-logo{font-size:1.25rem;font-weight:600;color:var(--black);text-decoration:none;letter-spacing:-0.01em}
+.nav-links{display:flex;list-style:none}
+.nav-links a{color:var(--gray);text-decoration:none;font-size:0.72rem;padding:0 10px;transition:color 0.15s;white-space:nowrap}
+.nav-links a:hover{color:var(--black)}
+.nav-cta{background:var(--blue);color:#fff;padding:5px 14px;border-radius:980px;font-size:0.75rem;text-decoration:none;transition:background 0.2s}
+.nav-cta:hover{background:var(--blue-h)}
+
+/* LINKS & BUTTONS */
+.lnk{color:#2997ff;font-size:0.95rem;text-decoration:none;display:inline-flex;align-items:center;gap:3px;cursor:pointer}
+.lnk::after{content:'›';font-size:1.1rem}
+.lnk:hover{text-decoration:underline}
+.lnk-dark{color:var(--blue);font-size:0.95rem;text-decoration:none;display:inline-flex;align-items:center;gap:3px;cursor:pointer}
+.lnk-dark::after{content:'›';font-size:1.1rem}
+.lnk-dark:hover{text-decoration:underline}
+.btn-w{display:inline-block;border:1px solid #2997ff;color:#2997ff;padding:8px 20px;border-radius:980px;font-size:0.82rem;text-decoration:none;transition:all 0.2s;cursor:pointer;background:transparent;font-family:var(--font)}
+.btn-w:hover{background:#2997ff;color:#fff}
+.btn-d{display:inline-block;border:1px solid var(--blue);color:var(--blue);padding:8px 20px;border-radius:980px;font-size:0.82rem;text-decoration:none;transition:all 0.2s;cursor:pointer;background:transparent;font-family:var(--font)}
+.btn-d:hover{background:var(--blue);color:#fff}
+.btn-fill{display:inline-block;background:var(--blue);color:#fff;padding:9px 22px;border-radius:980px;font-size:0.82rem;text-decoration:none;transition:background 0.2s;cursor:pointer;border:none;font-family:var(--font)}
+.btn-fill:hover{background:var(--blue-h)}
+
+/* TILE GRID */
+.tile-grid{margin-top:44px;display:grid;grid-template-columns:1fr 1fr;gap:12px;padding:12px}
+.tile{border-radius:18px;overflow:hidden;position:relative;display:flex;flex-direction:column;align-items:center;justify-content:flex-start;padding:52px 40px 40px;text-align:center}
+.tile-full{grid-column:1/-1;min-height:580px}
+.tile-half{min-height:440px}
+.t-dark{background:#1d1d1f}
+.t-white{background:#fff}
+.t-gray{background:#f5f5f7}
+.eyebrow{font-size:0.78rem;font-weight:600;margin-bottom:6px}
+.headline{font-size:clamp(2rem,4.5vw,3.6rem);font-weight:700;line-height:1.07;letter-spacing:-0.025em;margin-bottom:8px}
+.sub{font-size:1.05rem;font-weight:300;line-height:1.5;margin-bottom:22px;max-width:480px}
+.tlinks{display:flex;gap:20px;justify-content:center;align-items:center;flex-wrap:wrap}
+.tvisual{flex:1;display:flex;align-items:center;justify-content:center;width:100%;margin-top:20px}
+.pills{display:flex;gap:8px;justify-content:center;flex-wrap:wrap;margin-top:12px}
+.pill{border-radius:980px;padding:5px 14px;font-size:0.75rem;font-weight:500}
+.pill-dk{background:#2d2d2f;color:#f5f5f7}
+.pill-lt{background:#e8e8ed;color:var(--black)}
+
+/* ANIMATIONS */
+@keyframes fadeUp{from{opacity:0;transform:translateY(18px)}to{opacity:1;transform:translateY(0)}}
+@keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-10px)}}
+.float{animation:floatY 5s ease-in-out infinite}
+.h1{animation:fadeUp 0.8s ease 0.05s both}
+.h2{animation:fadeUp 0.8s ease 0.13s both}
+.h3{animation:fadeUp 0.8s ease 0.21s both}
+.h4{animation:fadeUp 0.8s ease 0.29s both}
+.h5{animation:fadeUp 1s ease 0.4s both}
+
+/* HOW IT WORKS */
+.how-sec{background:#fff;padding:96px 22px 80px;text-align:center}
+.sec-ey{font-size:0.78rem;font-weight:600;color:var(--gray);margin-bottom:6px}
+.sec-h{font-size:clamp(1.8rem,3.5vw,3rem);font-weight:700;letter-spacing:-0.025em;line-height:1.07;color:var(--black)}
+.steps{display:grid;grid-template-columns:repeat(3,1fr);max-width:980px;margin:56px auto 0;position:relative}
+.steps::before{content:'';position:absolute;top:36px;left:calc(16.5% + 36px);right:calc(16.5% + 36px);height:1px;background:var(--mid)}
+.step{padding:0 24px;text-align:center}
+.step-ico{width:72px;height:72px;border-radius:50%;background:#f5f5f7;display:flex;align-items:center;justify-content:center;margin:0 auto 20px;font-size:1.8rem}
+.step h3{font-size:1.1rem;font-weight:600;letter-spacing:-0.01em;margin-bottom:8px}
+.step p{font-size:0.875rem;color:var(--gray);line-height:1.6;font-weight:300}
+
+/* PRODUCTS */
+.prod-grid{padding:0 12px 12px;display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.prod-tile{border-radius:18px;padding:52px 40px 48px;text-align:center;display:flex;flex-direction:column;align-items:center;min-height:520px;overflow:hidden}
+
+/* AI SECTION */
+.ai-sec{background:#000;padding:96px 22px;text-align:center;position:relative;overflow:hidden}
+.ai-glow{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:900px;height:500px;background:radial-gradient(ellipse,rgba(0,113,227,0.12) 0%,transparent 65%);pointer-events:none}
+.ai-feats{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;max-width:980px;margin:0 auto 52px}
+.ai-feat{background:#1d1d1f;padding:36px 24px;text-align:left}
+.ai-feat:first-child{border-radius:18px 0 0 18px}
+.ai-feat:last-child{border-radius:0 18px 18px 0}
+.ai-feat-n{font-size:0.72rem;color:#6e6e73;margin-bottom:14px;font-weight:500}
+.ai-feat h3{font-size:0.95rem;font-weight:600;color:#f5f5f7;margin-bottom:6px;letter-spacing:-0.01em}
+.ai-feat p{font-size:0.82rem;color:#6e6e73;line-height:1.6;font-weight:300}
+
+/* GALLERY */
+.gal-grid{padding:0 12px 12px;display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.gal{border-radius:18px;overflow:hidden;position:relative;min-height:380px;display:flex;flex-direction:column;justify-content:flex-end;padding:28px;cursor:pointer;transition:transform 0.25s}
+.gal:hover{transform:scale(1.01)}
+.gal:first-child{grid-column:1/3;min-height:480px}
+.gal-badge{position:absolute;top:22px;left:22px;background:rgba(255,255,255,0.12);backdrop-filter:blur(10px);border-radius:980px;padding:5px 14px;font-size:0.68rem;color:#fff;font-weight:500}
+.gal-brand{font-size:1.25rem;font-weight:700;color:#fff;letter-spacing:-0.02em;margin-bottom:3px}
+.gal-type{font-size:0.75rem;color:rgba(255,255,255,0.45)}
+
+/* SHOP */
+.shop-sec{background:#f5f5f7;padding:60px 22px;text-align:center}
+.shop-cards{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:980px;margin:28px auto 0}
+.shop-card{background:#fff;border-radius:18px;padding:28px 18px;text-align:center;transition:transform 0.2s;cursor:pointer}
+.shop-card:hover{transform:scale(1.015)}
+.shop-ico{font-size:2.2rem;margin-bottom:12px}
+.shop-card h4{font-size:0.95rem;font-weight:600;letter-spacing:-0.01em;margin-bottom:5px}
+.shop-card p{font-size:0.75rem;color:var(--gray);line-height:1.5;font-weight:300}
+.shop-lnk{margin-top:10px;display:block;color:var(--blue);font-size:0.78rem;text-decoration:none}
+.shop-lnk:hover{text-decoration:underline}
+
+/* CTA */
+.cta-sec{background:#fff;text-align:center;padding:96px 22px}
+.cta-sec h2{font-size:clamp(1.8rem,3.5vw,3rem);font-weight:700;letter-spacing:-0.025em;margin-bottom:10px}
+.cta-sec p{font-size:1.05rem;color:var(--gray);font-weight:300;margin-bottom:28px}
+.cta-row{display:flex;gap:16px;justify-content:center;flex-wrap:wrap}
+
+/* FOOTER */
+footer{background:#f5f5f7;border-top:1px solid var(--mid);padding:0 22px}
+.foot-note{padding:16px 0;border-bottom:1px solid var(--mid);font-size:0.72rem;color:var(--gray);line-height:1.6;max-width:980px;margin:0 auto}
+.foot-cols{display:grid;grid-template-columns:repeat(4,1fr);max-width:980px;margin:0 auto;padding:28px 0;border-bottom:1px solid var(--mid)}
+.foot-col h4{font-size:0.72rem;font-weight:600;color:var(--black);margin-bottom:10px}
+.foot-col ul{list-style:none;display:flex;flex-direction:column;gap:7px}
+.foot-col a{font-size:0.72rem;color:var(--gray);text-decoration:none;transition:color 0.15s}
+.foot-col a:hover{color:var(--black);text-decoration:underline}
+.foot-btm{display:flex;justify-content:space-between;align-items:center;padding:11px 0;max-width:980px;margin:0 auto}
+.foot-btm p{font-size:0.72rem;color:var(--gray)}
+.foot-btm-links{display:flex;gap:14px}
+.foot-btm-links a{font-size:0.72rem;color:var(--gray);text-decoration:none}
+.foot-btm-links a:hover{text-decoration:underline}
+
+/* SCROLL REVEAL */
+.reveal{opacity:0;transform:translateY(20px);transition:opacity 0.7s ease,transform 0.7s ease}
+.reveal.in{opacity:1;transform:translateY(0)}
+
+@media(max-width:768px){
+  .nav-links{display:none}
+  .tile-grid,.prod-grid,.gal-grid{grid-template-columns:1fr}
+  .gal:first-child{grid-column:1}
+  .tile-full,.tile-half,.prod-tile{min-height:400px}
+  .steps,.shop-cards,.foot-cols{grid-template-columns:1fr 1fr}
+  .steps::before{display:none}
+  .ai-feats{grid-template-columns:1fr 1fr}
+  .ai-feat:first-child,.ai-feat:last-child{border-radius:0}
+  .foot-btm{flex-direction:column;gap:8px;text-align:center}
+}
+</style>
+</head>
+<body>
+
+<nav id="main-nav">
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">DYP</a>
+    <ul class="nav-links">
+      <li><a href="products.html">Products</a></li>
+      <li><a href="index.html#how">How It Works</a></li>
+      <li><a href="index.html#ai">AI Design</a></li>
+      <li><a href="index.html#gallery">Gallery</a></li>
+      <li><a href="index.html#contact">Contact</a></li>
+    </ul>
+    <a class="nav-cta" href="products.html">Start Designing</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="tile-grid">
+  <div class="tile tile-full t-dark">
+    <div class="eyebrow h1" style="color:#2997ff">Introducing DYP</div>
+    <h1 class="headline h2" style="color:#f5f5f7">Design Your Packaging.<br/>Launch your brand.</h1>
+    <p class="sub h3" style="color:#6e6e73">AI-generated labels. 360° live preview.<br/>Physical sample delivered — no payment required.</p>
+    <div class="tlinks h4">
+      <a href="products.html" class="lnk">Start designing</a>
+      <a href="#how" class="btn-w">How it works</a>
+    </div>
+    <div class="tvisual h5">
+      <div style="position:relative;display:flex;align-items:flex-end;justify-content:center;gap:28px">
+        <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:480px;height:240px;background:radial-gradient(ellipse,rgba(0,113,227,0.16) 0%,transparent 70%);pointer-events:none"></div>
+        <!-- Bottle A -->
+        <svg class="float" viewBox="0 0 150 310" width="105" height="255" xmlns="http://www.w3.org/2000/svg" style="animation-delay:0s">
+          <defs>
+            <linearGradient id="ag" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#12122a"/><stop offset="50%" style="stop-color:#1c1c40"/><stop offset="100%" style="stop-color:#0c0c1c"/></linearGradient>
+            <linearGradient id="al" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#08082a"/><stop offset="100%" style="stop-color:#040416"/></linearGradient>
+            <linearGradient id="as" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="45%" style="stop-color:rgba(255,255,255,0.09)"/><stop offset="65%" style="stop-color:rgba(255,255,255,0.15)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient>
+            <clipPath id="ac"><path d="M52 22c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v138c0 10 8 16 17 16h58c9 0 17-6 17-16V79c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z"/></clipPath>
+          </defs>
+          <path d="M52 22c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v138c0 10 8 16 17 16h58c9 0 17-6 17-16V79c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z" fill="url(#ag)" stroke="rgba(41,151,255,0.18)" stroke-width="0.5"/>
+          <rect x="31" y="78" width="87" height="98" fill="url(#al)" clip-path="url(#ac)"/>
+          <rect x="31" y="78" width="87" height="1.5" fill="rgba(41,151,255,0.55)"/>
+          <rect x="31" y="175" width="87" height="1.5" fill="rgba(41,151,255,0.55)"/>
+          <text x="74" y="113" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" font-weight="600" fill="rgba(41,151,255,0.7)" letter-spacing="2.5">AURA</text>
+          <text x="74" y="136" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="19" font-weight="700" fill="#f5f5f7" letter-spacing="-1">Pure.</text>
+          <line x1="45" y1="145" x2="103" y2="145" stroke="rgba(41,151,255,0.18)" stroke-width="0.5"/>
+          <text x="74" y="160" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="rgba(255,255,255,0.25)" letter-spacing="1.5">STILL WATER · 500ML</text>
+          <path d="M52 22c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v138c0 10 8 16 17 16h58c9 0 17-6 17-16V79c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z" fill="url(#as)"/>
+          <rect x="55" y="9" width="38" height="14" rx="3" fill="#101030" stroke="rgba(41,151,255,0.18)" stroke-width="0.5"/>
+        </svg>
+        <!-- Bottle B (tallest, centre) -->
+        <svg class="float" viewBox="0 0 155 335" width="120" height="295" xmlns="http://www.w3.org/2000/svg" style="animation-delay:0.7s">
+          <defs>
+            <linearGradient id="bg2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#0c1a0c"/><stop offset="50%" style="stop-color:#142814"/><stop offset="100%" style="stop-color:#081008"/></linearGradient>
+            <linearGradient id="bl2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#061406"/><stop offset="100%" style="stop-color:#020c02"/></linearGradient>
+            <linearGradient id="bs2" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="40%" style="stop-color:rgba(255,255,255,0.07)"/><stop offset="60%" style="stop-color:rgba(255,255,255,0.14)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient>
+            <clipPath id="bc2"><path d="M55 25c0 0-6 7-7 17l-5 26c-9 7-12 16-12 24v150c0 11 9 18 19 18h71c10 0 19-7 19-18V92c0-8-3-17-12-24l-5-26c-1-10-7-17-7-17z"/></clipPath>
+          </defs>
+          <path d="M55 25c0 0-6 7-7 17l-5 26c-9 7-12 16-12 24v150c0 11 9 18 19 18h71c10 0 19-7 19-18V92c0-8-3-17-12-24l-5-26c-1-10-7-17-7-17z" fill="url(#bg2)" stroke="rgba(80,200,80,0.2)" stroke-width="0.5"/>
+          <rect x="31" y="91" width="93" height="115" fill="url(#bl2)" clip-path="url(#bc2)"/>
+          <rect x="31" y="91" width="93" height="1.5" fill="rgba(80,200,80,0.5)"/>
+          <rect x="31" y="205" width="93" height="1.5" fill="rgba(80,200,80,0.5)"/>
+          <text x="77" y="130" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" font-weight="600" fill="rgba(80,200,80,0.75)" letter-spacing="3">VERDE</text>
+          <text x="77" y="155" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="21" font-weight="700" fill="#f5f5f7" letter-spacing="-1">Natural.</text>
+          <line x1="45" y1="164" x2="109" y2="164" stroke="rgba(80,200,80,0.2)" stroke-width="0.5"/>
+          <text x="77" y="180" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="rgba(255,255,255,0.25)" letter-spacing="1.5">ORGANIC · 750ML</text>
+          <path d="M55 25c0 0-6 7-7 17l-5 26c-9 7-12 16-12 24v150c0 11 9 18 19 18h71c10 0 19-7 19-18V92c0-8-3-17-12-24l-5-26c-1-10-7-17-7-17z" fill="url(#bs2)"/>
+          <rect x="58" y="11" width="38" height="15" rx="3" fill="#0a180a" stroke="rgba(80,200,80,0.18)" stroke-width="0.5"/>
+        </svg>
+        <!-- Can -->
+        <svg class="float" viewBox="0 0 118 255" width="94" height="225" xmlns="http://www.w3.org/2000/svg" style="animation-delay:1.4s">
+          <defs>
+            <linearGradient id="cng" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#1a0800"/><stop offset="50%" style="stop-color:#2c1200"/><stop offset="100%" style="stop-color:#100500"/></linearGradient>
+            <linearGradient id="cns" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="35%" style="stop-color:rgba(255,255,255,0.06)"/><stop offset="55%" style="stop-color:rgba(255,255,255,0.13)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient>
+          </defs>
+          <rect x="14" y="21" width="90" height="207" rx="13" fill="url(#cng)" stroke="rgba(255,140,40,0.2)" stroke-width="0.5"/>
+          <ellipse cx="59" cy="21" rx="45" ry="11" fill="#1c0e00" stroke="rgba(255,140,40,0.2)" stroke-width="0.5"/>
+          <ellipse cx="59" cy="228" rx="45" ry="11" fill="#140900"/>
+          <text x="59" y="100" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" font-weight="600" fill="rgba(255,140,40,0.75)" letter-spacing="2.5">EMBER</text>
+          <text x="59" y="122" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="15" font-weight="700" fill="#f5f5f7" letter-spacing="-0.5">Energy+</text>
+          <text x="59" y="142" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="rgba(255,255,255,0.22)" letter-spacing="1">330ML · SLIM CAN</text>
+          <rect x="14" y="21" width="90" height="207" rx="13" fill="url(#cns)"/>
+          <ellipse cx="59" cy="10" rx="14" ry="4" fill="#222" stroke="rgba(255,140,40,0.25)" stroke-width="0.5"/>
+          <line x1="59" y1="6" x2="68" y2="0" stroke="rgba(255,140,40,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+        </svg>
+      </div>
+    </div>
+  </div>
+
+  <!-- AI HALF TILE -->
+  <div class="tile tile-half t-white reveal">
+    <div class="eyebrow" style="color:var(--black)">AI Label Generator</div>
+    <h2 class="headline" style="font-size:2.2rem">Describe it.<br/>We design it.</h2>
+    <p class="sub" style="color:var(--gray);font-size:0.93rem">Type your brand vision. Four professional label concepts — instantly.</p>
+    <div class="tlinks"><a href="products.html" class="lnk-dark">Start designing</a></div>
+    <div class="tvisual">
+      <div style="background:#f5f5f7;border-radius:14px;padding:18px;width:100%;max-width:340px;text-align:left">
+        <div style="font-size:0.65rem;color:#6e6e73;margin-bottom:6px;font-weight:500">Your prompt</div>
+        <div style="font-size:0.78rem;color:var(--black);line-height:1.5;border-left:2px solid #0071e3;padding-left:10px;margin-bottom:14px">"Premium wellness brand, sage green, clean lines..."</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:6px">
+          <div style="aspect-ratio:2/3;border-radius:8px;background:linear-gradient(160deg,#e8f5e9,#c8e6cc);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:#2d6a4f;font-weight:600;letter-spacing:1px">MIN</div>
+          <div style="aspect-ratio:2/3;border-radius:8px;background:linear-gradient(160deg,#f0f8f0,#dcedc8);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:#33691e;font-weight:600;letter-spacing:1px">BOLD</div>
+          <div style="aspect-ratio:2/3;border-radius:8px;background:linear-gradient(160deg,#e8f5ea,#b2dfdb);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:#00695c;font-weight:600;letter-spacing:1px">PRE</div>
+          <div style="aspect-ratio:2/3;border-radius:8px;background:linear-gradient(160deg,#f1f8e9,#ccff90);display:flex;align-items:center;justify-content:center;font-size:0.5rem;color:#558b2f;font-weight:600;letter-spacing:1px">FUN</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 360 HALF TILE -->
+  <div class="tile tile-half t-gray reveal">
+    <div class="eyebrow" style="color:var(--gray)">360° Live Preview</div>
+    <h2 class="headline" style="font-size:2.2rem">See every angle<br/>before you order.</h2>
+    <p class="sub" style="color:var(--gray);font-size:0.93rem">Interactive 3D viewer. Download your branded mockup and share with your team.</p>
+    <div class="tlinks"><a href="products.html" class="lnk-dark">Preview your design</a></div>
+    <div class="tvisual">
+      <svg class="float" style="animation-delay:0.3s" viewBox="0 0 200 240" width="150" height="205" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="pvg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#c8c8d8"/><stop offset="45%" style="stop-color:#e0e0f0"/><stop offset="100%" style="stop-color:#b0b0c0"/></linearGradient>
+          <linearGradient id="pvl" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#eeebe4"/><stop offset="100%" style="stop-color:#e4e0d8"/></linearGradient>
+          <linearGradient id="pvs" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="40%" style="stop-color:rgba(255,255,255,0.4)"/><stop offset="60%" style="stop-color:rgba(255,255,255,0.6)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient>
+          <clipPath id="pvc"><path d="M72 30c0 0-5 5-5 13l-4 20c-7 5-10 11-10 17v120c0 9 7 14 15 14h66c8 0 15-5 15-14V80c0-6-3-12-10-17l-4-20c-1-8-5-13-5-13z"/></clipPath>
+        </defs>
+        <path d="M72 30c0 0-5 5-5 13l-4 20c-7 5-10 11-10 17v120c0 9 7 14 15 14h66c8 0 15-5 15-14V80c0-6-3-12-10-17l-4-20c-1-8-5-13-5-13z" fill="url(#pvg)" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+        <rect x="53" y="79" width="94" height="96" fill="url(#pvl)" clip-path="url(#pvc)"/>
+        <text x="100" y="113" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" font-weight="600" fill="#777" letter-spacing="2">YOUR BRAND</text>
+        <text x="100" y="133" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="14" font-weight="700" fill="#1d1d1f" letter-spacing="-0.5">Hydrate.</text>
+        <line x1="66" y1="141" x2="134" y2="141" stroke="rgba(0,0,0,0.1)" stroke-width="0.5"/>
+        <text x="100" y="154" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="#aaa" letter-spacing="1">STILL · 500ML</text>
+        <path d="M72 30c0 0-5 5-5 13l-4 20c-7 5-10 11-10 17v120c0 9 7 14 15 14h66c8 0 15-5 15-14V80c0-6-3-12-10-17l-4-20c-1-8-5-13-5-13z" fill="url(#pvs)"/>
+        <rect x="78" y="18" width="44" height="14" rx="3" fill="#c0c0d0" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>
+        <path d="M 36 155 A 64 60 0 0 1 164 155" stroke="#0071e3" stroke-width="1" fill="none" stroke-dasharray="4 4" opacity="0.25"/>
+        <polygon points="164,151 167,158 161,156" fill="#0071e3" opacity="0.25"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- HOW IT WORKS -->
+<section class="how-sec" id="how">
+  <div class="sec-ey">The Process</div>
+  <h2 class="sec-h">Three steps to your<br/>branded beverage.</h2>
+  <div class="steps">
+    <div class="step reveal"><div class="step-ico">🎨</div><h3>Design Your Label</h3><p>Upload your logo, enter brand details, and pick from 4 AI-generated label concepts built for your vision.</p></div>
+    <div class="step reveal"><div class="step-ico">🔄</div><h3>Preview in 360°</h3><p>See your exact design on a 3D product. Rotate, inspect every angle, and download a shareable mockup.</p></div>
+    <div class="step reveal"><div class="step-ico">📦</div><h3>Receive Your Sample</h3><p>No payment upfront. Submit your order and we ship a physical sample to your door within days.</p></div>
+  </div>
+</section>
+
+<!-- PRODUCTS -->
+<div class="prod-grid" id="products">
+  <div class="prod-tile t-dark reveal">
+    <div class="eyebrow" style="color:#2997ff">Bottles</div>
+    <h2 class="headline" style="color:#f5f5f7;font-size:2.3rem">Still &amp; Sparkling.</h2>
+    <p class="sub" style="color:#6e6e73;font-size:0.93rem">Premium PET with full-wrap label printing. Maximum brand shelf presence.</p>
+    <div class="tlinks"><a class="lnk" href="products.html">Shop bottles</a><a class="btn-w" href="products.html">Get a sample</a></div>
+    <div class="pills"><span class="pill pill-dk">250ml</span><span class="pill pill-dk">500ml</span><span class="pill pill-dk">750ml</span><span class="pill pill-dk">1L</span><span class="pill pill-dk">1.5L</span></div>
+    <div class="tvisual">
+      <svg class="float" viewBox="0 0 160 280" width="130" height="240" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="pb" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#141430"/><stop offset="50%" style="stop-color:#20204e"/><stop offset="100%" style="stop-color:#0c0c20"/></linearGradient><linearGradient id="pbl" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#08082c"/><stop offset="100%" style="stop-color:#040416"/></linearGradient><linearGradient id="pbs" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="40%" style="stop-color:rgba(255,255,255,0.07)"/><stop offset="60%" style="stop-color:rgba(255,255,255,0.14)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient><clipPath id="pbc"><path d="M60 22c0 0-6 7-7 17l-5 25c-9 7-12 16-12 24v130c0 11 9 18 19 18h64c10 0 19-7 19-18V88c0-8-3-17-12-24l-5-25c-1-10-7-17-7-17z"/></clipPath></defs>
+        <path d="M60 22c0 0-6 7-7 17l-5 25c-9 7-12 16-12 24v130c0 11 9 18 19 18h64c10 0 19-7 19-18V88c0-8-3-17-12-24l-5-25c-1-10-7-17-7-17z" fill="url(#pb)" stroke="rgba(41,151,255,0.15)" stroke-width="0.5"/>
+        <rect x="36" y="87" width="88" height="106" fill="url(#pbl)" clip-path="url(#pbc)"/>
+        <rect x="36" y="87" width="88" height="1.5" fill="rgba(41,151,255,0.5)"/><rect x="36" y="192" width="88" height="1.5" fill="rgba(41,151,255,0.5)"/>
+        <text x="80" y="122" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" font-weight="600" fill="rgba(41,151,255,0.7)" letter-spacing="2.5">YOUR BRAND</text>
+        <text x="80" y="147" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#f5f5f7" letter-spacing="-1">Hydrate.</text>
+        <line x1="48" y1="156" x2="112" y2="156" stroke="rgba(41,151,255,0.2)" stroke-width="0.5"/>
+        <text x="80" y="171" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="rgba(255,255,255,0.25)" letter-spacing="2">STILL WATER · 500ML</text>
+        <path d="M60 22c0 0-6 7-7 17l-5 25c-9 7-12 16-12 24v130c0 11 9 18 19 18h64c10 0 19-7 19-18V88c0-8-3-17-12-24l-5-25c-1-10-7-17-7-17z" fill="url(#pbs)"/>
+        <rect x="64" y="8" width="32" height="15" rx="3" fill="#10102e" stroke="rgba(41,151,255,0.18)" stroke-width="0.5"/>
+      </svg>
+    </div>
+  </div>
+  <div class="prod-tile reveal" style="background:#f5f5f7">
+    <div class="eyebrow" style="color:var(--black)">Cans</div>
+    <h2 class="headline" style="font-size:2.3rem">Slim &amp; Standard.</h2>
+    <p class="sub" style="color:var(--gray);font-size:0.93rem">Aluminium cans with full 360° wrap printing. The format of modern premium beverages.</p>
+    <div class="tlinks"><a class="lnk-dark" href="products.html">Shop cans</a><a class="btn-d" href="products.html">Get a sample</a></div>
+    <div class="pills"><span class="pill pill-lt">150ml</span><span class="pill pill-lt">250ml</span><span class="pill pill-lt">330ml</span><span class="pill pill-lt">355ml</span><span class="pill pill-lt">500ml</span></div>
+    <div class="tvisual">
+      <svg class="float" style="animation-delay:0.5s" viewBox="0 0 120 260" width="96" height="230" xmlns="http://www.w3.org/2000/svg">
+        <defs><linearGradient id="scg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#c0c0d0"/><stop offset="40%" style="stop-color:#dcdcec"/><stop offset="100%" style="stop-color:#a8a8bc"/></linearGradient><linearGradient id="scl" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#eeeae2"/><stop offset="100%" style="stop-color:#e2ddd4"/></linearGradient><linearGradient id="scs" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="35%" style="stop-color:rgba(255,255,255,0.3)"/><stop offset="55%" style="stop-color:rgba(255,255,255,0.5)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient></defs>
+        <rect x="14" y="25" width="92" height="202" rx="13" fill="url(#scg)" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+        <ellipse cx="60" cy="25" rx="46" ry="11" fill="#c8c8d8" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+        <ellipse cx="60" cy="227" rx="46" ry="11" fill="#b8b8cc"/>
+        <rect x="20" y="62" width="80" height="128" rx="2" fill="url(#scl)"/>
+        <text x="60" y="106" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" font-weight="600" fill="#555" letter-spacing="2.5">YOUR BRAND</text>
+        <text x="60" y="130" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="16" font-weight="700" fill="#1d1d1f" letter-spacing="-0.5">Energy+</text>
+        <text x="60" y="150" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="#999" letter-spacing="1">330ML · SLIM CAN</text>
+        <rect x="14" y="25" width="92" height="202" rx="13" fill="url(#scs)"/>
+        <ellipse cx="60" cy="13" rx="14" ry="4" fill="#b0b0c4" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+        <line x1="60" y1="9" x2="70" y2="2" stroke="rgba(0,0,0,0.2)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+  </div>
+</div>
+
+<!-- AI SECTION -->
+<section class="ai-sec" id="ai">
+  <div class="ai-glow"></div>
+  <div style="position:relative;z-index:2;max-width:980px;margin:0 auto">
+    <div class="sec-ey" style="color:#6e6e73">AI-Powered Design</div>
+    <h2 class="sec-h" style="color:#f5f5f7;margin-bottom:12px">Your brand,<br/>designed by AI.</h2>
+    <p style="font-size:1rem;color:#6e6e73;font-weight:300;max-width:520px;margin:0 auto 48px;line-height:1.6">No design degree needed. Pick from 4 label concepts crafted for your product and brand style.</p>
+    <div class="ai-feats">
+      <div class="ai-feat reveal"><div class="ai-feat-n">01</div><h3>Brand-First</h3><p>Your logo, colours, and name built into every concept from the start.</p></div>
+      <div class="ai-feat reveal"><div class="ai-feat-n">02</div><h3>4 Styles</h3><p>Minimal, Bold, Premium, and Expressive — four distinct directions every time.</p></div>
+      <div class="ai-feat reveal"><div class="ai-feat-n">03</div><h3>Instant Preview</h3><p>Your chosen design wraps live onto a 3D product model in seconds.</p></div>
+      <div class="ai-feat reveal"><div class="ai-feat-n">04</div><h3>No Limits</h3><p>Swap styles, change colours, tweak text. Iterate until it's exactly right.</p></div>
+    </div>
+    <a href="products.html" class="btn-fill" style="font-size:0.9rem;padding:11px 28px">Start designing for free</a>
+  </div>
+</section>
+
+<!-- GALLERY -->
+<div class="gal-grid" id="gallery">
+
+  <!-- AURA WELLNESS — large tile, purple bottle -->
+  <div class="gal reveal" style="background:linear-gradient(160deg,#1c1428,#2e1e50)">
+    <div class="gal-badge">Wellness · 500ml Bottle</div>
+    <!-- centred bottle illustration -->
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);pointer-events:none">
+      <svg viewBox="0 0 160 320" width="130" height="280" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 20px 40px rgba(0,0,0,0.5))">
+        <defs>
+          <linearGradient id="g-aw1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#2a1a40"/><stop offset="50%" style="stop-color:#3e2860"/><stop offset="100%" style="stop-color:#1e1030"/></linearGradient>
+          <linearGradient id="g-aw2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#1a0e30"/><stop offset="100%" style="stop-color:#100820"/></linearGradient>
+          <linearGradient id="g-aws" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="40%" style="stop-color:rgba(255,255,255,0.08)"/><stop offset="60%" style="stop-color:rgba(255,255,255,0.16)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient>
+          <linearGradient id="g-awg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(160,120,220,0.2)"/><stop offset="50%" style="stop-color:rgba(180,140,240,0.7)"/><stop offset="100%" style="stop-color:rgba(160,120,220,0.2)"/></linearGradient>
+          <clipPath id="cp-aw"><path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z"/></clipPath>
+        </defs>
+        <path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z" fill="url(#g-aw1)" stroke="rgba(160,120,220,0.3)" stroke-width="0.5"/>
+        <rect x="33" y="80" width="88" height="102" fill="url(#g-aw2)" clip-path="url(#cp-aw)"/>
+        <rect x="33" y="80" width="88" height="1.5" fill="url(#g-awg)"/>
+        <rect x="33" y="181" width="88" height="1.5" fill="url(#g-awg)"/>
+        <!-- label content -->
+        <text x="77" y="112" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6.5" font-weight="600" fill="rgba(180,140,255,0.8)" letter-spacing="3">AURA</text>
+        <text x="77" y="136" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="300" fill="#f0eaff" letter-spacing="1">Wellness</text>
+        <line x1="47" y1="145" x2="107" y2="145" stroke="rgba(180,140,255,0.2)" stroke-width="0.5"/>
+        <text x="77" y="160" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="rgba(255,255,255,0.3)" letter-spacing="2">STILL WATER · 500ML</text>
+        <!-- shine -->
+        <path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z" fill="url(#g-aws)"/>
+        <rect x="57" y="11" width="34" height="14" rx="3" fill="#22123a" stroke="rgba(160,120,220,0.3)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div><div class="gal-brand">Aura Wellness</div><div class="gal-type">Spa &amp; Hospitality</div></div>
+  </div>
+
+  <!-- VERDE NATURAL — green bottle -->
+  <div class="gal reveal" style="background:linear-gradient(160deg,#0c1e0e,#163020)">
+    <div class="gal-badge">Organic · 750ml</div>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);pointer-events:none">
+      <svg viewBox="0 0 160 320" width="110" height="240" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 16px 32px rgba(0,0,0,0.5))">
+        <defs>
+          <linearGradient id="g-vn1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#0c2010"/><stop offset="50%" style="stop-color:#163018"/><stop offset="100%" style="stop-color:#081608"/></linearGradient>
+          <linearGradient id="g-vn2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#081808"/><stop offset="100%" style="stop-color:#040c04"/></linearGradient>
+          <linearGradient id="g-vns" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="40%" style="stop-color:rgba(255,255,255,0.07)"/><stop offset="60%" style="stop-color:rgba(255,255,255,0.14)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient>
+          <linearGradient id="g-vng" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(80,180,80,0.2)"/><stop offset="50%" style="stop-color:rgba(100,200,80,0.6)"/><stop offset="100%" style="stop-color:rgba(80,180,80,0.2)"/></linearGradient>
+          <clipPath id="cp-vn"><path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z"/></clipPath>
+        </defs>
+        <path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z" fill="url(#g-vn1)" stroke="rgba(80,180,80,0.25)" stroke-width="0.5"/>
+        <rect x="33" y="80" width="88" height="102" fill="url(#g-vn2)" clip-path="url(#cp-vn)"/>
+        <rect x="33" y="80" width="88" height="1.5" fill="url(#g-vng)"/>
+        <rect x="33" y="181" width="88" height="1.5" fill="url(#g-vng)"/>
+        <text x="77" y="111" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6.5" font-weight="600" fill="rgba(100,200,80,0.8)" letter-spacing="3">VERDE</text>
+        <text x="77" y="135" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="19" font-weight="700" fill="#e8f5e0" letter-spacing="-0.5">Natural.</text>
+        <line x1="47" y1="144" x2="107" y2="144" stroke="rgba(100,200,80,0.2)" stroke-width="0.5"/>
+        <text x="77" y="160" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="rgba(255,255,255,0.3)" letter-spacing="2">ORGANIC · 750ML</text>
+        <path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z" fill="url(#g-vns)"/>
+        <rect x="57" y="11" width="34" height="14" rx="3" fill="#0a180a" stroke="rgba(80,180,80,0.25)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div><div class="gal-brand">Verde Natural</div><div class="gal-type">Organic Beverage</div></div>
+  </div>
+
+  <!-- FLUX ENERGY — red/dark can -->
+  <div class="gal reveal" style="background:linear-gradient(160deg,#1e0808,#400e0e)">
+    <div class="gal-badge">Energy · 330ml Can</div>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);pointer-events:none">
+      <svg viewBox="0 0 120 250" width="100" height="210" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 16px 32px rgba(0,0,0,0.5))">
+        <defs>
+          <linearGradient id="g-fe1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#2a0808"/><stop offset="50%" style="stop-color:#440e0e"/><stop offset="100%" style="stop-color:#1e0404"/></linearGradient>
+          <linearGradient id="g-fes" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="35%" style="stop-color:rgba(255,255,255,0.07)"/><stop offset="55%" style="stop-color:rgba(255,255,255,0.13)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient>
+        </defs>
+        <rect x="14" y="22" width="92" height="200" rx="13" fill="url(#g-fe1)" stroke="rgba(255,60,60,0.25)" stroke-width="0.5"/>
+        <ellipse cx="60" cy="22" rx="46" ry="11" fill="#2a0a0a" stroke="rgba(255,60,60,0.2)" stroke-width="0.5"/>
+        <ellipse cx="60" cy="222" rx="46" ry="11" fill="#1e0606"/>
+        <!-- label area -->
+        <rect x="20" y="56" width="80" height="130" rx="1" fill="rgba(255,60,60,0.06)"/>
+        <text x="60" y="96" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" font-weight="800" fill="rgba(255,80,80,0.9)" letter-spacing="4">FLUX</text>
+        <text x="60" y="118" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="18" font-weight="800" fill="#fff" letter-spacing="-0.5">Energy+</text>
+        <rect x="30" y="124" width="60" height="2" fill="rgba(255,60,60,0.5)" rx="1"/>
+        <text x="60" y="142" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="rgba(255,255,255,0.3)" letter-spacing="1.5">330ML · SLIM CAN</text>
+        <rect x="14" y="22" width="92" height="200" rx="13" fill="url(#g-fes)"/>
+        <ellipse cx="60" cy="11" rx="14" ry="4" fill="#2a0a0a" stroke="rgba(255,60,60,0.3)" stroke-width="0.5"/>
+        <line x1="60" y1="7" x2="69" y2="1" stroke="rgba(255,80,80,0.5)" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </div>
+    <div><div class="gal-brand">Flux Energy</div><div class="gal-type">Performance Drink</div></div>
+  </div>
+
+  <!-- ZEN HOTELS — teal/dark slim bottle -->
+  <div class="gal reveal" style="background:linear-gradient(160deg,#00181c,#003040)">
+    <div class="gal-badge">Sparkling · 250ml</div>
+    <div style="position:absolute;top:50%;left:50%;transform:translate(-50%,-58%);pointer-events:none">
+      <svg viewBox="0 0 160 320" width="110" height="240" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 16px 32px rgba(0,0,0,0.5))">
+        <defs>
+          <linearGradient id="g-zh1" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:#002028"/><stop offset="50%" style="stop-color:#003040"/><stop offset="100%" style="stop-color:#001820"/></linearGradient>
+          <linearGradient id="g-zh2" x1="0%" y1="0%" x2="100%" y2="100%"><stop offset="0%" style="stop-color:#001820"/><stop offset="100%" style="stop-color:#000e14"/></linearGradient>
+          <linearGradient id="g-zhs" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(255,255,255,0)"/><stop offset="40%" style="stop-color:rgba(255,255,255,0.08)"/><stop offset="60%" style="stop-color:rgba(255,255,255,0.15)"/><stop offset="100%" style="stop-color:rgba(255,255,255,0)"/></linearGradient>
+          <linearGradient id="g-zhg" x1="0%" y1="0%" x2="100%" y2="0%"><stop offset="0%" style="stop-color:rgba(40,180,180,0.2)"/><stop offset="50%" style="stop-color:rgba(60,200,200,0.6)"/><stop offset="100%" style="stop-color:rgba(40,180,180,0.2)"/></linearGradient>
+          <clipPath id="cp-zh"><path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z"/></clipPath>
+        </defs>
+        <path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z" fill="url(#g-zh1)" stroke="rgba(40,180,180,0.25)" stroke-width="0.5"/>
+        <rect x="33" y="80" width="88" height="102" fill="url(#g-zh2)" clip-path="url(#cp-zh)"/>
+        <rect x="33" y="80" width="88" height="1.5" fill="url(#g-zhg)"/>
+        <rect x="33" y="181" width="88" height="1.5" fill="url(#g-zhg)"/>
+        <text x="77" y="111" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6.5" font-weight="300" fill="rgba(60,200,200,0.7)" letter-spacing="5">ZEN</text>
+        <text x="77" y="135" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="13" font-weight="300" fill="#e0f8f8" letter-spacing="3">HOTELS</text>
+        <line x1="47" y1="144" x2="107" y2="144" stroke="rgba(40,180,180,0.2)" stroke-width="0.5"/>
+        <text x="77" y="160" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6" fill="rgba(255,255,255,0.3)" letter-spacing="2">SPARKLING · 250ML</text>
+        <path d="M54 24c0 0-5 6-6 15l-4 22c-8 6-11 13-11 20v140c0 10 8 16 17 16h58c9 0 17-6 17-16V81c0-7-3-14-11-20l-4-22c-1-9-6-15-6-15z" fill="url(#g-zhs)"/>
+        <rect x="57" y="11" width="34" height="14" rx="3" fill="#001820" stroke="rgba(40,180,180,0.25)" stroke-width="0.5"/>
+      </svg>
+    </div>
+    <div><div class="gal-brand">Zen Hotels</div><div class="gal-type">Corporate Collection</div></div>
+  </div>
+
+</div>
+
+<!-- SHOP ROW -->
+<div class="shop-sec">
+  <div class="sec-ey">Everything DYP</div>
+  <h2 style="font-size:2rem;font-weight:700;letter-spacing:-0.02em">Explore the range.</h2>
+  <p style="font-size:0.95rem;color:var(--gray);margin-top:6px;font-weight:300">Every format. Every size. Built for businesses ready to launch.</p>
+  <div class="shop-cards">
+    <div class="shop-card reveal" onclick="location.href='products.html?type=bottle&size=250ml'"><div class="shop-ico">🍶</div><h4>Still Water Bottle</h4><p>250ml – 1.5L · PET · Min 500 units</p><span class="shop-lnk">Shop →</span></div>
+    <div class="shop-card reveal" onclick="location.href='products.html?type=bottle&size=330ml'"><div class="shop-ico">💧</div><h4>Sparkling Bottle</h4><p>330ml – 750ml · PET · Min 500 units</p><span class="shop-lnk">Shop →</span></div>
+    <div class="shop-card reveal" onclick="location.href='products.html?type=can&size=250ml'"><div class="shop-ico">🥤</div><h4>Slim Can</h4><p>150ml – 330ml · Aluminium · Min 1,000</p><span class="shop-lnk">Shop →</span></div>
+    <div class="shop-card reveal" onclick="location.href='products.html?type=can&size=355ml'"><div class="shop-ico">🫙</div><h4>Standard Can</h4><p>355ml – 500ml · Aluminium · Min 1,000</p><span class="shop-lnk">Shop →</span></div>
+  </div>
+</div>
+
+<!-- CTA -->
+<section class="cta-sec" id="contact">
+  <p style="font-size:0.78rem;font-weight:600;color:var(--gray);margin-bottom:6px">Get started today</p>
+  <h2>Ready to launch<br/>your brand?</h2>
+  <p>No design experience. No payment needed. Just your vision.</p>
+  <div class="cta-row">
+    <a href="products.html" class="btn-fill" style="font-size:0.9rem;padding:11px 28px">Start designing</a>
+    <a href="mailto:hello@dyp.co" class="btn-d">Contact us</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="foot-note">DYP — Design Your Packaging. Sample shipments subject to design review. Minimum order quantities apply per product. All designs subject to print feasibility check before production.</div>
+  <div class="foot-cols">
+    <div class="foot-col"><h4>Products</h4><ul><li><a href="products.html">Still Water Bottles</a></li><li><a href="products.html">Sparkling Bottles</a></li><li><a href="products.html">Slim Cans</a></li><li><a href="products.html">Standard Cans</a></li><li><a href="products.html">Size Guide</a></li></ul></div>
+    <div class="foot-col"><h4>Design</h4><ul><li><a href="products.html">AI Label Generator</a></li><li><a href="products.html">Upload Your Logo</a></li><li><a href="products.html">360° Preview</a></li><li><a href="index.html#gallery">Design Gallery</a></li></ul></div>
+    <div class="foot-col"><h4>Services</h4><ul><li><a href="index.html#how">How It Works</a></li><li><a href="products.html">Free Sample</a></li><li><a href="mailto:hello@dyp.co">Bulk Orders</a></li><li><a href="mailto:hello@dyp.co">FAQ</a></li></ul></div>
+    <div class="foot-col"><h4>Company</h4><ul><li><a href="#">About DYP</a></li><li><a href="mailto:hello@dyp.co">Contact</a></li><li><a href="#">Privacy Policy</a></li><li><a href="#">Terms of Use</a></li></ul></div>
+  </div>
+  <div class="foot-btm">
+    <p>Copyright © 2026 DYP — Design Your Packaging. All rights reserved.</p>
+    <div class="foot-btm-links"><a href="#">Privacy Policy</a><a href="#">Terms of Use</a><a href="mailto:hello@dyp.co">Contact</a></div>
+  </div>
+</footer>
+
+<script>
+// Scroll reveal
+const io = new IntersectionObserver(entries=>{
+  entries.forEach(e=>{if(e.isIntersecting)e.target.classList.add('in')});
+},{threshold:0.08});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+// Nav shadow on scroll
+window.addEventListener('scroll',()=>{
+  document.getElementById('main-nav').style.borderBottomColor=
+    window.scrollY>8?'rgba(0,0,0,0.13)':'rgba(0,0,0,0.08)';
+});
+</script>
+</body>
+</html>
