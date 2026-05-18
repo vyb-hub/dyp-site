@@ -4,8 +4,8 @@
 // Find them: Supabase Dashboard → Settings → API
 // ─────────────────────────────────────────────────────────────
 
-const SUPABASE_URL      = 'https://fvlpmzehjiwcrdffkdmm.supabase.co';
-const SUPABASE_ANON_KEY = 'sb_publishable_qqnDvG63Ojr3-p2OU3Vomw_5WWkb7Fv';
+const SUPABASE_URL      = '__SUPABASE_URL__';
+const SUPABASE_ANON_KEY = '__SUPABASE_ANON_KEY__';
 
 const { createClient } = window.supabase;
 const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
