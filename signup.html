@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DYP — Create Account</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#1d1d1f;--white:#f5f5f7;--gray:#6e6e73;--light:#fbfbfd;--mid:#e8e8ed;
+  --blue:#0071e3;--blue-h:#0077ed;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
+}
+body{font-family:var(--font);background:var(--light);color:var(--black);min-height:100vh;display:flex;flex-direction:column;-webkit-font-smoothing:antialiased}
+nav{position:fixed;top:0;left:0;right:0;z-index:9999;height:44px;background:rgba(251,251,253,0.85);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center}
+.nav-inner{width:100%;max-width:980px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.nav-logo{font-size:1.25rem;font-weight:600;color:var(--black);text-decoration:none;letter-spacing:-0.01em}
+.auth-wrap{flex:1;display:flex;align-items:center;justify-content:center;padding:80px 22px 40px}
+.auth-card{background:#fff;border-radius:18px;padding:40px 44px;width:100%;max-width:420px;box-shadow:0 2px 24px rgba(0,0,0,0.06),0 0 0 1px rgba(0,0,0,0.04)}
+.auth-logo{font-size:1.5rem;font-weight:700;text-align:center;margin-bottom:4px;letter-spacing:-0.02em}
+.auth-sub{font-size:0.85rem;color:var(--gray);text-align:center;margin-bottom:28px;font-weight:300}
+.field{margin-bottom:14px}
+.field label{display:block;font-size:0.75rem;font-weight:500;color:var(--black);margin-bottom:5px}
+.field input{width:100%;background:var(--light);border:1px solid var(--mid);border-radius:10px;padding:10px 14px;color:var(--black);font-family:var(--font);font-size:0.88rem;outline:none;transition:border-color 0.15s,box-shadow 0.15s}
+.field input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,0.1);background:#fff}
+.field input::placeholder{color:#b0b0b8}
+.field-row{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.submit-btn{width:100%;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:980px;font-family:var(--font);font-size:0.9rem;font-weight:500;cursor:pointer;transition:background 0.2s;margin-top:6px;letter-spacing:0}
+.submit-btn:hover{background:var(--blue-h)}
+.submit-btn:disabled{background:var(--mid);cursor:not-allowed}
+.auth-footer{text-align:center;font-size:0.82rem;color:var(--gray);margin-top:18px}
+.auth-link{color:var(--blue);text-decoration:none}
+.auth-link:hover{text-decoration:underline}
+.msg{border-radius:9px;padding:10px 14px;font-size:0.8rem;margin-bottom:14px;display:none}
+.msg.show{display:block}
+.msg-err{background:#fff2f2;border:1px solid #fcc;color:#c62828}
+.msg-ok{background:#f0fff4;border:1px solid #b2dfdb;color:#1b5e20}
+.divider{border:none;border-top:1px solid var(--mid);margin:20px 0}
+@media(max-width:480px){.auth-card{padding:30px 22px;border-radius:14px}.field-row{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">DYP</a>
+    <span style="font-size:0.78rem;color:var(--gray)">Already have an account? <a href="login.html" class="auth-link">Sign in</a></span>
+  </div>
+</nav>
+<div class="auth-wrap">
+  <div class="auth-card">
+    <div class="auth-logo">DYP</div>
+    <div class="auth-sub">Create your free account</div>
+    <div class="msg msg-err" id="err-msg"></div>
+    <div class="msg msg-ok"  id="ok-msg"></div>
+    <form id="signup-form" onsubmit="handleSignup(event)" novalidate autocomplete="on">
+      <div class="field-row">
+        <div class="field">
+          <label>First Name *</label>
+          <input type="text" id="first-name" placeholder="First" required autocomplete="given-name"/>
+        </div>
+        <div class="field">
+          <label>Last Name *</label>
+          <input type="text" id="last-name" placeholder="Last" required autocomplete="family-name"/>
+        </div>
+      </div>
+      <div class="field">
+        <label>Email Address *</label>
+        <input type="email" id="email" placeholder="you@company.com" required autocomplete="email"/>
+      </div>
+      <div class="field">
+        <label>Business Name <span style="color:var(--gray);font-weight:400">(optional)</span></label>
+        <input type="text" id="biz" placeholder="Your company name" autocomplete="organization"/>
+      </div>
+      <div class="field">
+        <label>Password *</label>
+        <input type="password" id="password" placeholder="Minimum 8 characters" required autocomplete="new-password" minlength="8"/>
+      </div>
+      <div class="field">
+        <label>Confirm Password *</label>
+        <input type="password" id="confirm-pw" placeholder="Repeat password" required autocomplete="new-password"/>
+      </div>
+      <button type="submit" class="submit-btn" id="submit-btn">Create Account</button>
+    </form>
+    <hr class="divider"/>
+    <div class="auth-footer">Already have an account? <a href="login.html" class="auth-link">Sign in →</a></div>
+    <div class="auth-footer" style="margin-top:8px;font-size:0.7rem;color:#b0b0b8">By signing up you agree to our <a href="#" class="auth-link">Terms</a> and <a href="#" class="auth-link">Privacy Policy</a>.</div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/dyp-supabase.js"></script>
+<script>
+// Redirect if already logged in
+(async () => {
+  const user = await getCurrentUser();
+  if (user) window.location.href = 'products.html';
+})();
+
+async function handleSignup(e) {
+  e.preventDefault();
+  const first    = document.getElementById('first-name').value.trim();
+  const last     = document.getElementById('last-name').value.trim();
+  const email    = document.getElementById('email').value.trim().toLowerCase();
+  const biz      = document.getElementById('biz').value.trim();
+  const password = document.getElementById('password').value;
+  const confirm  = document.getElementById('confirm-pw').value;
+  const btn      = document.getElementById('submit-btn');
+
+  hideMessages();
+
+  if (!first || !last)         { showErr('Please enter your full name.'); return; }
+  if (!email)                  { showErr('Please enter your email address.'); return; }
+  if (password.length < 8)     { showErr('Password must be at least 8 characters.'); return; }
+  if (password !== confirm)    { showErr('Passwords do not match.'); return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Creating account…';
+
+  const { error } = await sb.auth.signUp({
+    email,
+    password,
+    options: {
+      data: {
+        full_name:     first + ' ' + last,
+        business_name: biz
+      }
+    }
+  });
+
+  btn.disabled = false;
+  btn.textContent = 'Create Account';
+
+  if (error) {
+    showErr(friendlyError(error.message));
+    return;
+  }
+
+  showOk('Account created! Redirecting to the Design Studio…');
+  setTimeout(() => { window.location.href = 'products.html?welcome=1'; }, 1500);
+}
+
+function showErr(msg) {
+  const el = document.getElementById('err-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function showOk(msg) {
+  const el = document.getElementById('ok-msg');
+  el.textContent = msg;
+  el.classList.add('show');
+}
+function hideMessages() {
+  document.getElementById('err-msg').classList.remove('show');
+  document.getElementById('ok-msg').classList.remove('show');
+}
+function friendlyError(msg) {
+  if (msg.includes('already registered')) return 'An account with this email already exists. Try signing in instead.';
+  if (msg.includes('invalid email'))      return 'Please enter a valid email address.';
+  if (msg.includes('Password'))           return 'Password must be at least 8 characters.';
+  return msg;
+}
+</script>
+</body>
+</html>

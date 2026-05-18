@@ -184,7 +184,12 @@ input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
       <div class="ns-arrow">›</div>
       <div class="ns" id="ns4"><div class="ns-num">4</div>Submit</div>
     </div>
-    <div class="nav-right">No payment required</div>
+    <div class="nav-right" style="display:flex;align-items:center;gap:12px">
+      <a href="dashboard.html" style="font-size:0.75rem;color:var(--gray);text-decoration:none;display:none" id="nav-my-orders">My Orders</a>
+      <span style="font-size:0.75rem;color:var(--gray);display:none" id="nav-user-name"></span>
+      <button onclick="signOut('/')" style="font-size:0.75rem;color:var(--gray);background:none;border:none;cursor:pointer;font-family:var(--font);display:none" id="nav-logout">Sign Out</button>
+      <span style="font-size:0.75rem;color:var(--gray)" id="nav-no-payment">No payment required</span>
+    </div>
   </div>
 </nav>
 
@@ -400,6 +405,41 @@ input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
 <!-- TOAST -->
 <div class="toast" id="toast"><strong id="toast-title"></strong><span id="toast-msg"></span></div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/dyp-supabase.js"></script>
+<script>
+// Auth guard — redirect to login if not signed in
+(async () => {
+  const user = await requireAuth('/login?redirect=products.html');
+  if (!user) return;
+  window.DYP_USER = user;
+
+  // Pre-fill contact fields from user profile
+  const profile = await getUserProfile(user.id);
+  if (profile) {
+    const nameEl = document.getElementById('contact-name');
+    const bizEl  = document.getElementById('biz-name');
+    if (nameEl && !nameEl.value) nameEl.value = profile.full_name || '';
+    if (bizEl  && !bizEl.value && user.user_metadata?.business_name) {
+      bizEl.value = user.user_metadata.business_name;
+    }
+  }
+  if (!document.getElementById('contact-email').value) {
+    document.getElementById('contact-email').value = user.email;
+  }
+
+  // Show user nav items
+  const nm = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
+  document.getElementById('nav-user-name').textContent  = nm;
+  document.getElementById('nav-user-name').style.display = '';
+  document.getElementById('nav-logout').style.display    = '';
+  document.getElementById('nav-my-orders').style.display = '';
+  document.getElementById('nav-no-payment').style.display = 'none';
+
+  updateProgress();
+})();
+</script>
+
 <script>
 // ─── STATE ───────────────────────────────────────────────
 const S = {
@@ -510,7 +550,7 @@ function selectSize(size, moq, el) {
 function handleLogo(input) {
   if(!input.files[0]) return;
   const f = input.files[0];
-  S.logoUploaded = true; S.logoName = f.name;
+  S.logoUploaded = true; S.logoName = f.name; S.logoFile = f;
   document.getElementById('logo-prev').style.display = 'flex';
   document.getElementById('logo-name-txt').textContent = f.name;
   document.getElementById('logo-size-txt').textContent = (f.size/1024/1024).toFixed(1)+' MB · '+f.name.split('.').pop().toUpperCase();
@@ -527,7 +567,7 @@ function handleLogo(input) {
 }
 
 function removeLogo() {
-  S.logoUploaded = false;
+  S.logoUploaded = false; S.logoFile = null;
   document.getElementById('logo-prev').style.display = 'none';
   document.getElementById('sum-logo').textContent = '— not uploaded';
   document.getElementById('logo-ph').style.display = 'block';
@@ -667,11 +707,13 @@ function downloadMockup() {
 }
 
 // ─── SUBMIT ───────────────────────────────────────────────
-function submitOrder() {
+async function submitOrder() {
   const name  = document.getElementById('brand-name').value.trim();
   const biz   = document.getElementById('biz-name').value.trim();
   const cname = document.getElementById('contact-name').value.trim();
   const email = document.getElementById('contact-email').value.trim();
+  const phone = document.getElementById('contact-phone').value.trim();
+  const notes = document.getElementById('notes').value.trim();
 
   if(!name)  { toast('Missing info', 'Please add your brand name.'); return; }
   if(!biz)   { toast('Missing info', 'Please add your business name.'); return; }
@@ -679,17 +721,52 @@ function submitOrder() {
   if(!email) { toast('Missing info', 'Please add your email address.'); return; }
   if(S.designIdx === null){ toast('No design chosen', 'Please select one of the 4 label designs.'); return; }
 
-  const ref = 'DYP-'+Date.now().toString(36).toUpperCase();
-  document.getElementById('order-ref').textContent = 'Order reference: '+ref;
-  document.getElementById('success').classList.add('show');
+  const btn = document.getElementById('submit-btn');
+  btn.disabled = true;
+  btn.textContent = 'Submitting…';
 
-  // Mark step 4 done
+  // Upload logo if provided
+  let logoUrl = null;
+  if(S.logoFile && DYP_USER) {
+    logoUrl = await uploadLogo(S.logoFile, DYP_USER.id);
+  }
+
+  const ref = 'DYP-' + Date.now().toString(36).toUpperCase();
+
+  const { error } = await sb.from('orders').insert({
+    ref_id:        ref,
+    user_id:       DYP_USER?.id ?? null,
+    brand_name:    name,
+    business_name: biz,
+    contact_name:  cname,
+    email:         email.toLowerCase(),
+    phone:         phone || null,
+    product_type:  S.type,
+    size:          S.size,
+    design_style:  DESIGNS[S.designIdx].name,
+    label_color:   S.colourName,
+    quantity:      S.qty,
+    notes:         notes || null,
+    logo_url:      logoUrl,
+  });
+
+  btn.disabled = false;
+  btn.textContent = 'Request Your Sample →';
+
+  if(error) {
+    toast('Submit failed', error.message || 'Please try again.');
+    return;
+  }
+
+  document.getElementById('order-ref').textContent = 'Order reference: ' + ref;
+  document.getElementById('success').classList.add('show');
   document.getElementById('ns4').className='ns done';
   document.getElementById('ns4').querySelector('.ns-num').textContent='✓';
 }
 
 // ─── INIT ─────────────────────────────────────────────────
 renderDesignCards();
+window.DYP_USER = null; // set after auth check
 
 // Apply initial URL params
 if(params.get('type')==='can') {

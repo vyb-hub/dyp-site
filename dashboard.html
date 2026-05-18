@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>DYP — My Orders</title>
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --black:#1d1d1f;--white:#f5f5f7;--gray:#6e6e73;--light:#fbfbfd;--mid:#e8e8ed;
+  --blue:#0071e3;--blue-h:#0077ed;--surface:#fff;
+  --green:#28cd41;--orange:#ff9500;--red:#ff3b30;
+  --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
+}
+body{font-family:var(--font);background:var(--light);color:var(--black);min-height:100vh;-webkit-font-smoothing:antialiased}
+nav{position:fixed;top:0;left:0;right:0;z-index:9999;height:44px;background:rgba(251,251,253,0.92);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.08);display:flex;align-items:center;justify-content:center}
+.nav-inner{width:100%;max-width:980px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.nav-logo{font-size:1.25rem;font-weight:600;color:var(--black);text-decoration:none;letter-spacing:-0.01em}
+.nav-right{display:flex;align-items:center;gap:16px}
+.nav-btn{font-size:0.78rem;color:var(--gray);text-decoration:none;cursor:pointer;background:none;border:none;font-family:var(--font);padding:0}
+.nav-btn:hover{color:var(--black)}
+.nav-cta{background:var(--blue);color:#fff;padding:5px 14px;border-radius:980px;font-size:0.75rem;text-decoration:none}
+.nav-cta:hover{background:var(--blue-h)}
+
+.page{max-width:900px;margin:0 auto;padding:72px 22px 40px}
+.page-header{margin-bottom:28px}
+.page-header h1{font-size:1.8rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:4px}
+.page-header p{font-size:0.9rem;color:var(--gray);font-weight:300}
+
+.empty{text-align:center;padding:80px 20px;color:var(--gray)}
+.empty-icon{font-size:3rem;margin-bottom:16px;opacity:0.3}
+.empty h3{font-size:1.1rem;font-weight:600;color:var(--black);margin-bottom:8px}
+.empty p{font-size:0.875rem;margin-bottom:24px}
+.btn-fill{display:inline-block;background:var(--blue);color:#fff;padding:10px 24px;border-radius:980px;font-size:0.85rem;text-decoration:none;font-weight:500}
+.btn-fill:hover{background:var(--blue-h)}
+
+.orders-card{background:#fff;border-radius:14px;border:1px solid var(--mid);overflow:hidden}
+.orders-card table{width:100%;border-collapse:collapse}
+.orders-card thead th{padding:11px 16px;text-align:left;font-size:0.65rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray);border-bottom:1px solid var(--mid);background:#fbfbfd;white-space:nowrap}
+.orders-card tbody tr:hover{background:#f9f9fb}
+.orders-card tbody td{padding:14px 16px;font-size:0.82rem;border-bottom:1px solid var(--mid);vertical-align:middle}
+.orders-card tbody tr:last-child td{border-bottom:none}
+.badge{display:inline-block;padding:3px 10px;border-radius:980px;font-size:0.68rem;font-weight:600;white-space:nowrap}
+.badge-new{background:rgba(0,113,227,0.1);color:var(--blue)}
+.badge-review{background:rgba(255,149,0,0.1);color:var(--orange)}
+.badge-dispatched{background:rgba(40,205,65,0.1);color:#1a9e30}
+.badge-closed{background:rgba(110,110,115,0.12);color:var(--gray)}
+
+.loading{text-align:center;padding:48px;color:var(--gray);font-size:0.875rem}
+</style>
+</head>
+<body>
+<nav>
+  <div class="nav-inner">
+    <a class="nav-logo" href="index.html">DYP</a>
+    <div class="nav-right">
+      <a href="products.html" class="nav-cta">+ New Design</a>
+      <span id="nav-user-name" style="font-size:0.78rem;color:var(--gray)"></span>
+      <button class="nav-btn" id="nav-logout">Sign Out</button>
+    </div>
+  </div>
+</nav>
+
+<div class="page">
+  <div class="page-header">
+    <h1>My Orders</h1>
+    <p>Your submitted design requests and their current status.</p>
+  </div>
+
+  <div id="loading" class="loading">Loading your orders…</div>
+  <div id="empty-state" class="empty" style="display:none">
+    <div class="empty-icon">📦</div>
+    <h3>No orders yet</h3>
+    <p>You haven't submitted any design requests. Start designing to request your free sample.</p>
+    <a href="products.html" class="btn-fill">Start Designing →</a>
+  </div>
+  <div class="orders-card" id="orders-table" style="display:none">
+    <table>
+      <thead>
+        <tr>
+          <th>Order Ref</th>
+          <th>Brand</th>
+          <th>Product</th>
+          <th>Qty</th>
+          <th>Submitted</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="orders-tbody"></tbody>
+    </table>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/dyp-supabase.js"></script>
+<script>
+const STATUS_LABELS = {new:'New',review:'In Review',dispatched:'Sample Dispatched',closed:'Closed'};
+const STATUS_BADGE  = {new:'badge-new',review:'badge-review',dispatched:'badge-dispatched',closed:'badge-closed'};
+
+(async () => {
+  const user = await requireAuth('/login?redirect=dashboard.html');
+  if (!user) return;
+
+  // Set name in nav
+  const profile = await getUserProfile(user.id);
+  const nameEl  = document.getElementById('nav-user-name');
+  if (nameEl) nameEl.textContent = profile?.full_name?.split(' ')[0] || '';
+  document.getElementById('nav-logout').addEventListener('click', () => signOut('/'));
+
+  // Load orders
+  const { data: orders, error } = await sb.from('orders')
+    .select('ref_id, brand_name, product_type, size, quantity, created_at, status')
+    .eq('user_id', user.id)
+    .order('created_at', { ascending: false });
+
+  document.getElementById('loading').style.display = 'none';
+
+  if (error || !orders?.length) {
+    document.getElementById('empty-state').style.display = 'block';
+    return;
+  }
+
+  document.getElementById('orders-table').style.display = '';
+  const tbody = document.getElementById('orders-tbody');
+  tbody.innerHTML = orders.map(o => `
+    <tr>
+      <td><span style="font-family:monospace;font-size:0.75rem;color:var(--gray)">${o.ref_id}</span></td>
+      <td><strong>${escHtml(o.brand_name)}</strong></td>
+      <td>${escHtml(o.product_type)} · ${escHtml(o.size)}</td>
+      <td>${(o.quantity||0).toLocaleString()} units</td>
+      <td style="color:var(--gray);white-space:nowrap">${fmtDate(o.created_at)}</td>
+      <td><span class="badge ${STATUS_BADGE[o.status] || 'badge-new'}">${STATUS_LABELS[o.status] || o.status}</span></td>
+    </tr>
+  `).join('');
+})();
+
+function fmtDate(d) {
+  return new Date(d).toLocaleDateString('en-IN', { day:'numeric', month:'short', year:'numeric' });
+}
+function escHtml(str) {
+  return String(str ?? '').replace(/[&<>"']/g, c =>
+    ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
+</script>
+</body>
+</html>

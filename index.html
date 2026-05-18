@@ -160,8 +160,17 @@ footer{background:#f5f5f7;border-top:1px solid var(--mid);padding:0 22px}
       <li><a href="index.html#ai">AI Design</a></li>
       <li><a href="index.html#gallery">Gallery</a></li>
       <li><a href="index.html#contact">Contact</a></li>
+      <li id="nav-my-orders-li" style="display:none"><a href="dashboard.html" id="nav-my-orders">My Orders</a></li>
     </ul>
-    <a class="nav-cta" href="products.html">Start Designing</a>
+    <div style="display:flex;align-items:center;gap:10px">
+      <a class="nav-links" href="login.html" id="nav-login" style="color:var(--gray);font-size:0.72rem;padding:0 10px;text-decoration:none">Sign In</a>
+      <a class="nav-cta" href="signup.html" id="nav-signup">Get Started</a>
+      <div id="nav-user-menu" style="display:none;align-items:center;gap:10px">
+        <span style="font-size:0.72rem;color:var(--gray)" id="nav-user-name"></span>
+        <button id="nav-logout" style="font-size:0.72rem;color:var(--gray);background:none;border:none;cursor:pointer;font-family:var(--font)">Sign Out</button>
+        <a class="nav-cta" href="products.html">Start Designing</a>
+      </div>
+    </div>
   </div>
 </nav>
 
@@ -514,6 +523,8 @@ footer{background:#f5f5f7;border-top:1px solid var(--mid);padding:0 22px}
   </div>
 </footer>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="js/dyp-supabase.js"></script>
 <script>
 // Scroll reveal
 const io = new IntersectionObserver(entries=>{
@@ -526,6 +537,21 @@ window.addEventListener('scroll',()=>{
   document.getElementById('main-nav').style.borderBottomColor=
     window.scrollY>8?'rgba(0,0,0,0.13)':'rgba(0,0,0,0.08)';
 });
+
+// Auth-aware nav
+(async () => {
+  const user = await getCurrentUser();
+  if (user) {
+    document.getElementById('nav-login').style.display   = 'none';
+    document.getElementById('nav-signup').style.display  = 'none';
+    document.getElementById('nav-user-menu').style.display = 'flex';
+    document.getElementById('nav-my-orders-li').style.display = '';
+    const profile = await getUserProfile(user.id);
+    const nm = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
+    document.getElementById('nav-user-name').textContent = nm;
+    document.getElementById('nav-logout').addEventListener('click', () => signOut('/'));
+  }
+})();
 </script>
 </body>
 </html>
