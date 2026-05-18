@@ -140,8 +140,7 @@ function showErr(msg) {
 }
 
 function friendlyError(msg) {
-  if (msg.includes('Invalid login'))  return 'Incorrect email or password. Please try again.';
-  if (msg.includes('Email not confirmed')) return 'Please confirm your email address first.';
+  if (msg.includes('Invalid login')) return 'Incorrect email or password. Please try again.';
   return msg;
 }
 </script>
