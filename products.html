@@ -445,78 +445,242 @@ nav{position:fixed;top:0;left:0;right:0;z-index:9999;height:44px;background:rgba
 
   <!-- SVG PREVIEW -->
   <div class="canvas-wrap">
-    <svg id="preview-svg" class="float" viewBox="0 0 200 340" width="200" height="340" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 16px 40px rgba(0,0,0,0.12));transition:all 0.5s ease">
+    <svg id="preview-svg" class="float" viewBox="0 0 200 360" width="200" height="360" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 24px 56px rgba(0,0,0,0.22));transition:all 0.5s ease">
       <defs>
+        <!-- Body gradient: 5-stop cylindrical light simulation -->
         <linearGradient id="pvbg" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" id="pvbg-s1" style="stop-color:#c8c8d8"/>
-          <stop offset="45%" id="pvbg-s2" style="stop-color:#e0e0f0"/>
-          <stop offset="100%" id="pvbg-s3" style="stop-color:#b0b0c0"/>
+          <stop offset="0%"   id="pvbg-s1" style="stop-color:#7888a0"/>
+          <stop offset="18%"  id="pvbg-s2" style="stop-color:#d8e8f4"/>
+          <stop offset="48%"  id="pvbg-s3" style="stop-color:#b8c8d8"/>
+          <stop offset="78%"  id="pvbg-s4" style="stop-color:#c0ccd8"/>
+          <stop offset="100%" id="pvbg-s5" style="stop-color:#7080a0"/>
         </linearGradient>
+        <!-- Label gradient -->
         <linearGradient id="pvlbl" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" id="pvlbl-s1" style="stop-color:#c9a84c"/>
+          <stop offset="0%"   id="pvlbl-s1" style="stop-color:#c9a84c"/>
           <stop offset="100%" id="pvlbl-s2" style="stop-color:#8a6f24"/>
         </linearGradient>
+        <!-- Interior gradient -->
         <linearGradient id="pvint" x1="0%" y1="0%" x2="100%" y2="100%">
-          <stop offset="0%" id="pvint-s1" style="stop-color:#111111"/>
+          <stop offset="0%"   id="pvint-s1" style="stop-color:#111111"/>
           <stop offset="100%" id="pvint-s2" style="stop-color:#1a1a1a"/>
         </linearGradient>
+        <!-- Main shine -->
         <linearGradient id="pvsh" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color:rgba(255,255,255,0)"/>
-          <stop offset="38%" style="stop-color:rgba(255,255,255,0.18)"/>
-          <stop offset="58%" style="stop-color:rgba(255,255,255,0.28)"/>
+          <stop offset="0%"   style="stop-color:rgba(255,255,255,0)"/>
+          <stop offset="38%"  style="stop-color:rgba(255,255,255,0.18)"/>
+          <stop offset="58%"  style="stop-color:rgba(255,255,255,0.28)"/>
           <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
         </linearGradient>
+        <!-- Gold stripe -->
         <linearGradient id="pvgold" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color:rgba(201,168,76,0.2)"/>
-          <stop offset="50%" style="stop-color:rgba(201,168,76,0.8)"/>
+          <stop offset="0%"   style="stop-color:rgba(201,168,76,0.2)"/>
+          <stop offset="50%"  style="stop-color:rgba(201,168,76,0.8)"/>
           <stop offset="100%" style="stop-color:rgba(201,168,76,0.2)"/>
         </linearGradient>
+        <!-- Metallic stripe -->
         <linearGradient id="pvmetallic" x1="0%" y1="0%" x2="100%" y2="0%">
-          <stop offset="0%" style="stop-color:rgba(200,200,220,0.6)"/>
-          <stop offset="50%" style="stop-color:rgba(240,240,255,0.9)"/>
+          <stop offset="0%"   style="stop-color:rgba(200,200,220,0.6)"/>
+          <stop offset="50%"  style="stop-color:rgba(240,240,255,0.9)"/>
           <stop offset="100%" style="stop-color:rgba(200,200,220,0.6)"/>
+        </linearGradient>
+        <!-- Ambient occlusion: left edge darkening -->
+        <linearGradient id="pvao-l" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0.4)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0)"/>
+        </linearGradient>
+        <!-- Ambient occlusion: right edge darkening -->
+        <linearGradient id="pvao-r" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0.24)"/>
+        </linearGradient>
+        <!-- Rim light: right-edge highlight from back light source -->
+        <linearGradient id="pvrim" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   style="stop-color:rgba(255,255,255,0)"/>
+          <stop offset="76%"  style="stop-color:rgba(255,255,255,0)"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0.42)"/>
+        </linearGradient>
+        <!-- Specular highlight: top-left hot-spot -->
+        <radialGradient id="pvspec" cx="38%" cy="16%" r="62%" gradientUnits="objectBoundingBox">
+          <stop offset="0%"   style="stop-color:rgba(255,255,255,0.7)"/>
+          <stop offset="50%"  style="stop-color:rgba(255,255,255,0.1)"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+        </radialGradient>
+        <!-- Ground contact shadow -->
+        <radialGradient id="pvgshadow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0.5)"/>
+          <stop offset="60%"  style="stop-color:rgba(0,0,0,0.22)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0)"/>
+        </radialGradient>
+        <!-- Label inner shadow: top edge -->
+        <linearGradient id="pvlbl-it" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0.32)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0)"/>
+        </linearGradient>
+        <!-- Label inner shadow: bottom edge -->
+        <linearGradient id="pvlbl-ib" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0.32)"/>
+        </linearGradient>
+        <!-- Label inner shadow: left edge (wrap curvature) -->
+        <linearGradient id="pvlbl-il" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0.22)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0)"/>
+        </linearGradient>
+        <!-- UV spot-gloss diagonal sweep -->
+        <linearGradient id="pvuv" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%"   style="stop-color:rgba(255,255,255,0)"/>
+          <stop offset="36%"  style="stop-color:rgba(255,255,255,0.16)"/>
+          <stop offset="60%"  style="stop-color:rgba(255,255,255,0.06)"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+        </linearGradient>
+        <!-- Material filters -->
+        <filter id="f-grain" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.65 0.65" numOctaves="3" seed="2" stitchTiles="stitch" result="noise"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0  0 0 0 0 0  0 0 0 0 0  0 0 0 0.09 0" in="noise" result="an"/>
+          <feBlend in="SourceGraphic" in2="an" mode="multiply" result="b"/>
+          <feComposite in="b" in2="SourceGraphic" operator="in"/>
+        </filter>
+        <filter id="f-metal" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.03 0.85" numOctaves="2" seed="5" result="noise"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0.82  0 0 0 0 0.82  0 0 0 0 0.86  0 0 0 0.1 0" in="noise" result="c"/>
+          <feBlend in="SourceGraphic" in2="c" mode="overlay"/>
+        </filter>
+        <filter id="f-kraft" x="0%" y="0%" width="100%" height="100%" color-interpolation-filters="sRGB">
+          <feTurbulence type="fractalNoise" baseFrequency="0.28 0.22" numOctaves="4" seed="8" result="noise"/>
+          <feColorMatrix type="matrix" values="0 0 0 0 0.38  0 0 0 0 0.28  0 0 0 0 0.12  0 0 0 0.16 0" in="noise" result="c"/>
+          <feBlend in="SourceGraphic" in2="c" mode="multiply"/>
+        </filter>
+        <filter id="f-gnd" x="-80%" y="-80%" width="260%" height="260%">
+          <feGaussianBlur in="SourceGraphic" stdDeviation="6"/>
+        </filter>
+        <!-- Label curvature wrap: dark at both edges, brighter centre -->
+        <linearGradient id="pvlbl-curve" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0.24)"/>
+          <stop offset="16%"  style="stop-color:rgba(255,255,255,0.09)"/>
+          <stop offset="44%"  style="stop-color:rgba(255,255,255,0.02)"/>
+          <stop offset="74%"  style="stop-color:rgba(0,0,0,0.06)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0.22)"/>
+        </linearGradient>
+        <!-- Narrow key-light specular streak -->
+        <linearGradient id="pvhband" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   style="stop-color:rgba(255,255,255,0)"/>
+          <stop offset="14%"  style="stop-color:rgba(255,255,255,0)"/>
+          <stop offset="22%"  style="stop-color:rgba(255,255,255,0.55)"/>
+          <stop offset="32%"  style="stop-color:rgba(255,255,255,0.12)"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+        </linearGradient>
+        <!-- Environment fill-light (cool blue from opposite side) -->
+        <linearGradient id="pvenv" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   style="stop-color:rgba(180,210,255,0)"/>
+          <stop offset="64%"  style="stop-color:rgba(180,210,255,0)"/>
+          <stop offset="76%"  style="stop-color:rgba(180,210,255,0.16)"/>
+          <stop offset="90%"  style="stop-color:rgba(180,210,255,0.06)"/>
+          <stop offset="100%" style="stop-color:rgba(180,210,255,0)"/>
+        </linearGradient>
+        <!-- Cap: realistic metallic horizontal gradient -->
+        <linearGradient id="pvcap-g" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%"   style="stop-color:#707880"/>
+          <stop offset="18%"  style="stop-color:#d4d8e4"/>
+          <stop offset="42%"  style="stop-color:#b8bcc8"/>
+          <stop offset="68%"  style="stop-color:#c0c4d0"/>
+          <stop offset="100%" style="stop-color:#686c78"/>
+        </linearGradient>
+        <linearGradient id="pvcap-top" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   style="stop-color:rgba(255,255,255,0.5)"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+        </linearGradient>
+        <linearGradient id="pvcap-bot" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0.26)"/>
+        </linearGradient>
+        <!-- Shoulder shadow where neck meets body -->
+        <linearGradient id="pvneck-sh" x1="0%" y1="0%" x2="0%" y2="100%">
+          <stop offset="0%"   style="stop-color:rgba(0,0,0,0.2)"/>
+          <stop offset="100%" style="stop-color:rgba(0,0,0,0)"/>
         </linearGradient>
         <clipPath id="pvclip">
           <path id="pvclip-path" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z"/>
         </clipPath>
       </defs>
 
+      <!-- Ground contact shadow -->
+      <ellipse id="pv-gnd-shadow" cx="100" cy="340" rx="56" ry="10" fill="url(#pvgshadow)" filter="url(#f-gnd)"/>
+
       <!-- Container body -->
-      <path id="pv-body" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvbg)" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+      <path id="pv-body" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvbg)" stroke="rgba(0,0,0,0.07)" stroke-width="0.5"/>
+
+      <!-- Ambient occlusion edges -->
+      <rect id="pv-ao-l" x="48" y="18" width="30" height="320" fill="url(#pvao-l)" clip-path="url(#pvclip)"/>
+      <rect id="pv-ao-r" x="122" y="18" width="30" height="320" fill="url(#pvao-r)" clip-path="url(#pvclip)"/>
 
       <!-- Label area (exterior colour) -->
       <rect id="pv-label" x="48" y="112" width="104" height="160" fill="url(#pvlbl)" clip-path="url(#pvclip)"/>
+      <!-- Label curvature overlay: simulates label wrapping around surface -->
+      <rect id="pv-lbl-curve" x="48" y="112" width="104" height="160" fill="url(#pvlbl-curve)" clip-path="url(#pvclip)"/>
+
+      <!-- Shoulder shadow: where body meets neck -->
+      <rect id="pv-neck-sh" x="48" y="108" width="104" height="16" fill="url(#pvneck-sh)" clip-path="url(#pvclip)"/>
 
       <!-- Metallic accent stripes -->
       <rect id="pv-stripe-top" x="48" y="112" width="104" height="2.5" fill="url(#pvgold)" clip-path="url(#pvclip)"/>
       <rect id="pv-stripe-bot" x="48" y="269.5" width="104" height="2.5" fill="url(#pvgold)" clip-path="url(#pvclip)"/>
+      <!-- Stripe hot-spot -->
+      <rect x="48" y="112" width="52" height="1" fill="rgba(255,255,255,0.45)" clip-path="url(#pvclip)"/>
+
+      <!-- Label depth: inner top/bottom/left shadows simulate label wrap -->
+      <rect id="pv-lbl-it" x="48" y="112" width="104" height="36" fill="url(#pvlbl-it)" clip-path="url(#pvclip)"/>
+      <rect id="pv-lbl-ib" x="48" y="236" width="104" height="36" fill="url(#pvlbl-ib)" clip-path="url(#pvclip)"/>
+      <rect id="pv-lbl-il" x="48" y="112" width="38" height="160" fill="url(#pvlbl-il)" clip-path="url(#pvclip)"/>
+
+      <!-- UV spot-gloss print effect on label -->
+      <rect id="pv-uv" x="48" y="112" width="104" height="160" fill="url(#pvuv)" clip-path="url(#pvclip)"/>
 
       <!-- Logo zone -->
       <rect x="78" y="128" width="44" height="30" rx="3" fill="rgba(255,255,255,0.06)" id="logo-zone"/>
       <text id="logo-ph" x="100" y="147" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6.5" fill="rgba(255,255,255,0.22)" letter-spacing="1">YOUR LOGO</text>
 
-      <!-- Product illustration (set by JS per industry selection) -->
+      <!-- Product illustration -->
       <g id="pv-illustration" transform="translate(100,145)" clip-path="url(#pvclip)" style="transition:opacity 0.35s ease"></g>
 
-      <!-- Brand name (interior colour applied to text) -->
+      <!-- Brand name -->
       <text id="pv-brand" x="100" y="192" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="20" font-weight="700" fill="#ffffff" letter-spacing="-0.5">Brand</text>
-
       <!-- Divider -->
       <line id="pv-div" x1="65" y1="200" x2="135" y2="200" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
-
       <!-- Tagline -->
       <text id="pv-tag" x="100" y="215" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7.5" fill="rgba(255,255,255,0.5)" letter-spacing="2">PURE · NATURAL</text>
-
       <!-- Product descriptor -->
       <text id="pv-type" x="100" y="248" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6.5" fill="rgba(255,255,255,0.22)" letter-spacing="1.5">STILL WATER · 250ML</text>
 
-      <!-- Shine overlay -->
+      <!-- Category-specific effects (condensation, texture, etc.) -->
+      <g id="pv-fx" clip-path="url(#pvclip)"></g>
+
+      <!-- Main shine overlay -->
       <path id="pv-shine" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvsh)"/>
 
-      <!-- Cap -->
-      <rect id="pv-cap" x="82" y="18" width="36" height="20" rx="4" fill="#d0d0e0" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>
-      <!-- Neck -->
-      <rect id="pv-neck" x="76" y="36" width="48" height="5" rx="1" fill="#c8c8d8"/>
+      <!-- Narrow key-light specular band -->
+      <path id="pv-hband" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvhband)"/>
+
+      <!-- Specular hot-spot highlight -->
+      <path id="pv-spec" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvspec)"/>
+
+      <!-- Environment fill-light (cool blue from opposite side) -->
+      <path id="pv-env" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvenv)"/>
+
+      <!-- Rim light (back-lit edge) -->
+      <rect id="pv-rim" x="131" y="18" width="21" height="320" fill="url(#pvrim)" clip-path="url(#pvclip)"/>
+
+      <!-- Cap: 3-layer metallic -->
+      <rect id="pv-cap" x="82" y="18" width="36" height="20" rx="4" fill="url(#pvcap-g)" stroke="rgba(0,0,0,0.12)" stroke-width="0.5"/>
+      <rect x="83" y="18.5" width="34" height="5" rx="2.5" fill="url(#pvcap-top)"/>
+      <rect x="82" y="30"   width="36" height="8" fill="url(#pvcap-bot)"/>
+      <rect id="pv-cap-spec" x="85" y="19" width="8" height="18" rx="4" fill="rgba(255,255,255,0.3)"/>
+      <rect id="pv-cap-ao"   x="82" y="35" width="36" height="3" fill="rgba(0,0,0,0.18)"/>
+      <rect x="82" y="18" width="36" height="20" rx="4" fill="rgba(180,185,200,0.06)" filter="url(#f-metal)"/>
+      <!-- Neck: layered for depth -->
+      <rect id="pv-neck" x="76" y="36" width="48" height="5" rx="1" fill="#bbbccc"/>
+      <rect x="76" y="36" width="24" height="5" rx="1" fill="rgba(255,255,255,0.22)"/>
+      <rect x="76" y="39" width="48" height="2" fill="rgba(0,0,0,0.1)"/>
     </svg>
   </div>
 
@@ -640,6 +804,7 @@ const S = {
   shape:    'round',
   industry: null,
   industryLabel: null,
+  industryKey: null,
   extColor: '#c9a84c',
   extColorName: 'Gold',
   intColor: '#111111',
@@ -661,13 +826,13 @@ const S = {
 
 // ── MATERIAL CONFIG ──────────────────────────────────────────
 const MATERIALS = {
-  plastic:    { label:'Plastic',     bodyGrad:['#c8d8e8','#dde8f0','#a8b8c8'], shine:0.28, gloss:true  },
-  tin:        { label:'Tin',         bodyGrad:['#9ba0a8','#c8ccd4','#888d95'], shine:0.45, gloss:true  },
-  glass:      { label:'Glass',       bodyGrad:['#ccd8e4','#e8eff5','#b0c4d4'], shine:0.55, gloss:true  },
-  kraft:      { label:'Kraft Paper', bodyGrad:['#c4a882','#d4b890','#a08858'], shine:0.05, gloss:false },
-  aluminum:   { label:'Aluminum',    bodyGrad:['#a8acb4','#d8dce4','#909498'], shine:0.5,  gloss:true  },
-  pouch:      { label:'Flex Pouch',  bodyGrad:['#b0c0d0','#ccd8e4','#98a8b8'], shine:0.15, gloss:false },
-  paperboard: { label:'Paperboard',  bodyGrad:['#e4ddd0','#f0ebe2','#c8c0b0'], shine:0.05, gloss:false },
+  plastic:    { label:'Plastic',     bodyGrad:['#7888a0','#d8e8f4','#b8c8d8','#c0ccd8','#7080a0'], shine:0.28, gloss:true  },
+  tin:        { label:'Tin',         bodyGrad:['#585e68','#d4d8e2','#a0a5ad','#b0b5bd','#505660'], shine:0.45, gloss:true  },
+  glass:      { label:'Glass',       bodyGrad:['#7888a4','#e4f0f8','#b4c8dc','#c0d0e4','#6878a0'], shine:0.55, gloss:true  },
+  kraft:      { label:'Kraft Paper', bodyGrad:['#6a5030','#c4a878','#a88858','#b09060','#604830'], shine:0.05, gloss:false },
+  aluminum:   { label:'Aluminum',    bodyGrad:['#484d58','#e0e4ec','#98a0a8','#b0b8c0','#404850'], shine:0.5,  gloss:true  },
+  pouch:      { label:'Flex Pouch',  bodyGrad:['#6878a0','#b8c8e0','#9098b0','#98a8c0','#6070a0'], shine:0.15, gloss:false },
+  paperboard: { label:'Paperboard',  bodyGrad:['#9a8870','#e4d8c0','#c8baa0','#d0c0a4','#887860'], shine:0.05, gloss:false },
 };
 
 // ── SHAPE CONFIG ─────────────────────────────────────────────
@@ -685,15 +850,15 @@ const SHAPES = [
 
 // Shape → SVG path transforms for the preview
 const SHAPE_TRANSFORMS = {
-  round:     { body:'M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z', labelY:112, labelH:160 },
-  square:    { body:'M60 40h80c6 0 10 4 10 10v240c0 6-4 10-10 10H60c-6 0-10-4-10-10V50c0-6 4-10 10-10z', labelY:100, labelH:160 },
-  rectangle: { body:'M70 20h60c5 0 9 4 9 9v270c0 5-4 9-9 9H70c-5 0-9-4-9-9V29c0-5 4-9 9-9z', labelY:80, labelH:190 },
-  cylinder:  { body:'M55 50 Q55 40 100 38 Q145 40 145 50L145 280 Q145 295 100 298 Q55 295 55 280Z', labelY:110, labelH:150 },
-  oval:      { body:'M100 20 C60 20 45 60 45 110 L45 230 C45 280 60 320 100 320 C140 320 155 280 155 230 L155 110 C155 60 140 20 100 20Z', labelY:115, labelH:145 },
-  hexagon:   { body:'M100 25L155 57V121L100 153L45 121V57Z M45 121L100 153L155 121L155 265L100 300L45 265Z', labelY:105, labelH:150 },
-  jar:       { body:'M65 80c0-8 4-14 10-14h50c6 0 10 6 10 14v180c0 10-6 18-16 18H81c-10 0-16-8-16-18V80z M70 66h60c4 0 7 4 7 8v8H63V74c0-4 3-8 7-8z', labelY:100, labelH:140 },
-  pouch:     { body:'M75 40Q70 60 65 120Q60 180 65 240Q70 300 100 310Q130 300 135 240Q140 180 135 120Q130 60 125 40Q112 32 100 32Q88 32 75 40Z', labelY:120, labelH:140 },
-  tube:      { body:'M84 10 Q84 4 100 4 Q116 4 116 10 L116 310 Q116 322 100 326 Q84 322 84 310 Z', labelY:80, labelH:190 },
+  round:     { body:'M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z', labelY:112, labelH:160, bounds:{x1:48,x2:152,y1:36,y2:331} },
+  square:    { body:'M60 40h80c6 0 10 4 10 10v240c0 6-4 10-10 10H60c-6 0-10-4-10-10V50c0-6 4-10 10-10z', labelY:100, labelH:160, bounds:{x1:50,x2:150,y1:40,y2:300} },
+  rectangle: { body:'M70 20h60c5 0 9 4 9 9v270c0 5-4 9-9 9H70c-5 0-9-4-9-9V29c0-5 4-9 9-9z', labelY:80, labelH:190, bounds:{x1:61,x2:139,y1:20,y2:308} },
+  cylinder:  { body:'M55 50 Q55 40 100 38 Q145 40 145 50L145 280 Q145 295 100 298 Q55 295 55 280Z', labelY:110, labelH:150, bounds:{x1:55,x2:145,y1:38,y2:298} },
+  oval:      { body:'M100 20 C60 20 45 60 45 110 L45 230 C45 280 60 320 100 320 C140 320 155 280 155 230 L155 110 C155 60 140 20 100 20Z', labelY:115, labelH:145, bounds:{x1:45,x2:155,y1:20,y2:320} },
+  hexagon:   { body:'M100 25L155 57V121L100 153L45 121V57Z M45 121L100 153L155 121L155 265L100 300L45 265Z', labelY:105, labelH:150, bounds:{x1:45,x2:155,y1:25,y2:300} },
+  jar:       { body:'M65 80c0-8 4-14 10-14h50c6 0 10 6 10 14v180c0 10-6 18-16 18H81c-10 0-16-8-16-18V80z M70 66h60c4 0 7 4 7 8v8H63V74c0-4 3-8 7-8z', labelY:100, labelH:140, bounds:{x1:63,x2:137,y1:66,y2:278} },
+  pouch:     { body:'M75 40Q70 60 65 120Q60 180 65 240Q70 300 100 310Q130 300 135 240Q140 180 135 120Q130 60 125 40Q112 32 100 32Q88 32 75 40Z', labelY:120, labelH:140, bounds:{x1:60,x2:140,y1:32,y2:310} },
+  tube:      { body:'M84 10 Q84 4 100 4 Q116 4 116 10 L116 310 Q116 322 100 326 Q84 322 84 310 Z', labelY:80, labelH:190, bounds:{x1:84,x2:116,y1:4,y2:326} },
 };
 
 // ── INDUSTRY DATA ────────────────────────────────────────────
@@ -918,16 +1083,40 @@ function selectMaterial(key, el) {
 
 function applyMaterialToPreview(key) {
   const m = MATERIALS[key];
-  const [c1, c2, c3] = m.bodyGrad;
+  const [c1, c2, c3, c4, c5] = m.bodyGrad;
   document.getElementById('pvbg-s1').style.stopColor = c1;
   document.getElementById('pvbg-s2').style.stopColor = c2;
   document.getElementById('pvbg-s3').style.stopColor = c3;
-  const shine = document.getElementById('pv-shine');
-  shine.style.opacity = m.gloss ? '1' : '0.15';
-  // Update cap/neck to match material
-  const capColor = m.bodyGrad[0];
-  document.getElementById('pv-cap').style.fill  = capColor;
-  document.getElementById('pv-neck').style.fill = capColor;
+  const s4 = document.getElementById('pvbg-s4');
+  const s5 = document.getElementById('pvbg-s5');
+  if (s4) s4.style.stopColor = c4 || c3;
+  if (s5) s5.style.stopColor = c5 || c1;
+
+  // Per-material texture filter on body
+  const body = document.getElementById('pv-body');
+  const filters = { tin:'url(#f-metal)', aluminum:'url(#f-metal)', kraft:'url(#f-kraft)', pouch:'url(#f-grain)', paperboard:'url(#f-grain)' };
+  body.setAttribute('filter', filters[key] || '');
+
+  // Gloss vs matte response for each lighting layer
+  const gloss = m.gloss;
+  document.getElementById('pv-shine').style.opacity = gloss ? '1' : '0.1';
+  const spec  = document.getElementById('pv-spec');  if (spec)  spec.style.opacity  = gloss ? '1'   : '0.15';
+  const hband = document.getElementById('pv-hband'); if (hband) hband.style.opacity = gloss ? '1'   : '0.18';
+  const env   = document.getElementById('pv-env');   if (env)   env.style.opacity   = gloss ? '1'   : '0.3';
+  const rim   = document.getElementById('pv-rim');   if (rim)   rim.style.opacity   = gloss ? '0.9' : '0.5';
+
+  // Glass: semi-transparent body + boosted specular
+  body.style.opacity = key === 'glass' ? '0.8' : '1';
+  if (key === 'glass' && spec) spec.style.opacity = '1';
+
+  // Cap/neck tint
+  const metalCap    = key === 'tin' || key === 'aluminum' || key === 'glass';
+  const capSpecFill = metalCap ? 'rgba(255,255,255,0.55)' : 'rgba(255,255,255,0.32)';
+  document.getElementById('pv-neck').style.fill = metalCap ? '#9ba0a8' : c1;
+  const cs = document.getElementById('pv-cap-spec');
+  if (cs) cs.style.fill = capSpecFill;
+
+  if (S.industry && S.industryKey) applyCategoryEffects(S.industry, S.industryKey);
 }
 
 // ════════════════════════════════════════════════════════════════
@@ -997,6 +1186,28 @@ function applyShapeToPreview(key) {
     const illG = document.getElementById('pv-illustration');
     if (illG) illG.setAttribute('transform', `translate(100, ${cfg.labelY + 32})`);
 
+    // Update realism elements to match new shape bounds
+    const b   = cfg.bounds || {x1:48, x2:152, y1:36, y2:331};
+    const bW  = b.x2 - b.x1;
+    const aoW = Math.max(20, Math.min(34, bW * 0.28));
+    const _el = id => document.getElementById(id);
+    const aoL2 = _el('pv-ao-l'), aoR2 = _el('pv-ao-r'), rim2 = _el('pv-rim');
+    const spec2 = _el('pv-spec'), gndS = _el('pv-gnd-shadow');
+    const lbIt = _el('pv-lbl-it'), lbIb = _el('pv-lbl-ib'), lbIl = _el('pv-lbl-il'), uvEl = _el('pv-uv');
+    if (aoL2) { aoL2.setAttribute('x', b.x1); aoL2.setAttribute('y', b.y1); aoL2.setAttribute('width', aoW); aoL2.setAttribute('height', b.y2 - b.y1); }
+    if (aoR2) { aoR2.setAttribute('x', b.x2 - aoW); aoR2.setAttribute('y', b.y1); aoR2.setAttribute('width', aoW); aoR2.setAttribute('height', b.y2 - b.y1); }
+    if (rim2) { rim2.setAttribute('x', b.x2 - 22); rim2.setAttribute('y', b.y1); rim2.setAttribute('height', b.y2 - b.y1); }
+    if (spec2) spec2.setAttribute('d', cfg.body);
+    const hband2 = _el('pv-hband'), env2 = _el('pv-env');
+    if (hband2) hband2.setAttribute('d', cfg.body);
+    if (env2)   env2.setAttribute('d', cfg.body);
+    if (gndS) { gndS.setAttribute('cx', 100); gndS.setAttribute('cy', b.y2 + 14); gndS.setAttribute('rx', Math.round(bW * 0.52)); }
+    const lbS = Math.min(38, cfg.labelH * 0.22);
+    if (lbIt) { lbIt.setAttribute('y', cfg.labelY); lbIt.setAttribute('height', lbS); }
+    if (lbIb) { lbIb.setAttribute('y', cfg.labelY + cfg.labelH - lbS); lbIb.setAttribute('height', lbS); }
+    if (lbIl) { lbIl.setAttribute('y', cfg.labelY); lbIl.setAttribute('height', cfg.labelH); }
+    if (uvEl) { uvEl.setAttribute('y', cfg.labelY); uvEl.setAttribute('height', cfg.labelH); }
+
     // Animate in
     svg.style.opacity = '1';
     svg.style.transform = 'scale(1)';
@@ -1036,11 +1247,14 @@ function toggleIndustryCategory(key) {
 function selectIndustry(item, catLabel, el) {
   S.industry = item;
   S.industryLabel = catLabel;
+  const cat = INDUSTRIES.find(c => c.label === catLabel);
+  S.industryKey = cat ? cat.key : null;
   document.querySelectorAll('.ind-item').forEach(i => i.classList.remove('active'));
   el.classList.add('active');
   document.getElementById('sum-industry').textContent = item;
   updateAISuggestion(item);
   applyProductPreset(item);
+  applyCategoryEffects(item, S.industryKey);
   updateProgress();
 }
 
@@ -1103,6 +1317,47 @@ function applyProductPreset(item) {
 
   updateComboBadge();
   renderDesignCards();
+  if (S.industryKey) applyCategoryEffects(item, S.industryKey);
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: CATEGORY EFFECTS
+// ════════════════════════════════════════════════════════════════
+function strHash(s) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) { h ^= s.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
+  return h;
+}
+
+function applyCategoryEffects(item, catKey) {
+  const fx = document.getElementById('pv-fx');
+  if (!fx) return;
+  let html = '';
+
+  // Food + glass/plastic → condensation drops
+  if (catKey === 'food' && (S.material === 'glass' || S.material === 'plastic')) {
+    const cfg = SHAPE_TRANSFORMS[S.shape] || SHAPE_TRANSFORMS.round;
+    const b = cfg.bounds || {x1:48, x2:152, y1:112, y2:272};
+    for (let i = 0; i < 22; i++) {
+      const x = b.x1 + 4 + (strHash(item + i) % (b.x2 - b.x1 - 8));
+      const y = b.y1 + 10 + (strHash(item + i + 50) % (b.y2 - b.y1 - 20));
+      const r = 0.55 + (strHash(item + i + 200) % 18) / 7;
+      html += `<circle cx="${x}" cy="${y}" r="${r.toFixed(2)}" fill="rgba(220,240,255,0.22)" stroke="rgba(255,255,255,0.5)" stroke-width="0.35"/>`;
+      html += `<circle cx="${(x - r*0.3).toFixed(1)}" cy="${(y - r*0.3).toFixed(1)}" r="${(r*0.3).toFixed(2)}" fill="rgba(255,255,255,0.52)"/>`;
+    }
+  }
+
+  // Kraft/paperboard → warm fibre-grain overlay
+  if (S.material === 'kraft' || S.material === 'paperboard') {
+    html += `<rect x="0" y="0" width="200" height="360" fill="rgba(130,90,40,0.05)" filter="url(#f-kraft)"/>`;
+  }
+
+  // Industrial metals → brushed-grain overlay
+  if ((S.material === 'tin' || S.material === 'aluminum') && catKey === 'industrial') {
+    html += `<rect x="0" y="0" width="200" height="360" fill="rgba(180,190,200,0.06)" filter="url(#f-metal)"/>`;
+  }
+
+  fx.innerHTML = html;
 }
 
 function setIllustration(key) {
