@@ -5,163 +5,277 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>DYP — Design Studio</title>
 <style>
+/* ─── RESET & ROOT ─────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --black:#1d1d1f;--white:#f5f5f7;--gray:#6e6e73;--light:#fbfbfd;--mid:#e8e8ed;
-  --blue:#0071e3;--blue-h:#0077ed;--surface:#fff;
+  --black:#1d1d1f;
+  --white:#f5f5f7;
+  --gray:#6e6e73;
+  --light:#fbfbfd;
+  --mid:#e8e8ed;
+  --blue:#0071e3;
+  --blue-h:#0077ed;
+  --blue-soft:rgba(0,113,227,0.08);
+  --surface:#fff;
+  --gold:#c9a84c;
+  --gold-soft:rgba(201,168,76,0.12);
+  --radius-sm:8px;
+  --radius-md:12px;
+  --radius-lg:16px;
+  --shadow-sm:0 1px 3px rgba(0,0,0,0.06),0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md:0 4px 16px rgba(0,0,0,0.08),0 2px 4px rgba(0,0,0,0.04);
+  --shadow-lg:0 16px 40px rgba(0,0,0,0.12),0 4px 8px rgba(0,0,0,0.06);
+  --transition:0.18s ease;
   --font:-apple-system,BlinkMacSystemFont,'SF Pro Display','SF Pro Text','Helvetica Neue',Arial,sans-serif;
 }
+html{scroll-behavior:smooth}
 body{font-family:var(--font);background:var(--light);color:var(--black);-webkit-font-smoothing:antialiased;min-height:100vh}
 
-/* NAV */
+/* ─── NAV ──────────────────────────────────────────────────── */
 nav{position:fixed;top:0;left:0;right:0;z-index:9999;height:44px;background:rgba(251,251,253,0.92);backdrop-filter:saturate(180%) blur(20px);border-bottom:1px solid rgba(0,0,0,0.1);display:flex;align-items:center;justify-content:center}
-.nav-inner{width:100%;max-width:1200px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
+.nav-inner{width:100%;max-width:1280px;display:flex;align-items:center;justify-content:space-between;padding:0 22px}
 .nav-logo{font-size:1.2rem;font-weight:600;color:var(--black);text-decoration:none;letter-spacing:-0.01em}
 .nav-steps{display:flex;align-items:center;gap:0}
-.ns{display:flex;align-items:center;gap:6px;padding:0 14px;height:44px;font-size:0.72rem;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:all 0.2s;white-space:nowrap}
+.ns{display:flex;align-items:center;gap:6px;padding:0 12px;height:44px;font-size:0.72rem;color:var(--gray);cursor:pointer;border-bottom:2px solid transparent;transition:all var(--transition);white-space:nowrap}
 .ns.active{color:var(--blue);border-bottom-color:var(--blue)}
-.ns.done{color:rgba(0,113,227,0.5);border-bottom-color:rgba(0,113,227,0.25)}
-.ns-num{width:18px;height:18px;border-radius:50%;background:var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;transition:all 0.2s;flex-shrink:0}
+.ns.done{color:rgba(0,113,227,0.6);border-bottom-color:rgba(0,113,227,0.25)}
+.ns-num{width:18px;height:18px;border-radius:50%;background:var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.6rem;font-weight:700;transition:all var(--transition);flex-shrink:0}
 .ns.active .ns-num{background:var(--blue);color:#fff}
 .ns.done .ns-num{background:rgba(0,113,227,0.15);color:var(--blue)}
 .ns-arrow{color:var(--mid);font-size:0.75rem}
-.nav-right{font-size:0.75rem;color:var(--gray)}
+.nav-right{font-size:0.75rem;color:var(--gray);display:flex;align-items:center;gap:12px}
 
-/* LAYOUT */
-.studio{display:grid;grid-template-columns:320px 1fr 280px;min-height:calc(100vh - 44px);margin-top:44px}
+/* ─── STUDIO LAYOUT ────────────────────────────────────────── */
+.studio{display:grid;grid-template-columns:300px 1fr 268px;min-height:calc(100vh - 44px);margin-top:44px}
+.left-panel{background:var(--surface);border-right:1px solid var(--mid);overflow-y:auto;position:sticky;top:44px;height:calc(100vh - 44px)}
+.right-panel{background:var(--surface);border-left:1px solid var(--mid);overflow-y:auto;position:sticky;top:44px;height:calc(100vh - 44px);padding:20px 18px;display:flex;flex-direction:column;gap:18px}
+.center-panel{background:var(--light);display:flex;flex-direction:column;align-items:center;padding:36px 24px;gap:24px;min-height:calc(100vh - 44px)}
 
-/* PANELS */
-.left-panel{background:var(--surface);border-right:1px solid var(--mid);overflow-y:auto;position:sticky;top:44px;max-height:calc(100vh - 44px)}
-.right-panel{background:var(--surface);border-left:1px solid var(--mid);overflow-y:auto;position:sticky;top:44px;max-height:calc(100vh - 44px);padding:24px 20px;display:flex;flex-direction:column;gap:20px}
-.center-panel{background:var(--light);display:flex;flex-direction:column;align-items:center;padding:40px 24px;gap:28px;min-height:calc(100vh - 44px)}
+/* Custom scrollbar */
+.left-panel::-webkit-scrollbar,.right-panel::-webkit-scrollbar{width:4px}
+.left-panel::-webkit-scrollbar-thumb,.right-panel::-webkit-scrollbar-thumb{background:var(--mid);border-radius:2px}
 
-/* PANEL SECTIONS */
-.ps{border-bottom:1px solid var(--mid);padding:20px}
-.ps-label{font-size:0.68rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray);margin-bottom:14px;display:flex;align-items:center;justify-content:space-between}
-.ps-label span{font-size:0.65rem;color:var(--mid);text-transform:none;letter-spacing:0;font-weight:400}
+/* ─── PANEL SECTION ─────────────────────────────────────────── */
+.ps{border-bottom:1px solid var(--mid);padding:16px 18px}
+.ps:last-child{border-bottom:none}
+.ps-label{font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;gap:8px}
+.ps-label-badge{font-size:0.6rem;background:var(--blue-soft);color:var(--blue);border-radius:4px;padding:2px 6px;font-weight:600;letter-spacing:0;text-transform:none}
 
-/* PRODUCT TYPE TABS */
-.type-tabs{display:flex;gap:8px;margin-bottom:16px}
-.ttab{flex:1;padding:8px 0;background:var(--light);border:1px solid var(--mid);border-radius:8px;font-size:0.8rem;font-weight:500;color:var(--gray);cursor:pointer;text-align:center;transition:all 0.15s}
-.ttab.active{background:#fff;border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.ttab:hover:not(.active){background:#fff;border-color:rgba(0,113,227,0.3)}
+/* ─── CHIP SELECTOR ─────────────────────────────────────────── */
+.chip-grid{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:inline-flex;align-items:center;gap:5px;padding:6px 11px;background:var(--light);border:1px solid var(--mid);border-radius:980px;font-size:0.76rem;font-weight:500;color:var(--gray);cursor:pointer;transition:all var(--transition);user-select:none;white-space:nowrap}
+.chip:hover:not(.active){border-color:rgba(0,113,227,0.4);color:var(--black);background:#fff}
+.chip.active{background:#fff;border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 1px var(--blue),var(--shadow-sm)}
+.chip .chip-icon{font-size:0.85rem;line-height:1}
 
-/* SIZE GRID */
-.size-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
-.size-btn{padding:8px 4px;background:var(--light);border:1px solid var(--mid);border-radius:8px;font-size:0.78rem;font-weight:500;color:var(--gray);cursor:pointer;text-align:center;transition:all 0.15s}
-.size-btn:hover:not(.active){border-color:rgba(0,113,227,0.3);color:var(--black)}
-.size-btn.active{background:#fff;border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.size-btn .moq{display:block;font-size:0.6rem;color:var(--gray);margin-top:2px;font-weight:400}
+/* ─── SHAPE GRID ─────────────────────────────────────────────── */
+.shape-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.shape-btn{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;padding:10px 6px;background:var(--light);border:1px solid var(--mid);border-radius:var(--radius-md);cursor:pointer;transition:all var(--transition);min-height:64px}
+.shape-btn:hover:not(.active){border-color:rgba(0,113,227,0.35);background:#fff}
+.shape-btn.active{background:#fff;border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.shape-btn svg{width:28px;height:28px;transition:all var(--transition)}
+.shape-btn.active svg{stroke:var(--blue)}
+.shape-btn .shape-label{font-size:0.65rem;font-weight:500;color:var(--gray);text-align:center;line-height:1.2}
+.shape-btn.active .shape-label{color:var(--blue)}
 
-/* LOGO UPLOAD */
-.upload-zone{border:1.5px dashed var(--mid);border-radius:10px;padding:20px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative}
+/* ─── INDUSTRY ACCORDION ──────────────────────────────────────── */
+.industry-cats{display:flex;flex-direction:column;gap:4px}
+.ind-cat{border:1px solid var(--mid);border-radius:var(--radius-md);overflow:hidden;transition:border-color var(--transition)}
+.ind-cat.open{border-color:rgba(0,113,227,0.3)}
+.ind-cat-header{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;background:var(--light);transition:background var(--transition)}
+.ind-cat.open .ind-cat-header{background:var(--blue-soft)}
+.ind-cat-title{font-size:0.78rem;font-weight:600;color:var(--black);display:flex;align-items:center;gap:7px}
+.ind-cat-icon{font-size:1rem}
+.ind-cat-chevron{font-size:0.7rem;color:var(--gray);transition:transform var(--transition)}
+.ind-cat.open .ind-cat-chevron{transform:rotate(180deg)}
+.ind-cat-body{display:none;padding:8px 10px 10px;background:#fff}
+.ind-cat.open .ind-cat-body{display:flex;flex-wrap:wrap;gap:5px}
+.ind-item{padding:5px 10px;background:var(--light);border:1px solid var(--mid);border-radius:980px;font-size:0.72rem;font-weight:500;color:var(--gray);cursor:pointer;transition:all var(--transition)}
+.ind-item:hover:not(.active){border-color:rgba(0,113,227,0.35);color:var(--black)}
+.ind-item.active{background:var(--blue);border-color:var(--blue);color:#fff}
+
+/* ─── COLOUR SECTION ──────────────────────────────────────────── */
+.color-cols{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.color-col-label{font-size:0.65rem;font-weight:600;color:var(--gray);margin-bottom:7px;letter-spacing:0.04em;text-transform:uppercase}
+.color-swatches{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:6px}
+.swatch{width:24px;height:24px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all var(--transition);flex-shrink:0;position:relative}
+.swatch:hover:not(.active){transform:scale(1.12)}
+.swatch.active{border-color:var(--black);transform:scale(1.18);box-shadow:0 0 0 2px #fff inset}
+.swatch.transparent-swatch{background:conic-gradient(#ccc 90deg,#fff 90deg 180deg,#ccc 180deg 270deg,#fff 270deg);border:1.5px solid var(--mid)}
+.swatch.custom-swatch{background:linear-gradient(135deg,#f00,#ff0,#0f0,#0ff,#00f,#f0f);border:1.5px solid var(--mid)}
+.color-hex-input{width:100%;border:1px solid var(--mid);border-radius:var(--radius-sm);padding:5px 9px;font-size:0.75rem;font-family:var(--font);color:var(--black);outline:none;transition:border-color var(--transition)}
+.color-hex-input:focus{border-color:var(--blue)}
+.color-label-name{font-size:0.68rem;color:var(--gray);margin-top:4px;min-height:16px}
+
+/* ─── TYPOGRAPHY SYSTEM ───────────────────────────────────────── */
+.font-grid{display:flex;flex-direction:column;gap:5px}
+.font-btn{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;background:var(--light);border:1px solid var(--mid);border-radius:var(--radius-md);cursor:pointer;transition:all var(--transition);gap:8px}
+.font-btn:hover:not(.active){border-color:rgba(0,113,227,0.3);background:#fff}
+.font-btn.active{background:#fff;border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.font-meta{flex:1;min-width:0}
+.font-name{font-size:0.76rem;font-weight:600;color:var(--black);margin-bottom:2px}
+.font-btn.active .font-name{color:var(--blue)}
+.font-sample{font-size:0.68rem;color:var(--gray);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.font-preview-text{font-size:1rem;font-weight:600;color:var(--gray);flex-shrink:0;min-width:40px;text-align:right}
+.font-btn.active .font-preview-text{color:var(--blue)}
+
+/* Font preview classes */
+.fp-luxury{font-family:Georgia,'Times New Roman',serif;font-style:italic}
+.fp-sans{font-family:-apple-system,'Helvetica Neue',Arial,sans-serif;font-weight:300;letter-spacing:0.02em}
+.fp-industrial{font-family:'Courier New',monospace;font-weight:700;letter-spacing:0.05em}
+.fp-retro{font-family:Georgia,serif;font-weight:800;letter-spacing:-0.02em}
+.fp-minimal{font-family:-apple-system,sans-serif;font-weight:200;letter-spacing:0.1em}
+.fp-script{font-family:Georgia,'Times New Roman',serif;font-style:italic;font-weight:400}
+.fp-playful{font-family:'Helvetica Neue',Arial,sans-serif;font-weight:900;letter-spacing:-0.03em}
+
+/* ─── QUANTITY SELECTOR ───────────────────────────────────────── */
+.qty-chips{display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.qty-chip{padding:8px 4px;background:var(--light);border:1px solid var(--mid);border-radius:var(--radius-sm);font-size:0.76rem;font-weight:600;color:var(--gray);cursor:pointer;text-align:center;transition:all var(--transition)}
+.qty-chip:hover:not(.active){border-color:rgba(0,113,227,0.3);color:var(--black)}
+.qty-chip.active{background:#fff;border-color:var(--blue);color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
+.qty-chip .qty-sub{display:block;font-size:0.58rem;font-weight:400;color:inherit;opacity:0.7;margin-top:2px}
+.qty-guidance{margin-top:10px;padding:10px 12px;background:var(--light);border-radius:var(--radius-sm);border:1px solid var(--mid)}
+.qty-guidance-title{font-size:0.68rem;font-weight:600;color:var(--black);margin-bottom:3px}
+.qty-guidance-text{font-size:0.65rem;color:var(--gray);line-height:1.55}
+
+/* ─── LOGO UPLOAD ─────────────────────────────────────────────── */
+.upload-zone{border:1.5px dashed var(--mid);border-radius:var(--radius-md);padding:18px;text-align:center;cursor:pointer;transition:all 0.2s;position:relative}
 .upload-zone:hover{border-color:var(--blue);background:#f0f6ff}
 .upload-zone input{position:absolute;inset:0;opacity:0;cursor:pointer;width:100%;height:100%}
-.upload-zone p{font-size:0.8rem;color:var(--gray);line-height:1.5}
+.upload-zone p{font-size:0.78rem;color:var(--gray);line-height:1.5}
 .upload-zone strong{color:var(--blue);font-weight:500}
-.upload-zone .fmt{font-size:0.68rem;color:var(--mid);margin-top:4px}
-.logo-prev{display:flex;align-items:center;gap:10px;background:var(--light);border:1px solid var(--mid);border-radius:8px;padding:10px 12px;margin-top:10px}
-.logo-thumb{width:36px;height:36px;background:var(--light);border-radius:6px;border:1px solid var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.6rem;color:var(--gray);overflow:hidden;flex-shrink:0}
+.upload-zone .fmt{font-size:0.65rem;color:var(--mid);margin-top:3px}
+.logo-prev{display:flex;align-items:center;gap:10px;background:var(--light);border:1px solid var(--mid);border-radius:var(--radius-sm);padding:9px 11px;margin-top:8px}
+.logo-thumb{width:34px;height:34px;background:#fff;border-radius:6px;border:1px solid var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.58rem;color:var(--gray);overflow:hidden;flex-shrink:0}
 .logo-thumb img{width:100%;height:100%;object-fit:contain}
 .logo-info{flex:1;min-width:0}
-.logo-name{font-size:0.78rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.logo-size{font-size:0.68rem;color:var(--gray);margin-top:1px}
-.logo-rm{background:none;border:none;color:var(--gray);cursor:pointer;font-size:0.78rem;padding:4px;transition:color 0.15s;flex-shrink:0}
+.logo-name{font-size:0.76rem;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.logo-size{font-size:0.65rem;color:var(--gray);margin-top:1px}
+.logo-rm{background:none;border:none;color:var(--gray);cursor:pointer;font-size:0.75rem;padding:4px;transition:color var(--transition);flex-shrink:0}
 .logo-rm:hover{color:#e34000}
 
-/* TEXT FIELDS */
-.field{margin-bottom:12px}
-.field label{font-size:0.72rem;color:var(--gray);display:block;margin-bottom:5px}
-.field input,.field select,.field textarea{width:100%;background:#fff;border:1px solid var(--mid);border-radius:8px;padding:8px 12px;color:var(--black);font-family:var(--font);font-size:0.85rem;outline:none;transition:border-color 0.15s;resize:none}
-.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,0.1)}
+/* ─── TEXT FIELDS ─────────────────────────────────────────────── */
+.field{margin-bottom:10px}
+.field label{font-size:0.7rem;color:var(--gray);display:block;margin-bottom:4px}
+.field input,.field select,.field textarea{width:100%;background:#fff;border:1px solid var(--mid);border-radius:var(--radius-sm);padding:7px 11px;color:var(--black);font-family:var(--font);font-size:0.83rem;outline:none;transition:border-color var(--transition);resize:none}
+.field input:focus,.field select:focus,.field textarea:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(0,113,227,0.08)}
 .field input::placeholder,.field textarea::placeholder{color:var(--mid)}
 
-/* COLOUR DOTS */
-.color-row{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
-.cdot{width:26px;height:26px;border-radius:50%;cursor:pointer;border:2px solid transparent;transition:all 0.15s;flex-shrink:0}
-.cdot.active{border-color:var(--black);transform:scale(1.15)}
-.cdot:hover:not(.active){transform:scale(1.1)}
-
-/* QTY */
-.qty-disp{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:8px}
-.qty-num{font-size:1.6rem;font-weight:700;letter-spacing:-0.02em;color:var(--blue)}
-.qty-lbl{font-size:0.72rem;color:var(--gray)}
-input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
-.qty-range-labels{display:flex;justify-content:space-between;font-size:0.65rem;color:var(--mid);margin-top:4px}
-
-/* CENTER — PREVIEW */
-.preview-label{font-size:0.68rem;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray)}
-.canvas-wrap{position:relative;width:280px;display:flex;align-items:center;justify-content:center;padding:20px 0}
-.view-tabs{display:flex;gap:6px}
-.vtab{padding:5px 14px;background:#fff;border:1px solid var(--mid);border-radius:6px;font-size:0.75rem;color:var(--gray);cursor:pointer;transition:all 0.15s;font-family:var(--font)}
+/* ─── CENTER PANEL ─────────────────────────────────────────────── */
+.preview-label{font-size:0.65rem;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray)}
+.canvas-wrap{position:relative;width:240px;display:flex;align-items:center;justify-content:center;padding:16px 0}
+.view-tabs{display:flex;gap:5px}
+.vtab{padding:5px 13px;background:#fff;border:1px solid var(--mid);border-radius:6px;font-size:0.73rem;color:var(--gray);cursor:pointer;transition:all var(--transition);font-family:var(--font)}
 .vtab.active{background:var(--blue);border-color:var(--blue);color:#fff}
 .vtab:hover:not(.active){border-color:rgba(0,113,227,0.4);color:var(--blue)}
-.rotate-hint{font-size:0.68rem;color:var(--mid);text-align:center}
+.rotate-hint{font-size:0.65rem;color:var(--mid);text-align:center}
 
-/* DESIGN CARDS */
-.designs-wrap{width:100%;max-width:560px}
-.designs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:14px}
-.designs-header h3{font-size:0.9rem;font-weight:600;color:var(--black)}
-.designs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:10px}
-.design-card{background:#fff;border:1.5px solid var(--mid);border-radius:12px;padding:12px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
-.design-card:hover{border-color:rgba(0,113,227,0.4);transform:translateY(-2px)}
+/* Preview combo badge */
+.combo-badge{display:flex;align-items:center;gap:6px;padding:7px 14px;background:#fff;border:1px solid var(--mid);border-radius:var(--radius-md);box-shadow:var(--shadow-sm)}
+.combo-badge .cb-dot{width:8px;height:8px;border-radius:50%;background:var(--blue);flex-shrink:0}
+.combo-badge .cb-text{font-size:0.7rem;color:var(--gray);line-height:1.4}
+.combo-badge .cb-text strong{color:var(--black);font-weight:600}
+
+/* AI suggestion badge */
+.ai-suggest{display:flex;align-items:flex-start;gap:8px;padding:10px 12px;background:linear-gradient(135deg,rgba(0,113,227,0.05),rgba(100,180,255,0.05));border:1px solid rgba(0,113,227,0.15);border-radius:var(--radius-md);width:100%;max-width:480px}
+.ai-suggest .ai-icon{font-size:1.1rem;flex-shrink:0;margin-top:1px}
+.ai-suggest .ai-text{font-size:0.72rem;color:var(--gray);line-height:1.55}
+.ai-suggest .ai-text strong{color:var(--black);font-weight:600;display:block;margin-bottom:2px}
+
+/* ─── DESIGN CARDS ─────────────────────────────────────────────── */
+.designs-wrap{width:100%;max-width:520px}
+.designs-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px}
+.designs-header h3{font-size:0.88rem;font-weight:600;color:var(--black)}
+.designs-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+.design-card{background:#fff;border:1.5px solid var(--mid);border-radius:var(--radius-md);padding:10px;cursor:pointer;transition:all 0.2s;position:relative;overflow:hidden}
+.design-card:hover{border-color:rgba(0,113,227,0.4);transform:translateY(-2px);box-shadow:var(--shadow-md)}
 .design-card.selected{border-color:var(--blue);box-shadow:0 0 0 1px var(--blue)}
-.design-card.selected::after{content:'✓';position:absolute;top:7px;right:9px;font-size:0.65rem;color:var(--blue);font-weight:700}
-.dc-preview{height:100px;border-radius:8px;margin-bottom:8px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
-.dc-name{font-size:0.78rem;font-weight:600;color:var(--black);margin-bottom:2px}
-.dc-desc{font-size:0.65rem;color:var(--gray);line-height:1.4}
+.design-card.selected::after{content:'✓';position:absolute;top:6px;right:8px;font-size:0.6rem;color:var(--blue);font-weight:700}
+.dc-preview{height:90px;border-radius:8px;margin-bottom:7px;display:flex;align-items:center;justify-content:center;overflow:hidden;position:relative}
+.dc-name{font-size:0.76rem;font-weight:600;color:var(--black);margin-bottom:1px}
+.dc-desc{font-size:0.62rem;color:var(--gray);line-height:1.4}
 
-/* RIGHT PANEL */
-.progress-wrap h3{font-size:0.68rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray);margin-bottom:14px}
-.prog-steps{display:flex;flex-direction:column;gap:10px}
-.pstep{display:flex;align-items:center;gap:10px;font-size:0.78rem}
-.pdot{width:18px;height:18px;border-radius:50%;border:1.5px solid var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.6rem;flex-shrink:0;transition:all 0.25s}
+/* ─── RIGHT PANEL ──────────────────────────────────────────────── */
+.progress-wrap h3{font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);margin-bottom:12px}
+.prog-steps{display:flex;flex-direction:column;gap:8px}
+.pstep{display:flex;align-items:center;gap:8px;font-size:0.76rem}
+.pdot{width:17px;height:17px;border-radius:50%;border:1.5px solid var(--mid);display:flex;align-items:center;justify-content:center;font-size:0.58rem;flex-shrink:0;transition:all 0.25s}
 .pdot.done{background:rgba(0,113,227,0.1);border-color:var(--blue);color:var(--blue)}
 .pdot.curr{background:var(--blue);border-color:var(--blue);color:#fff}
-.ptext{color:var(--gray);transition:color 0.2s}
+.ptext{color:var(--gray);transition:color 0.2s;font-size:0.74rem}
 .ptext.done{color:var(--black)}
 .ptext.curr{color:var(--blue);font-weight:500}
 
-.sum-card{background:var(--light);border-radius:12px;padding:16px}
-.sum-card h3{font-size:0.68rem;font-weight:600;letter-spacing:0.05em;text-transform:uppercase;color:var(--gray);margin-bottom:14px}
-.sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:8px 0;border-bottom:1px solid var(--mid)}
+.sum-card{background:var(--light);border-radius:var(--radius-md);padding:14px}
+.sum-card h3{font-size:0.65rem;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray);margin-bottom:12px}
+.sum-row{display:flex;justify-content:space-between;align-items:flex-start;padding:6px 0;border-bottom:1px solid var(--mid)}
 .sum-row:last-child{border:none}
-.sum-key{font-size:0.75rem;color:var(--gray)}
-.sum-val{font-size:0.75rem;font-weight:500;color:var(--black);text-align:right;max-width:140px}
+.sum-key{font-size:0.72rem;color:var(--gray)}
+.sum-val{font-size:0.72rem;font-weight:500;color:var(--black);text-align:right;max-width:130px;line-height:1.4}
 .sum-val.blue{color:var(--blue)}
 
-.note-box{background:#f0f6ff;border-radius:10px;padding:14px;font-size:0.78rem;color:var(--gray);line-height:1.65}
-.note-box strong{color:var(--black);display:block;margin-bottom:4px;font-size:0.8rem}
+.note-box{background:#f0f6ff;border-radius:var(--radius-md);padding:12px;font-size:0.75rem;color:var(--gray);line-height:1.65}
+.note-box strong{color:var(--black);display:block;margin-bottom:3px;font-size:0.78rem}
 
-.submit-btn{width:100%;padding:12px;background:var(--blue);color:#fff;border:none;border-radius:980px;font-family:var(--font);font-size:0.9rem;font-weight:500;cursor:pointer;transition:background 0.2s;letter-spacing:0}
-.submit-btn:hover{background:var(--blue-h)}
-.submit-btn:disabled{background:var(--mid);cursor:not-allowed}
-.dl-btn{width:100%;padding:10px;background:transparent;color:var(--blue);border:1px solid var(--blue);border-radius:980px;font-family:var(--font);font-size:0.82rem;cursor:pointer;transition:all 0.2s}
-.dl-btn:hover{background:var(--blue);color:#fff}
+.submit-btn{width:100%;padding:11px;background:var(--blue);color:#fff;border:none;border-radius:980px;font-family:var(--font);font-size:0.88rem;font-weight:500;cursor:pointer;transition:background 0.2s,opacity 0.2s}
+.submit-btn:hover:not(:disabled){background:var(--blue-h)}
+.submit-btn:disabled{opacity:0.5;cursor:not-allowed}
+.dl-btn{width:100%;padding:9px;background:transparent;color:var(--blue);border:1px solid rgba(0,113,227,0.4);border-radius:980px;font-family:var(--font);font-size:0.8rem;cursor:pointer;transition:all 0.2s}
+.dl-btn:hover{background:var(--blue);color:#fff;border-color:var(--blue)}
 
-/* TOAST */
-.toast{position:fixed;bottom:24px;right:24px;background:var(--black);color:#fff;padding:12px 20px;border-radius:12px;font-size:0.82rem;z-index:99999;transform:translateY(80px);opacity:0;transition:all 0.35s;max-width:280px;line-height:1.5}
+/* ─── SHIMMER / LOADING ────────────────────────────────────────── */
+@keyframes shimmer{0%{background-position:-400px 0}100%{background-position:400px 0}}
+.shimmer{background:linear-gradient(90deg,var(--light) 25%,var(--mid) 50%,var(--light) 75%);background-size:800px 100%;animation:shimmer 1.4s infinite linear}
+
+/* ─── TOOLTIP ──────────────────────────────────────────────────── */
+[data-tip]{position:relative}
+[data-tip]::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:var(--black);color:#fff;font-size:0.65rem;padding:4px 8px;border-radius:5px;white-space:nowrap;pointer-events:none;opacity:0;transition:opacity 0.15s;z-index:999}
+[data-tip]:hover::after{opacity:1}
+
+/* ─── TOAST ────────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--black);color:#fff;padding:11px 18px;border-radius:var(--radius-md);font-size:0.8rem;z-index:99999;transform:translateY(80px);opacity:0;transition:all 0.32s cubic-bezier(.25,.8,.25,1);max-width:270px;line-height:1.5;box-shadow:var(--shadow-lg)}
 .toast.show{transform:translateY(0);opacity:1}
-.toast strong{display:block;margin-bottom:2px;font-size:0.85rem}
+.toast strong{display:block;margin-bottom:2px;font-size:0.82rem}
 
-/* SUCCESS SCREEN */
+/* ─── SUCCESS SCREEN ────────────────────────────────────────────── */
 .success-screen{display:none;position:fixed;inset:0;background:rgba(251,251,253,0.97);backdrop-filter:blur(20px);z-index:8888;flex-direction:column;align-items:center;justify-content:center;text-align:center;padding:40px}
 .success-screen.show{display:flex}
-.success-icon{font-size:4rem;margin-bottom:24px;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both}
+.success-icon{font-size:3.5rem;margin-bottom:20px;animation:popIn 0.5s cubic-bezier(0.175,0.885,0.32,1.275) both}
 @keyframes popIn{from{transform:scale(0);opacity:0}to{transform:scale(1);opacity:1}}
-.success-screen h2{font-size:2.4rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:12px}
-.success-screen p{font-size:1.05rem;color:var(--gray);font-weight:300;max-width:440px;line-height:1.6;margin-bottom:32px}
-.success-screen .ref{font-size:0.8rem;color:var(--mid);margin-bottom:28px}
+.success-screen h2{font-size:2.2rem;font-weight:700;letter-spacing:-0.025em;margin-bottom:10px}
+.success-screen p{font-size:1rem;color:var(--gray);font-weight:300;max-width:420px;line-height:1.6;margin-bottom:28px}
+.success-screen .ref{font-size:0.78rem;color:var(--mid);margin-bottom:24px}
 
+/* ─── SCROLL REVEAL ─────────────────────────────────────────────── */
+@keyframes fadeUp{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:translateY(0)}}
 @keyframes floatY{0%,100%{transform:translateY(0)}50%{transform:translateY(-8px)}}
 .float{animation:floatY 5s ease-in-out infinite}
+.reveal{opacity:0;transform:translateY(14px);transition:opacity 0.5s ease,transform 0.5s ease}
+.reveal.visible{opacity:1;transform:translateY(0)}
 
-@media(max-width:900px){.studio{grid-template-columns:1fr}.left-panel,.right-panel{position:relative;top:0;max-height:none}.designs-grid{grid-template-columns:1fr 1fr}}
+/* ─── MOBILE RESPONSIVE ─────────────────────────────────────────── */
+@media(max-width:1100px){
+  .studio{grid-template-columns:280px 1fr 240px}
+}
+@media(max-width:900px){
+  .studio{grid-template-columns:1fr}
+  .left-panel,.right-panel{position:relative;height:auto}
+  .left-panel{border-right:none;border-bottom:1px solid var(--mid)}
+  .right-panel{border-left:none;border-top:1px solid var(--mid)}
+  .designs-grid{grid-template-columns:repeat(2,1fr)}
+  .nav-steps .ns-arrow{display:none}
+  .ns span:last-child{display:none}
+  .color-cols{grid-template-columns:1fr}
+}
+@media(max-width:600px){
+  .shape-grid{grid-template-columns:repeat(3,1fr)}
+  .center-panel{padding:24px 16px}
+}
 </style>
 </head>
 <body>
 
-<!-- SUCCESS SCREEN -->
+<!-- ── SUCCESS SCREEN ──────────────────────────────────────────── -->
 <div class="success-screen" id="success">
   <div class="success-icon">📦</div>
   <h2>Order Submitted!</h2>
@@ -171,387 +285,987 @@ input[type=range]{width:100%;accent-color:var(--blue);cursor:pointer}
   <a href="products.html" style="color:var(--blue);font-size:0.85rem;text-decoration:none">Design another product</a>
 </div>
 
-<!-- NAV -->
+<!-- ── NAV ────────────────────────────────────────────────────── -->
 <nav>
   <div class="nav-inner">
     <a class="nav-logo" href="index.html">DYP</a>
     <div class="nav-steps">
-      <div class="ns done" id="ns1"><div class="ns-num">✓</div>Product</div>
+      <div class="ns done" id="ns1"><div class="ns-num">✓</div><span>Product</span></div>
       <div class="ns-arrow">›</div>
-      <div class="ns active" id="ns2"><div class="ns-num">2</div>Design</div>
+      <div class="ns active" id="ns2"><div class="ns-num">2</div><span>Design</span></div>
       <div class="ns-arrow">›</div>
-      <div class="ns" id="ns3"><div class="ns-num">3</div>Preview</div>
+      <div class="ns" id="ns3"><div class="ns-num">3</div><span>Preview</span></div>
       <div class="ns-arrow">›</div>
-      <div class="ns" id="ns4"><div class="ns-num">4</div>Submit</div>
+      <div class="ns" id="ns4"><div class="ns-num">4</div><span>Submit</span></div>
     </div>
-    <div class="nav-right" style="display:flex;align-items:center;gap:12px">
-      <a href="dashboard.html" style="font-size:0.75rem;color:var(--gray);text-decoration:none;display:none" id="nav-my-orders">My Orders</a>
-      <span style="font-size:0.75rem;color:var(--gray);display:none" id="nav-user-name"></span>
-      <button onclick="signOut('/')" style="font-size:0.75rem;color:var(--gray);background:none;border:none;cursor:pointer;font-family:var(--font);display:none" id="nav-logout">Sign Out</button>
-      <span style="font-size:0.75rem;color:var(--gray)" id="nav-no-payment">No payment required</span>
+    <div class="nav-right">
+      <a href="dashboard.html" style="color:var(--gray);text-decoration:none;display:none" id="nav-my-orders">My Orders</a>
+      <span style="display:none" id="nav-user-name"></span>
+      <button onclick="signOut('/')" style="background:none;border:none;cursor:pointer;font-family:var(--font);font-size:0.75rem;color:var(--gray);display:none" id="nav-logout">Sign Out</button>
+      <span id="nav-no-payment">No payment required</span>
     </div>
   </div>
 </nav>
 
 <div class="studio">
 
-  <!-- LEFT PANEL -->
-  <div class="left-panel">
+<!-- ════════════════════════════════════════════════════════════
+     LEFT PANEL
+═════════════════════════════════════════════════════════════ -->
+<div class="left-panel">
 
-    <!-- PRODUCT TYPE -->
-    <div class="ps">
-      <div class="ps-label">Product Type</div>
-      <div class="type-tabs">
-        <div class="ttab active" onclick="selectType('bottle',this)">🍶 Bottle</div>
-        <div class="ttab" onclick="selectType('can',this)">🥤 Can</div>
-      </div>
-      <div class="ps-label" style="margin-top:16px">Size <span id="selected-size-label">250ml selected</span></div>
-      <div class="size-grid" id="size-grid">
-        <div class="size-btn active" onclick="selectSize('250ml','500',this)">250ml<span class="moq">min 500</span></div>
-        <div class="size-btn" onclick="selectSize('500ml','500',this)">500ml<span class="moq">min 500</span></div>
-        <div class="size-btn" onclick="selectSize('750ml','500',this)">750ml<span class="moq">min 500</span></div>
-        <div class="size-btn" onclick="selectSize('1L','500',this)">1L<span class="moq">min 500</span></div>
-        <div class="size-btn" onclick="selectSize('1.5L','1000',this)">1.5L<span class="moq">min 1000</span></div>
-        <div class="size-btn" onclick="selectSize('Custom','TBD',this)">Custom<span class="moq">contact us</span></div>
-      </div>
-    </div>
-
-    <!-- LOGO UPLOAD -->
-    <div class="ps">
-      <div class="ps-label">Your Logo <span>PNG, JPG, SVG</span></div>
-      <div class="upload-zone" id="upload-zone">
-        <input type="file" accept=".png,.jpg,.jpeg,.svg" onchange="handleLogo(this)" id="logo-input"/>
-        <div style="font-size:1.4rem;margin-bottom:6px;opacity:0.4">↑</div>
-        <p><strong>Click to upload</strong> or drag &amp; drop your logo</p>
-        <div class="fmt">PNG · JPG · SVG · Max 10MB</div>
-      </div>
-      <div class="logo-prev" id="logo-prev" style="display:none">
-        <div class="logo-thumb" id="logo-thumb">IMG</div>
-        <div class="logo-info">
-          <div class="logo-name" id="logo-name-txt">logo.png</div>
-          <div class="logo-size" id="logo-size-txt">2.4 MB</div>
-        </div>
-        <button class="logo-rm" onclick="removeLogo()">✕</button>
-      </div>
-    </div>
-
-    <!-- BRAND DETAILS -->
-    <div class="ps">
-      <div class="ps-label">Brand Details</div>
-      <div class="field">
-        <label>Brand Name *</label>
-        <input type="text" id="brand-name" placeholder="e.g. Aura, Verde, Flux..." oninput="updatePreview();updateProgress()"/>
-      </div>
-      <div class="field">
-        <label>Tagline <span style="font-size:0.65rem;color:var(--mid)">(optional)</span></label>
-        <input type="text" id="brand-tag" placeholder="e.g. Pure. Natural. Yours." oninput="updatePreview()"/>
-      </div>
-      <div class="field">
-        <label>Product Type</label>
-        <input type="text" id="prod-type-txt" placeholder="e.g. Still Water, Energy Drink..." oninput="updatePreview()"/>
-      </div>
-      <div class="ps-label" style="margin-top:8px;margin-bottom:6px">Label Colour</div>
-      <div class="color-row" id="color-row">
-        <div class="cdot active" style="background:#0a1a10" onclick="selectColour('#0a1a10','Forest Green',this)" title="Forest Green"></div>
-        <div class="cdot" style="background:#0a0e1a" onclick="selectColour('#0a0e1a','Midnight Blue',this)" title="Midnight Blue"></div>
-        <div class="cdot" style="background:#1a0808" onclick="selectColour('#1a0808','Deep Crimson',this)" title="Deep Crimson"></div>
-        <div class="cdot" style="background:#1a1000" onclick="selectColour('#1a1000','Rich Gold',this)" title="Rich Gold"></div>
-        <div class="cdot" style="background:#18001a" onclick="selectColour('#18001a','Royal Violet',this)" title="Royal Violet"></div>
-        <div class="cdot" style="background:#111" onclick="selectColour('#111','Pure Noir',this)" title="Pure Noir"></div>
-        <div class="cdot" style="background:#f0ede4;border:1px solid #ddd" onclick="selectColour('#f0ede4','Clean Cream',this)" title="Clean Cream"></div>
-      </div>
-    </div>
-
-    <!-- QUANTITY -->
-    <div class="ps">
-      <div class="ps-label">Estimated Quantity</div>
-      <div class="qty-disp">
-        <div class="qty-num" id="qty-display">500</div>
-        <div class="qty-lbl">units</div>
-      </div>
-      <input type="range" min="500" max="10000" step="500" value="500" oninput="updateQty(this.value)"/>
-      <div class="qty-range-labels"><span>500</span><span>10,000+</span></div>
-    </div>
-
-    <!-- CONTACT -->
-    <div class="ps">
-      <div class="ps-label">Your Details</div>
-      <div class="field"><label>Business Name *</label><input type="text" id="biz-name" placeholder="Your company name" oninput="updateProgress()"/></div>
-      <div class="field"><label>Contact Name *</label><input type="text" id="contact-name" placeholder="Your full name" oninput="updateProgress()"/></div>
-      <div class="field"><label>Email *</label><input type="email" id="contact-email" placeholder="you@company.com" oninput="updateProgress()"/></div>
-      <div class="field"><label>Phone</label><input type="tel" id="contact-phone" placeholder="+91 ..."/></div>
-      <div class="field"><label>Notes <span style="font-size:0.65rem;color:var(--mid)">(optional)</span></label><textarea id="notes" rows="3" placeholder="Any special requirements, questions, or details for our team..."></textarea></div>
+  <!-- 1. PACKAGING MATERIAL -->
+  <div class="ps">
+    <div class="ps-label">Packaging Material <span class="ps-label-badge">Required</span></div>
+    <div class="chip-grid" id="material-chips">
+      <div class="chip active" data-val="plastic" data-tip="Lightweight, versatile" onclick="selectMaterial('plastic',this)"><span class="chip-icon">🧴</span>Plastic</div>
+      <div class="chip" data-val="tin" data-tip="Durable, premium feel" onclick="selectMaterial('tin',this)"><span class="chip-icon">🥫</span>Tin</div>
+      <div class="chip" data-val="glass" data-tip="Luxury, eco-friendly" onclick="selectMaterial('glass',this)"><span class="chip-icon">🫙</span>Glass</div>
+      <div class="chip" data-val="kraft" data-tip="Eco, sustainable" onclick="selectMaterial('kraft',this)"><span class="chip-icon">📦</span>Kraft Paper</div>
+      <div class="chip" data-val="aluminum" data-tip="Lightweight, recyclable" onclick="selectMaterial('aluminum',this)"><span class="chip-icon">🔩</span>Aluminum</div>
+      <div class="chip" data-val="pouch" data-tip="Flexible, lightweight" onclick="selectMaterial('pouch',this)"><span class="chip-icon">👜</span>Flex Pouch</div>
+      <div class="chip" data-val="paperboard" data-tip="Printable, eco" onclick="selectMaterial('paperboard',this)"><span class="chip-icon">📋</span>Paperboard</div>
     </div>
   </div>
 
-  <!-- CENTER PANEL -->
-  <div class="center-panel">
-
-    <!-- LIVE PREVIEW -->
-    <div class="preview-label">Live Preview</div>
-    <div class="canvas-wrap">
-      <!-- BOTTLE SVG -->
-      <svg id="preview-svg" class="float" viewBox="0 0 200 340" width="200" height="340" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 16px 40px rgba(0,0,0,0.12))">
-        <defs>
-          <linearGradient id="pvbg" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" id="pvbg-s1" style="stop-color:#c8c8d8"/>
-            <stop offset="45%" id="pvbg-s2" style="stop-color:#e0e0f0"/>
-            <stop offset="100%" id="pvbg-s3" style="stop-color:#b0b0c0"/>
-          </linearGradient>
-          <linearGradient id="pvlbl" x1="0%" y1="0%" x2="100%" y2="100%">
-            <stop offset="0%" id="pvlbl-s1" style="stop-color:#0a1a10"/>
-            <stop offset="100%" id="pvlbl-s2" style="stop-color:#06120a"/>
-          </linearGradient>
-          <linearGradient id="pvsh" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:rgba(255,255,255,0)"/>
-            <stop offset="40%" style="stop-color:rgba(255,255,255,0.18)"/>
-            <stop offset="60%" style="stop-color:rgba(255,255,255,0.28)"/>
-            <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
-          </linearGradient>
-          <linearGradient id="pvgold" x1="0%" y1="0%" x2="100%" y2="0%">
-            <stop offset="0%" style="stop-color:rgba(200,200,200,0.3)"/>
-            <stop offset="50%" style="stop-color:rgba(220,220,220,0.7)"/>
-            <stop offset="100%" style="stop-color:rgba(200,200,200,0.3)"/>
-          </linearGradient>
-          <clipPath id="pvclip">
-            <path d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z"/>
-          </clipPath>
-        </defs>
-        <!-- Bottle body -->
-        <path id="bottle-body" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvbg)" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
-        <!-- Label area -->
-        <rect x="48" y="112" width="104" height="160" fill="url(#pvlbl)" clip-path="url(#pvclip)" id="label-rect"/>
-        <!-- Label top stripe -->
-        <rect x="48" y="112" width="104" height="2" fill="url(#pvgold)" clip-path="url(#pvclip)"/>
-        <!-- Label bottom stripe -->
-        <rect x="48" y="270" width="104" height="2" fill="url(#pvgold)" clip-path="url(#pvclip)"/>
-        <!-- Logo zone -->
-        <rect x="78" y="132" width="44" height="32" rx="4" fill="rgba(255,255,255,0.06)" id="logo-zone"/>
-        <text id="logo-ph" x="100" y="152" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(255,255,255,0.25)" letter-spacing="1">YOUR LOGO</text>
-        <!-- Brand name -->
-        <text id="pv-brand" x="100" y="196" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="22" font-weight="700" fill="#ffffff" letter-spacing="-0.5">Brand</text>
-        <!-- Divider -->
-        <line id="pv-div" x1="62" y1="205" x2="138" y2="205" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
-        <!-- Tagline -->
-        <text id="pv-tag" x="100" y="220" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" fill="rgba(255,255,255,0.5)" letter-spacing="2">PURE · NATURAL</text>
-        <!-- Product type -->
-        <text id="pv-type" x="100" y="253" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(255,255,255,0.25)" letter-spacing="1.5">STILL WATER · 250ML</text>
-        <!-- Shine overlay -->
-        <path d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvsh)"/>
-        <!-- Cap -->
-        <rect x="82" y="18" width="36" height="20" rx="4" fill="#d0d0e0" stroke="rgba(0,0,0,0.08)" stroke-width="0.5" id="bottle-cap"/>
-        <!-- Neck -->
-        <rect x="76" y="36" width="48" height="5" rx="1" fill="#c8c8d8" id="bottle-neck"/>
-      </svg>
+  <!-- 2. PACKAGING SHAPE -->
+  <div class="ps">
+    <div class="ps-label">Packaging Shape</div>
+    <div class="shape-grid" id="shape-grid">
+      <!-- Rendered by JS -->
     </div>
+  </div>
 
-    <div class="view-tabs">
-      <div class="vtab active" onclick="setView('front',this)">Front</div>
-      <div class="vtab" onclick="setView('angle',this)">Angle</div>
-      <div class="vtab" onclick="setView('back',this)">Back</div>
+  <!-- 3. APPLICATION / INDUSTRY -->
+  <div class="ps">
+    <div class="ps-label">Application / Industry</div>
+    <div class="industry-cats" id="industry-cats">
+      <!-- Rendered by JS -->
     </div>
-    <div class="rotate-hint">Click a view to rotate your product</div>
+  </div>
 
-    <!-- DESIGN CARDS -->
-    <div class="designs-wrap">
-      <div class="designs-header">
-        <h3>Choose a Label Design</h3>
-        <span style="font-size:0.72rem;color:var(--gray)">4 styles · tap to apply</span>
+  <!-- 4. COLOUR CONFIGURATION -->
+  <div class="ps">
+    <div class="ps-label">Colour Configuration</div>
+    <div class="color-cols">
+      <div>
+        <div class="color-col-label">Exterior</div>
+        <div class="color-swatches" id="ext-swatches"></div>
+        <input class="color-hex-input" type="text" id="ext-hex" maxlength="7" placeholder="#C9A84C" oninput="applyHexColor('ext',this.value)"/>
+        <div class="color-label-name" id="ext-color-name">Gold</div>
       </div>
-      <div class="designs-grid" id="designs-grid">
-        <!-- Rendered by JS -->
+      <div>
+        <div class="color-col-label">Interior</div>
+        <div class="color-swatches" id="int-swatches"></div>
+        <input class="color-hex-input" type="text" id="int-hex" maxlength="7" placeholder="#111111" oninput="applyHexColor('int',this.value)"/>
+        <div class="color-label-name" id="int-color-name">Matte Black</div>
       </div>
     </div>
   </div>
 
-  <!-- RIGHT PANEL -->
-  <div class="right-panel">
-
-    <!-- PROGRESS -->
-    <div class="progress-wrap">
-      <h3>Your Progress</h3>
-      <div class="prog-steps">
-        <div class="pstep"><div class="pdot done" id="pd1">✓</div><div class="ptext done" id="pt1">Product selected</div></div>
-        <div class="pstep"><div class="pdot" id="pd2">2</div><div class="ptext" id="pt2">Upload your logo</div></div>
-        <div class="pstep"><div class="pdot curr" id="pd3">3</div><div class="ptext curr" id="pt3">Add brand details</div></div>
-        <div class="pstep"><div class="pdot" id="pd4">4</div><div class="ptext" id="pt4">Choose a design</div></div>
-        <div class="pstep"><div class="pdot" id="pd5">5</div><div class="ptext" id="pt5">Your contact details</div></div>
-        <div class="pstep"><div class="pdot" id="pd6">6</div><div class="ptext" id="pt6">Submit order</div></div>
-      </div>
+  <!-- 5. TYPOGRAPHY SYSTEM -->
+  <div class="ps">
+    <div class="ps-label">Typography Style</div>
+    <div class="font-grid" id="font-grid">
+      <!-- Rendered by JS -->
     </div>
-
-    <!-- ORDER SUMMARY -->
-    <div class="sum-card">
-      <h3>Order Summary</h3>
-      <div class="sum-row"><div class="sum-key">Product</div><div class="sum-val blue" id="sum-product">Still Water Bottle</div></div>
-      <div class="sum-row"><div class="sum-key">Size</div><div class="sum-val" id="sum-size">250ml</div></div>
-      <div class="sum-row"><div class="sum-key">Qty (est.)</div><div class="sum-val" id="sum-qty">500 units</div></div>
-      <div class="sum-row"><div class="sum-key">Design</div><div class="sum-val" id="sum-design">— not chosen</div></div>
-      <div class="sum-row"><div class="sum-key">Logo</div><div class="sum-val" id="sum-logo">— not uploaded</div></div>
-      <div class="sum-row"><div class="sum-key">Payment</div><div class="sum-val blue">Sample first</div></div>
-    </div>
-
-    <div class="note-box">
-      <strong>How this works</strong>
-      No payment today. Submit your design — our team reviews it and ships you a physical sample within days.
-    </div>
-
-    <button class="dl-btn" onclick="downloadMockup()">↓ Download Mockup PNG</button>
-    <button class="submit-btn" id="submit-btn" onclick="submitOrder()">Request Your Sample →</button>
-    <p style="font-size:0.68rem;color:var(--mid);text-align:center;line-height:1.5">Our team will contact you within 24–48 hours to confirm your order details.</p>
   </div>
-</div>
 
-<!-- TOAST -->
+  <!-- 6. LOGO UPLOAD -->
+  <div class="ps">
+    <div class="ps-label">Your Logo <span style="font-size:0.6rem;color:var(--mid);font-weight:400;text-transform:none;letter-spacing:0">PNG · JPG · SVG</span></div>
+    <div class="upload-zone" id="upload-zone">
+      <input type="file" accept=".png,.jpg,.jpeg,.svg" onchange="handleLogo(this)" id="logo-input"/>
+      <div style="font-size:1.3rem;margin-bottom:5px;opacity:0.35">↑</div>
+      <p><strong>Click to upload</strong> or drag &amp; drop</p>
+      <div class="fmt">PNG · JPG · SVG · Max 10MB</div>
+    </div>
+    <div class="logo-prev" id="logo-prev" style="display:none">
+      <div class="logo-thumb" id="logo-thumb">IMG</div>
+      <div class="logo-info">
+        <div class="logo-name" id="logo-name-txt">logo.png</div>
+        <div class="logo-size" id="logo-size-txt">2.4 MB</div>
+      </div>
+      <button class="logo-rm" onclick="removeLogo()">✕</button>
+    </div>
+  </div>
+
+  <!-- 7. BRAND DETAILS -->
+  <div class="ps">
+    <div class="ps-label">Brand Details</div>
+    <div class="field">
+      <label>Brand Name *</label>
+      <input type="text" id="brand-name" placeholder="e.g. Aura, Verde, Flux…" oninput="updatePreview();updateProgress()"/>
+    </div>
+    <div class="field">
+      <label>Tagline <span style="font-size:0.6rem;color:var(--mid)">(optional)</span></label>
+      <input type="text" id="brand-tag" placeholder="e.g. Pure. Natural. Yours." oninput="updatePreview()"/>
+    </div>
+    <div class="field">
+      <label>Product Description</label>
+      <input type="text" id="prod-type-txt" placeholder="e.g. Artisan Pickle, Protein Shake…" oninput="updatePreview()"/>
+    </div>
+  </div>
+
+  <!-- 8. QUANTITY -->
+  <div class="ps">
+    <div class="ps-label">Estimated Starting Quantity</div>
+    <div class="qty-chips" id="qty-chips">
+      <div class="qty-chip" data-qty="50" data-label="Sampling" onclick="selectQty(50,this)">50<span class="qty-sub">Sampling</span></div>
+      <div class="qty-chip" data-qty="100" data-label="Test batch" onclick="selectQty(100,this)">100<span class="qty-sub">Test batch</span></div>
+      <div class="qty-chip active" data-qty="250" data-label="Small run" onclick="selectQty(250,this)">250<span class="qty-sub">Small run</span></div>
+      <div class="qty-chip" data-qty="500" data-label="Standard" onclick="selectQty(500,this)">500<span class="qty-sub">Standard</span></div>
+      <div class="qty-chip" data-qty="1000" data-label="Commercial" onclick="selectQty(1000,this)">1,000+<span class="qty-sub">Commercial</span></div>
+      <div class="qty-chip" data-qty="0" data-label="Contact us" onclick="selectQty(0,this)">Enterprise<span class="qty-sub">Contact us</span></div>
+    </div>
+    <div class="qty-guidance" id="qty-guidance">
+      <div class="qty-guidance-title" id="qty-guidance-title">Small Production Run</div>
+      <div class="qty-guidance-text" id="qty-guidance-text">Ideal for market testing and retail pilot. We recommend starting with a physical sample first.</div>
+    </div>
+  </div>
+
+  <!-- 9. CONTACT DETAILS -->
+  <div class="ps">
+    <div class="ps-label">Your Details</div>
+    <div class="field"><label>Business Name *</label><input type="text" id="biz-name" placeholder="Your company name" oninput="updateProgress()"/></div>
+    <div class="field"><label>Contact Name *</label><input type="text" id="contact-name" placeholder="Your full name" oninput="updateProgress()"/></div>
+    <div class="field"><label>Email *</label><input type="email" id="contact-email" placeholder="you@company.com" oninput="updateProgress()"/></div>
+    <div class="field"><label>Phone</label><input type="tel" id="contact-phone" placeholder="+91 …"/></div>
+    <div class="field"><label>Notes <span style="font-size:0.6rem;color:var(--mid)">(optional)</span></label><textarea id="notes" rows="3" placeholder="Special requirements, finish preferences, questions…"></textarea></div>
+  </div>
+
+</div><!-- /left-panel -->
+
+<!-- ════════════════════════════════════════════════════════════
+     CENTER PANEL
+═════════════════════════════════════════════════════════════ -->
+<div class="center-panel">
+
+  <div class="preview-label">Live Preview</div>
+
+  <!-- SVG PREVIEW -->
+  <div class="canvas-wrap">
+    <svg id="preview-svg" class="float" viewBox="0 0 200 340" width="200" height="340" xmlns="http://www.w3.org/2000/svg" style="filter:drop-shadow(0 16px 40px rgba(0,0,0,0.12));transition:all 0.5s ease">
+      <defs>
+        <linearGradient id="pvbg" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" id="pvbg-s1" style="stop-color:#c8c8d8"/>
+          <stop offset="45%" id="pvbg-s2" style="stop-color:#e0e0f0"/>
+          <stop offset="100%" id="pvbg-s3" style="stop-color:#b0b0c0"/>
+        </linearGradient>
+        <linearGradient id="pvlbl" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" id="pvlbl-s1" style="stop-color:#c9a84c"/>
+          <stop offset="100%" id="pvlbl-s2" style="stop-color:#8a6f24"/>
+        </linearGradient>
+        <linearGradient id="pvint" x1="0%" y1="0%" x2="100%" y2="100%">
+          <stop offset="0%" id="pvint-s1" style="stop-color:#111111"/>
+          <stop offset="100%" id="pvint-s2" style="stop-color:#1a1a1a"/>
+        </linearGradient>
+        <linearGradient id="pvsh" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgba(255,255,255,0)"/>
+          <stop offset="38%" style="stop-color:rgba(255,255,255,0.18)"/>
+          <stop offset="58%" style="stop-color:rgba(255,255,255,0.28)"/>
+          <stop offset="100%" style="stop-color:rgba(255,255,255,0)"/>
+        </linearGradient>
+        <linearGradient id="pvgold" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgba(201,168,76,0.2)"/>
+          <stop offset="50%" style="stop-color:rgba(201,168,76,0.8)"/>
+          <stop offset="100%" style="stop-color:rgba(201,168,76,0.2)"/>
+        </linearGradient>
+        <linearGradient id="pvmetallic" x1="0%" y1="0%" x2="100%" y2="0%">
+          <stop offset="0%" style="stop-color:rgba(200,200,220,0.6)"/>
+          <stop offset="50%" style="stop-color:rgba(240,240,255,0.9)"/>
+          <stop offset="100%" style="stop-color:rgba(200,200,220,0.6)"/>
+        </linearGradient>
+        <clipPath id="pvclip">
+          <path id="pvclip-path" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z"/>
+        </clipPath>
+      </defs>
+
+      <!-- Container body -->
+      <path id="pv-body" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvbg)" stroke="rgba(0,0,0,0.06)" stroke-width="0.5"/>
+
+      <!-- Label area (exterior colour) -->
+      <rect id="pv-label" x="48" y="112" width="104" height="160" fill="url(#pvlbl)" clip-path="url(#pvclip)"/>
+
+      <!-- Metallic accent stripes -->
+      <rect id="pv-stripe-top" x="48" y="112" width="104" height="2.5" fill="url(#pvgold)" clip-path="url(#pvclip)"/>
+      <rect id="pv-stripe-bot" x="48" y="269.5" width="104" height="2.5" fill="url(#pvgold)" clip-path="url(#pvclip)"/>
+
+      <!-- Logo zone -->
+      <rect x="78" y="128" width="44" height="30" rx="3" fill="rgba(255,255,255,0.06)" id="logo-zone"/>
+      <text id="logo-ph" x="100" y="147" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6.5" fill="rgba(255,255,255,0.22)" letter-spacing="1">YOUR LOGO</text>
+
+      <!-- Product illustration (set by JS per industry selection) -->
+      <g id="pv-illustration" transform="translate(100,145)" clip-path="url(#pvclip)" style="transition:opacity 0.35s ease"></g>
+
+      <!-- Brand name (interior colour applied to text) -->
+      <text id="pv-brand" x="100" y="192" text-anchor="middle" font-family="-apple-system,BlinkMacSystemFont,sans-serif" font-size="20" font-weight="700" fill="#ffffff" letter-spacing="-0.5">Brand</text>
+
+      <!-- Divider -->
+      <line id="pv-div" x1="65" y1="200" x2="135" y2="200" stroke="rgba(255,255,255,0.15)" stroke-width="0.5"/>
+
+      <!-- Tagline -->
+      <text id="pv-tag" x="100" y="215" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7.5" fill="rgba(255,255,255,0.5)" letter-spacing="2">PURE · NATURAL</text>
+
+      <!-- Product descriptor -->
+      <text id="pv-type" x="100" y="248" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="6.5" fill="rgba(255,255,255,0.22)" letter-spacing="1.5">STILL WATER · 250ML</text>
+
+      <!-- Shine overlay -->
+      <path id="pv-shine" d="M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z" fill="url(#pvsh)"/>
+
+      <!-- Cap -->
+      <rect id="pv-cap" x="82" y="18" width="36" height="20" rx="4" fill="#d0d0e0" stroke="rgba(0,0,0,0.08)" stroke-width="0.5"/>
+      <!-- Neck -->
+      <rect id="pv-neck" x="76" y="36" width="48" height="5" rx="1" fill="#c8c8d8"/>
+    </svg>
+  </div>
+
+  <div class="view-tabs">
+    <div class="vtab active" onclick="setView('front',this)">Front</div>
+    <div class="vtab" onclick="setView('angle',this)">Angle</div>
+    <div class="vtab" onclick="setView('back',this)">Back</div>
+  </div>
+  <div class="rotate-hint">Click a view to rotate</div>
+
+  <!-- COMBO BADGE -->
+  <div class="combo-badge" id="combo-badge">
+    <div class="cb-dot"></div>
+    <div class="cb-text"><strong id="combo-title">Plastic · Round</strong><br/><span id="combo-desc">Select material &amp; shape to see your packaging preview</span></div>
+  </div>
+
+  <!-- AI SUGGESTION -->
+  <div class="ai-suggest" id="ai-suggest" style="display:none">
+    <div class="ai-icon">✦</div>
+    <div class="ai-text"><strong id="ai-suggest-title">AI Recommendation</strong><span id="ai-suggest-body">Select an industry to get smart design suggestions.</span></div>
+  </div>
+
+  <!-- DESIGN CARDS -->
+  <div class="designs-wrap">
+    <div class="designs-header">
+      <h3>Label Style</h3>
+      <span style="font-size:0.7rem;color:var(--gray)" id="design-count-label">4 styles · tap to apply</span>
+    </div>
+    <div class="designs-grid" id="designs-grid"></div>
+  </div>
+
+</div><!-- /center-panel -->
+
+<!-- ════════════════════════════════════════════════════════════
+     RIGHT PANEL
+═════════════════════════════════════════════════════════════ -->
+<div class="right-panel">
+
+  <!-- PROGRESS -->
+  <div class="progress-wrap">
+    <h3>Your Progress</h3>
+    <div class="prog-steps">
+      <div class="pstep"><div class="pdot done" id="pd1">✓</div><div class="ptext done" id="pt1">Material selected</div></div>
+      <div class="pstep"><div class="pdot" id="pd2">2</div><div class="ptext" id="pt2">Shape chosen</div></div>
+      <div class="pstep"><div class="pdot curr" id="pd3">3</div><div class="ptext curr" id="pt3">Brand details</div></div>
+      <div class="pstep"><div class="pdot" id="pd4">4</div><div class="ptext" id="pt4">Upload logo</div></div>
+      <div class="pstep"><div class="pdot" id="pd5">5</div><div class="ptext" id="pt5">Select label style</div></div>
+      <div class="pstep"><div class="pdot" id="pd6">6</div><div class="ptext" id="pt6">Contact details</div></div>
+      <div class="pstep"><div class="pdot" id="pd7">7</div><div class="ptext" id="pt7">Submit order</div></div>
+    </div>
+  </div>
+
+  <!-- ORDER SUMMARY -->
+  <div class="sum-card">
+    <h3>Order Summary</h3>
+    <div class="sum-row"><div class="sum-key">Material</div><div class="sum-val blue" id="sum-material">Plastic</div></div>
+    <div class="sum-row"><div class="sum-key">Shape</div><div class="sum-val" id="sum-shape">— not chosen</div></div>
+    <div class="sum-row"><div class="sum-key">Industry</div><div class="sum-val" id="sum-industry">— not chosen</div></div>
+    <div class="sum-row"><div class="sum-key">Exterior</div><div class="sum-val" id="sum-ext-color">Gold</div></div>
+    <div class="sum-row"><div class="sum-key">Typography</div><div class="sum-val" id="sum-font">— not chosen</div></div>
+    <div class="sum-row"><div class="sum-key">Qty (est.)</div><div class="sum-val" id="sum-qty">250 units</div></div>
+    <div class="sum-row"><div class="sum-key">Label style</div><div class="sum-val" id="sum-design">— not chosen</div></div>
+    <div class="sum-row"><div class="sum-key">Logo</div><div class="sum-val" id="sum-logo">— not uploaded</div></div>
+    <div class="sum-row"><div class="sum-key">Payment</div><div class="sum-val blue">Sample first</div></div>
+  </div>
+
+  <div class="note-box">
+    <strong>How this works</strong>
+    No payment today. Submit your design — our team reviews it and ships you a physical sample within days.
+  </div>
+
+  <button class="dl-btn" onclick="downloadMockup()">↓ Download Mockup PNG</button>
+  <button class="submit-btn" id="submit-btn" onclick="submitOrder()">Request Your Sample →</button>
+  <p style="font-size:0.65rem;color:var(--mid);text-align:center;line-height:1.5">Our team will contact you within 24–48 hours.</p>
+
+</div><!-- /right-panel -->
+
+</div><!-- /studio -->
+
+<!-- ── TOAST ────────────────────────────────────────────────── -->
 <div class="toast" id="toast"><strong id="toast-title"></strong><span id="toast-msg"></span></div>
 
+<!-- ── SCRIPTS ──────────────────────────────────────────────── -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="js/dyp-supabase.js"></script>
+
 <script>
-// Auth guard — redirect to login if not signed in
+// ════════════════════════════════════════════════════════════════
+// DYP Design Studio — Modular JS
+// ════════════════════════════════════════════════════════════════
+
+// ── AUTH GUARD ───────────────────────────────────────────────
 (async () => {
   const user = await requireAuth('/login?redirect=products.html');
   if (!user) return;
   window.DYP_USER = user;
-
-  // Pre-fill contact fields from user profile
   const profile = await getUserProfile(user.id);
   if (profile) {
     const nameEl = document.getElementById('contact-name');
     const bizEl  = document.getElementById('biz-name');
     if (nameEl && !nameEl.value) nameEl.value = profile.full_name || '';
-    if (bizEl  && !bizEl.value && user.user_metadata?.business_name) {
+    if (bizEl  && !bizEl.value && user.user_metadata?.business_name)
       bizEl.value = user.user_metadata.business_name;
-    }
   }
-  if (!document.getElementById('contact-email').value) {
+  if (!document.getElementById('contact-email').value)
     document.getElementById('contact-email').value = user.email;
-  }
-
-  // Show user nav items
   const nm = profile?.full_name?.split(' ')[0] || user.email.split('@')[0];
   document.getElementById('nav-user-name').textContent  = nm;
   document.getElementById('nav-user-name').style.display = '';
   document.getElementById('nav-logout').style.display    = '';
   document.getElementById('nav-my-orders').style.display = '';
   document.getElementById('nav-no-payment').style.display = 'none';
-
   updateProgress();
 })();
-</script>
 
-<script>
-// ─── STATE ───────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// MODULE: STATE
+// ════════════════════════════════════════════════════════════════
 const S = {
-  type:'bottle', size:'250ml', moq:'500',
-  brandName:'', tagline:'', prodType:'',
-  colour:'#0a1a10', colourName:'Forest Green',
-  qty:500,
-  logoUploaded:false, logoName:'',
-  designIdx:null,
-  bizName:'', contactName:'', email:'',
+  material: 'plastic',
+  shape:    'round',
+  industry: null,
+  industryLabel: null,
+  extColor: '#c9a84c',
+  extColorName: 'Gold',
+  intColor: '#111111',
+  intColorName: 'Matte Black',
+  fontKey:  null,
+  qty:      250,
+  logoUploaded: false,
+  logoName: '',
+  logoFile: null,
+  brandName: '',
+  tagline: '',
+  prodType: '',
+  designIdx: null,
 };
 
-// Parse URL params (from homepage quick links)
-const params = new URLSearchParams(location.search);
-if(params.get('type')) S.type = params.get('type');
-if(params.get('size')) S.size = params.get('size');
+// ════════════════════════════════════════════════════════════════
+// MODULE: DATA DEFINITIONS
+// ════════════════════════════════════════════════════════════════
 
-// ─── DESIGN DEFINITIONS ──────────────────────────────────
-const DESIGNS = [
-  {
-    name:'Minimal',
-    desc:'Clean, generous space',
-    bg:'linear-gradient(145deg,#0c0c18,#14142a)',
-    accent:'rgba(255,255,255,0.7)',
-    accentLine:'rgba(255,255,255,0.15)',
-    labelFn:(name,tag)=>`
-      <text x="100" y="185" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="18" font-weight="300" fill="#ffffff" letter-spacing="4">${name.toUpperCase()}</text>
-      <line x1="62" y1="195" x2="138" y2="195" stroke="rgba(255,255,255,0.2)" stroke-width="0.5"/>
-      <text x="100" y="212" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(255,255,255,0.4)" letter-spacing="2">${tag.toUpperCase()}</text>
-    `
-  },
-  {
-    name:'Bold',
-    desc:'High contrast, strong type',
-    bg:'linear-gradient(145deg,#1a0010,#300020)',
-    accent:'#ff3b86',
-    accentLine:'rgba(255,59,134,0.4)',
-    labelFn:(name,tag)=>`
-      <text x="100" y="180" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="28" font-weight="800" fill="#ff3b86" letter-spacing="-1">${name}</text>
-      <rect x="60" y="186" width="80" height="3" fill="#ff3b86" opacity="0.6"/>
-      <text x="100" y="210" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(255,255,255,0.5)" letter-spacing="1.5">${tag.toUpperCase()}</text>
-    `
-  },
-  {
-    name:'Premium',
-    desc:'Refined, editorial feel',
-    bg:'linear-gradient(145deg,#100c00,#201800)',
-    accent:'#c9a84c',
-    accentLine:'rgba(201,168,76,0.3)',
-    labelFn:(name,tag)=>`
-      <text x="100" y="170" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="8" font-weight="500" fill="rgba(201,168,76,0.8)" letter-spacing="4">${name.toUpperCase()}</text>
-      <line x1="70" y1="178" x2="130" y2="178" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>
-      <text x="100" y="200" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="20" font-weight="700" fill="#f5e6b8" letter-spacing="-0.5">${tag || 'Pure.'}</text>
-      <line x1="70" y1="210" x2="130" y2="210" stroke="rgba(201,168,76,0.3)" stroke-width="0.5"/>
-    `
-  },
-  {
-    name:'Natural',
-    desc:'Organic, earth tones',
-    bg:'linear-gradient(145deg,#081408,#102010)',
-    accent:'#5cb85c',
-    accentLine:'rgba(92,184,92,0.3)',
-    labelFn:(name,tag)=>`
-      <ellipse cx="100" cy="180" rx="34" ry="34" fill="rgba(92,184,92,0.08)" stroke="rgba(92,184,92,0.2)" stroke-width="1"/>
-      <text x="100" y="176" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="11" font-weight="700" fill="#7dc87d" letter-spacing="-0.3">${name.slice(0,6)}</text>
-      <text x="100" y="192" text-anchor="middle" font-family="-apple-system,sans-serif" font-size="7" fill="rgba(125,200,125,0.6)" letter-spacing="1">${tag.toUpperCase().slice(0,14)}</text>
-    `
-  },
+// ── MATERIAL CONFIG ──────────────────────────────────────────
+const MATERIALS = {
+  plastic:    { label:'Plastic',     bodyGrad:['#c8d8e8','#dde8f0','#a8b8c8'], shine:0.28, gloss:true  },
+  tin:        { label:'Tin',         bodyGrad:['#9ba0a8','#c8ccd4','#888d95'], shine:0.45, gloss:true  },
+  glass:      { label:'Glass',       bodyGrad:['#ccd8e4','#e8eff5','#b0c4d4'], shine:0.55, gloss:true  },
+  kraft:      { label:'Kraft Paper', bodyGrad:['#c4a882','#d4b890','#a08858'], shine:0.05, gloss:false },
+  aluminum:   { label:'Aluminum',    bodyGrad:['#a8acb4','#d8dce4','#909498'], shine:0.5,  gloss:true  },
+  pouch:      { label:'Flex Pouch',  bodyGrad:['#b0c0d0','#ccd8e4','#98a8b8'], shine:0.15, gloss:false },
+  paperboard: { label:'Paperboard',  bodyGrad:['#e4ddd0','#f0ebe2','#c8c0b0'], shine:0.05, gloss:false },
+};
+
+// ── SHAPE CONFIG ─────────────────────────────────────────────
+const SHAPES = [
+  { key:'round',     label:'Round',     icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><circle cx="14" cy="17" r="9"/><rect x="11" y="4" width="6" height="8" rx="2"/></svg>` },
+  { key:'square',    label:'Square',    icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><rect x="5" y="6" width="18" height="20" rx="2"/><rect x="10" y="2" width="8" height="5" rx="1"/></svg>` },
+  { key:'rectangle', label:'Rect',      icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><rect x="7" y="5" width="14" height="22" rx="2"/><rect x="10" y="1" width="8" height="5" rx="1"/></svg>` },
+  { key:'cylinder',  label:'Cylinder',  icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><ellipse cx="14" cy="8" rx="9" ry="3"/><line x1="5" y1="8" x2="5" y2="24"/><line x1="23" y1="8" x2="23" y2="24"/><ellipse cx="14" cy="24" rx="9" ry="3"/></svg>` },
+  { key:'oval',      label:'Oval',      icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><ellipse cx="14" cy="17" rx="8" ry="11"/><rect x="11" y="2" width="6" height="6" rx="1.5"/></svg>` },
+  { key:'hexagon',   label:'Hexagon',   icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><polygon points="14,4 24,10 24,22 14,28 4,22 4,10"/></svg>` },
+  { key:'jar',       label:'Jar',       icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><rect x="8" y="10" width="12" height="16" rx="3"/><rect x="7" y="7" width="14" height="4" rx="1"/><rect x="10" y="4" width="8" height="4" rx="1"/></svg>` },
+  { key:'pouch',     label:'Pouch',     icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><path d="M8 8 Q6 14 6 20 Q6 26 14 26 Q22 26 22 20 Q22 14 20 8 Z"/><line x1="10" y1="8" x2="18" y2="8"/><rect x="11" y="3" width="6" height="6" rx="1"/></svg>` },
+  { key:'tube',      label:'Tube',      icon:`<svg viewBox="0 0 28 28" fill="none" stroke="#6e6e73" stroke-width="1.5"><rect x="9" y="2" width="10" height="22" rx="5"/><path d="M9 24 Q14 28 19 24"/></svg>` },
 ];
 
-// ─── TOAST ───────────────────────────────────────────────
-let toastTimer;
+// Shape → SVG path transforms for the preview
+const SHAPE_TRANSFORMS = {
+  round:     { body:'M76 36c0 0-7 8-8 20l-6 30c-10 8-14 18-14 27v158c0 13 10 20 22 20h80c12 0 22-7 22-20V113c0-9-4-19-14-27l-6-30c-1-12-8-20-8-20z', labelY:112, labelH:160 },
+  square:    { body:'M60 40h80c6 0 10 4 10 10v240c0 6-4 10-10 10H60c-6 0-10-4-10-10V50c0-6 4-10 10-10z', labelY:100, labelH:160 },
+  rectangle: { body:'M70 20h60c5 0 9 4 9 9v270c0 5-4 9-9 9H70c-5 0-9-4-9-9V29c0-5 4-9 9-9z', labelY:80, labelH:190 },
+  cylinder:  { body:'M55 50 Q55 40 100 38 Q145 40 145 50L145 280 Q145 295 100 298 Q55 295 55 280Z', labelY:110, labelH:150 },
+  oval:      { body:'M100 20 C60 20 45 60 45 110 L45 230 C45 280 60 320 100 320 C140 320 155 280 155 230 L155 110 C155 60 140 20 100 20Z', labelY:115, labelH:145 },
+  hexagon:   { body:'M100 25L155 57V121L100 153L45 121V57Z M45 121L100 153L155 121L155 265L100 300L45 265Z', labelY:105, labelH:150 },
+  jar:       { body:'M65 80c0-8 4-14 10-14h50c6 0 10 6 10 14v180c0 10-6 18-16 18H81c-10 0-16-8-16-18V80z M70 66h60c4 0 7 4 7 8v8H63V74c0-4 3-8 7-8z', labelY:100, labelH:140 },
+  pouch:     { body:'M75 40Q70 60 65 120Q60 180 65 240Q70 300 100 310Q130 300 135 240Q140 180 135 120Q130 60 125 40Q112 32 100 32Q88 32 75 40Z', labelY:120, labelH:140 },
+  tube:      { body:'M84 10 Q84 4 100 4 Q116 4 116 10 L116 310 Q116 322 100 326 Q84 322 84 310 Z', labelY:80, labelH:190 },
+};
+
+// ── INDUSTRY DATA ────────────────────────────────────────────
+const INDUSTRIES = [
+  { key:'food',      label:'Food',      icon:'🍽️', items:['Pickles','Cakes','Sauces','Snacks','Coffee','Spices'] },
+  { key:'beauty',    label:'Beauty',    icon:'💄', items:['Skincare','Perfume','Haircare'] },
+  { key:'industrial',label:'Industrial',icon:'🏭', items:['Paint','Lubricants','Chemicals'] },
+  { key:'fashion',   label:'Fashion',   icon:'👗', items:['Clothing Packaging','Luxury Boxes'] },
+  { key:'wellness',  label:'Wellness',  icon:'🌿', items:['Supplements','Ayurveda','Protein Powder'] },
+];
+
+// ── AI SUGGESTIONS ────────────────────────────────────────────
+const AI_SUGGESTIONS = {
+  'Pickles':            'Artisan jar with serif typography and green-earthy palette — evokes craft and freshness.',
+  'Cakes':             'Soft kraft box with playful script and warm neutral palette — ideal for bakery retail.',
+  'Sauces':            'Tall bottle with bold sans-serif and vibrant accent colour — impactful shelf presence.',
+  'Snacks':            'Flexible pouch with punchy typography and high-contrast colours for grab-and-go.',
+  'Coffee':            'Kraft pouch with industrial mono font and brown/gold tones — premium café vibe.',
+  'Spices':            'Hexagonal tin with luxury serif and deep jewel tones — spice rack worthy.',
+  'Skincare':          'Minimalist tube or jar with thin sans-serif, white + gold — clinical luxury.',
+  'Perfume':           'Glass bottle with premium script, matte black label and metallic accents.',
+  'Haircare':          'Oval bottle with modern sans-serif, pastel palette — approachable and clean.',
+  'Paint':             'Square tin with industrial mono font, bold colour block label.',
+  'Lubricants':        'Cylinder with bold industrial type, high-visibility safety colours.',
+  'Chemicals':         'Rectangle container with high-contrast label, clear hierarchy — compliance-first.',
+  'Clothing Packaging':'Rigid paperboard box with luxury serif, minimal design, metallic foil.',
+  'Luxury Boxes':      'Rigid paperboard with gold foil stamp, premium script, deep black.',
+  'Supplements':       'Round bottle with clean sans-serif, clinical white and blue palette.',
+  'Ayurveda':          'Kraft or glass jar with earthy script, botanical illustration elements.',
+  'Protein Powder':    'Large round container with bold industrial font, dynamic gradient label.',
+};
+
+// ── FONT PERSONALITIES ────────────────────────────────────────
+const FONTS = [
+  { key:'luxury-serif',  label:'Luxury Serif',   sample:'Elegance & Prestige', cls:'fp-luxury',    svgFamily:'Georgia, serif', svgWeight:'600', svgStyle:'italic', letterSpacing:'0' },
+  { key:'modern-sans',   label:'Modern Sans',     sample:'Clean Forward Design',cls:'fp-sans',      svgFamily:'-apple-system,sans-serif', svgWeight:'300', svgStyle:'normal', letterSpacing:'1' },
+  { key:'industrial',    label:'Industrial',      sample:'MONO STRENGTH',       cls:'fp-industrial', svgFamily:'Courier New, monospace',  svgWeight:'700', svgStyle:'normal', letterSpacing:'2' },
+  { key:'retro',         label:'Retro',           sample:'Classic Heritage',    cls:'fp-retro',     svgFamily:'Georgia, serif',         svgWeight:'800', svgStyle:'normal', letterSpacing:'-0.5' },
+  { key:'minimal',       label:'Minimal',         sample:'Pure Simplicity',     cls:'fp-minimal',   svgFamily:'-apple-system,sans-serif', svgWeight:'200', svgStyle:'normal', letterSpacing:'3' },
+  { key:'premium-script',label:'Premium Script',  sample:'Artisan Crafted',     cls:'fp-script',    svgFamily:'Georgia, serif',         svgWeight:'400', svgStyle:'italic', letterSpacing:'0.5' },
+  { key:'playful',       label:'Playful',         sample:'Fun & Bold!',         cls:'fp-playful',   svgFamily:'-apple-system,sans-serif', svgWeight:'900', svgStyle:'normal', letterSpacing:'-1' },
+];
+
+// ── COLOUR SWATCHES ───────────────────────────────────────────
+const SWATCHES = [
+  { hex:'#c9a84c', name:'Gold',          gradient:['#c9a84c','#8a6f24'], metallic:true  },
+  { hex:'#111111', name:'Matte Black',   gradient:['#111111','#1a1a1a'], metallic:false },
+  { hex:'#b0b8c4', name:'Silver',        gradient:['#c4ccd8','#8090a0'], metallic:true  },
+  { hex:'#ffffff', name:'White',         gradient:['#f8f8fa','#e8e8ec'], metallic:false },
+  { hex:'#c0392b', name:'Red',           gradient:['#c0392b','#8e1a14'], metallic:false },
+  { hex:'#2980b9', name:'Blue',          gradient:['#2980b9','#1a5f8a'], metallic:false },
+  { hex:'#27ae60', name:'Green',         gradient:['#27ae60','#1a7340'], metallic:false },
+  { hex:'#transparent', name:'Transparent', gradient:['rgba(200,220,240,0.3)','rgba(180,200,220,0.2)'], metallic:false, isTransparent:true },
+  { hex:'custom',  name:'Custom',        gradient:null, metallic:false, isCustom:true  },
+];
+
+// ── DESIGN STYLES ─────────────────────────────────────────────
+const DESIGNS = [
+  { name:'Minimal',  desc:'Clean, generous white space', bg:'linear-gradient(145deg,#0c0c18,#14142a)', accent:'rgba(255,255,255,0.7)', accentLine:'rgba(255,255,255,0.15)' },
+  { name:'Bold',     desc:'High contrast, striking type', bg:'linear-gradient(145deg,#1a0010,#300020)', accent:'#ff3b86', accentLine:'rgba(255,59,134,0.4)' },
+  { name:'Premium',  desc:'Refined, editorial luxury', bg:'linear-gradient(145deg,#100c00,#201800)', accent:'#c9a84c', accentLine:'rgba(201,168,76,0.3)' },
+  { name:'Natural',  desc:'Organic, earth-tone warmth', bg:'linear-gradient(145deg,#081408,#102010)', accent:'#5cb85c', accentLine:'rgba(92,184,92,0.3)' },
+];
+
+// ── PRODUCT PRESETS — shape + material + colours + font per product ──
+const PRODUCT_PRESETS = {
+  'Pickles':            { shape:'jar',       material:'glass',      extColor:'#2d5a27', extName:'Forest Green',  intColor:'#f5f5f0', intName:'Cream',       fontKey:'luxury-serif',   illKey:'pickles'      },
+  'Cakes':              { shape:'square',    material:'paperboard', extColor:'#d4956a', extName:'Warm Caramel',  intColor:'#3d1f00', intName:'Dark Brown',   fontKey:'playful',        illKey:'cakes'        },
+  'Sauces':             { shape:'round',     material:'glass',      extColor:'#c0392b', extName:'Red',           intColor:'#f5f5f0', intName:'Cream',        fontKey:'retro',          illKey:'sauces'       },
+  'Snacks':             { shape:'pouch',     material:'pouch',      extColor:'#e67e22', extName:'Orange',        intColor:'#1a0800', intName:'Dark',         fontKey:'playful',        illKey:'snacks'       },
+  'Coffee':             { shape:'pouch',     material:'kraft',      extColor:'#4a3220', extName:'Coffee Brown',  intColor:'#c9a84c', intName:'Gold',         fontKey:'industrial',     illKey:'coffee'       },
+  'Spices':             { shape:'hexagon',   material:'tin',        extColor:'#7a1515', extName:'Deep Red',      intColor:'#c9a84c', intName:'Gold',         fontKey:'luxury-serif',   illKey:'spices'       },
+  'Skincare':           { shape:'oval',      material:'glass',      extColor:'#f0e6d3', extName:'Clean Cream',   intColor:'#888060', intName:'Earth',        fontKey:'minimal',        illKey:'skincare'     },
+  'Perfume':            { shape:'oval',      material:'glass',      extColor:'#111111', extName:'Matte Black',   intColor:'#c9a84c', intName:'Gold',         fontKey:'luxury-serif',   illKey:'perfume'      },
+  'Haircare':           { shape:'round',     material:'plastic',    extColor:'#6c3483', extName:'Purple',        intColor:'#f0e6f8', intName:'Lavender',     fontKey:'modern-sans',    illKey:'haircare'     },
+  'Paint':              { shape:'square',    material:'tin',        extColor:'#c0392b', extName:'Red',           intColor:'#111111', intName:'Matte Black',  fontKey:'industrial',     illKey:'paint'        },
+  'Lubricants':         { shape:'cylinder',  material:'tin',        extColor:'#1c2833', extName:'Industrial',    intColor:'#f39c12', intName:'Amber',        fontKey:'industrial',     illKey:'lubricants'   },
+  'Chemicals':          { shape:'rectangle', material:'plastic',    extColor:'#f39c12', extName:'Orange',        intColor:'#111111', intName:'Black',        fontKey:'industrial',     illKey:'chemicals'    },
+  'Clothing Packaging': { shape:'square',    material:'paperboard', extColor:'#1c1c1e', extName:'Near Black',    intColor:'#c9a84c', intName:'Gold',         fontKey:'luxury-serif',   illKey:'clothing'     },
+  'Luxury Boxes':       { shape:'square',    material:'paperboard', extColor:'#111111', extName:'Matte Black',   intColor:'#c9a84c', intName:'Gold',         fontKey:'premium-script', illKey:'luxury'       },
+  'Supplements':        { shape:'round',     material:'plastic',    extColor:'#1a5f8a', extName:'Blue',          intColor:'#f5f5f7', intName:'White',        fontKey:'modern-sans',    illKey:'supplements'  },
+  'Ayurveda':           { shape:'jar',       material:'glass',      extColor:'#5d4e2a', extName:'Earth Gold',    intColor:'#f0e8d0', intName:'Parchment',    fontKey:'premium-script', illKey:'ayurveda'     },
+  'Protein Powder':     { shape:'cylinder',  material:'plastic',    extColor:'#111111', extName:'Matte Black',   intColor:'#e74c3c', intName:'Red',          fontKey:'industrial',     illKey:'protein'      },
+};
+
+// ── SVG ILLUSTRATIONS — (0,0)-centred, ~±14px bounding box ──────────
+const ILLUSTRATIONS = {
+  pickles: `
+    <rect x="-10" y="-6" width="20" height="16" rx="2.5" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+    <rect x="-12" y="-12" width="24" height="7" rx="2" fill="rgba(255,255,255,0.08)" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+    <ellipse cx="-4" cy="2" rx="3" ry="4.5" fill="none" stroke="rgba(100,210,100,0.7)" stroke-width="1.1"/>
+    <ellipse cx="4" cy="2" rx="3" ry="4.5" fill="none" stroke="rgba(100,210,100,0.7)" stroke-width="1.1"/>`,
+  cakes: `
+    <rect x="-13" y="5" width="26" height="7" rx="1.5" fill="rgba(255,200,150,0.2)" stroke="rgba(255,200,150,0.65)" stroke-width="1.2"/>
+    <rect x="-11" y="-3" width="22" height="9" rx="1.5" fill="rgba(200,150,100,0.2)" stroke="rgba(210,160,110,0.65)" stroke-width="1.2"/>
+    <path d="M-13,-3 Q-8,-9 -3,-5 Q0,-10 3,-5 Q8,-9 13,-3" fill="none" stroke="rgba(255,255,255,0.65)" stroke-width="1.3"/>
+    <line x1="-3" y1="-14" x2="-3" y2="-9" stroke="rgba(255,200,50,0.75)" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="-3" cy="-15.5" r="2" fill="rgba(255,180,30,0.85)"/>
+    <line x1="3" y1="-14" x2="3" y2="-9" stroke="rgba(255,200,50,0.75)" stroke-width="1.5" stroke-linecap="round"/>
+    <circle cx="3" cy="-15.5" r="2" fill="rgba(255,180,30,0.85)"/>`,
+  sauces: `
+    <path d="M-3,-13 L-3,-7 Q-9,-4 -9,4 Q-9,12 0,13 Q9,12 9,4 Q9,-4 3,-7 L3,-13 Z" fill="rgba(200,60,40,0.18)" stroke="rgba(255,255,255,0.55)" stroke-width="1.2"/>
+    <rect x="-4" y="-16" width="8" height="4" rx="1.5" fill="rgba(255,255,255,0.15)" stroke="rgba(255,255,255,0.5)" stroke-width="1"/>
+    <path d="M-5,3 Q-2,-1 0,1 Q2,-1 5,3" fill="none" stroke="rgba(255,150,100,0.65)" stroke-width="1.1"/>`,
+  snacks: `
+    <polygon points="0,-13 12,9 -12,9" fill="rgba(255,200,50,0.15)" stroke="rgba(255,210,60,0.7)" stroke-width="1.3"/>
+    <polygon points="0,-7 7,6 -7,6" fill="none" stroke="rgba(255,210,60,0.35)" stroke-width="0.8"/>
+    <path d="M-6,2 Q-2,-2 0,0 Q2,-2 6,2" fill="none" stroke="rgba(255,210,60,0.5)" stroke-width="0.9"/>`,
+  coffee: `
+    <rect x="-11" y="-4" width="22" height="14" rx="2" fill="rgba(100,60,30,0.3)" stroke="rgba(255,220,160,0.6)" stroke-width="1.2"/>
+    <ellipse cx="0" cy="-4" rx="11" ry="2.5" fill="rgba(80,40,20,0.25)" stroke="rgba(255,220,160,0.5)" stroke-width="1"/>
+    <path d="M-4,-10 Q-3,-14 -2,-10" fill="none" stroke="rgba(255,255,255,0.42)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M0,-12 Q1,-16 2,-12" fill="none" stroke="rgba(255,255,255,0.42)" stroke-width="1.2" stroke-linecap="round"/>
+    <path d="M4,-10 Q5,-14 6,-10" fill="none" stroke="rgba(255,255,255,0.42)" stroke-width="1.2" stroke-linecap="round"/>`,
+  spices: `
+    <circle cx="0" cy="0" r="5" fill="rgba(255,200,80,0.2)" stroke="rgba(255,200,80,0.55)" stroke-width="1.2"/>
+    <line x1="0" y1="-14" x2="0" y2="-7" stroke="rgba(255,200,80,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="0" y1="7" x2="0" y2="14" stroke="rgba(255,200,80,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="-14" y1="0" x2="-7" y2="0" stroke="rgba(255,200,80,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="7" y1="0" x2="14" y2="0" stroke="rgba(255,200,80,0.7)" stroke-width="1.5" stroke-linecap="round"/>
+    <line x1="-9.9" y1="-9.9" x2="-4.9" y2="-4.9" stroke="rgba(255,200,80,0.6)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="4.9" y1="4.9" x2="9.9" y2="9.9" stroke="rgba(255,200,80,0.6)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="9.9" y1="-9.9" x2="4.9" y2="-4.9" stroke="rgba(255,200,80,0.6)" stroke-width="1.3" stroke-linecap="round"/>
+    <line x1="-4.9" y1="4.9" x2="-9.9" y2="9.9" stroke="rgba(255,200,80,0.6)" stroke-width="1.3" stroke-linecap="round"/>`,
+  skincare: `
+    <path d="M0,-14 Q8,-5 8,3 Q8,12 0,13 Q-8,12 -8,3 Q-8,-5 0,-14Z" fill="rgba(200,230,200,0.12)" stroke="rgba(200,230,200,0.55)" stroke-width="1.2"/>
+    <path d="M0,-7 Q5,-1 5,4 Q5,9 0,10 Q-5,9 -5,4 Q-5,-1 0,-7Z" fill="rgba(200,230,200,0.08)" stroke="rgba(200,230,200,0.38)" stroke-width="0.9"/>
+    <line x1="0" y1="3" x2="0" y2="10" stroke="rgba(200,230,200,0.38)" stroke-width="0.9"/>`,
+  perfume: `
+    <rect x="-8" y="-3" width="16" height="14" rx="3" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+    <rect x="-4" y="-9" width="8" height="7" rx="1.5" fill="rgba(255,255,255,0.05)" stroke="rgba(255,255,255,0.45)" stroke-width="1.2"/>
+    <rect x="-6" y="-13" width="12" height="5" rx="1" fill="rgba(200,168,76,0.35)" stroke="rgba(200,168,76,0.7)" stroke-width="1"/>
+    <ellipse cx="0" cy="4" rx="4" ry="5" fill="rgba(200,168,76,0.06)" stroke="rgba(200,168,76,0.2)" stroke-width="0.8"/>`,
+  haircare: `
+    <path d="M-7,-13 Q-9,-1 -7,12" fill="none" stroke="rgba(200,150,230,0.65)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M-3,-15 Q-5,-1 -3,14" fill="none" stroke="rgba(200,150,230,0.5)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M1,-15 Q-1,-1 1,14" fill="none" stroke="rgba(200,150,230,0.65)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M5,-14 Q3,-1 5,12" fill="none" stroke="rgba(200,150,230,0.5)" stroke-width="1.6" stroke-linecap="round"/>
+    <path d="M9,-12 Q7,-1 8,10" fill="none" stroke="rgba(200,150,230,0.38)" stroke-width="1.6" stroke-linecap="round"/>`,
+  paint: `
+    <rect x="-12" y="-7" width="24" height="20" rx="2" fill="rgba(200,50,50,0.18)" stroke="rgba(255,255,255,0.5)" stroke-width="1.2"/>
+    <path d="M-9,-7 L-9,-13 L-5,-13" fill="none" stroke="rgba(255,255,255,0.5)" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round"/>
+    <path d="M0,-2 L0,-8 Q4,-10 4,-14 Q4,-18 0,-17 Q-4,-18 -4,-14 Q-4,-10 0,-8" fill="none" stroke="rgba(255,120,100,0.65)" stroke-width="1.2" stroke-linecap="round"/>
+    <rect x="-9" y="3" width="18" height="3" rx="1" fill="rgba(255,255,255,0.12)" stroke="rgba(255,255,255,0.3)" stroke-width="0.8"/>`,
+  lubricants: `
+    <circle cx="0" cy="0" r="5" fill="rgba(255,200,50,0.2)" stroke="rgba(255,200,50,0.6)" stroke-width="1.2"/>
+    <circle cx="0" cy="0" r="2" fill="rgba(255,200,50,0.5)"/>
+    <line x1="0" y1="-13" x2="0" y2="-7" stroke="rgba(255,200,50,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="0" y1="7" x2="0" y2="13" stroke="rgba(255,200,50,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-13" y1="0" x2="-7" y2="0" stroke="rgba(255,200,50,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="7" y1="0" x2="13" y2="0" stroke="rgba(255,200,50,0.7)" stroke-width="2" stroke-linecap="round"/>
+    <line x1="-9.2" y1="-9.2" x2="-6.4" y2="-6.4" stroke="rgba(255,200,50,0.6)" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="6.4" y1="6.4" x2="9.2" y2="9.2" stroke="rgba(255,200,50,0.6)" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="9.2" y1="-9.2" x2="6.4" y2="-6.4" stroke="rgba(255,200,50,0.6)" stroke-width="1.8" stroke-linecap="round"/>
+    <line x1="-6.4" y1="6.4" x2="-9.2" y2="9.2" stroke="rgba(255,200,50,0.6)" stroke-width="1.8" stroke-linecap="round"/>`,
+  chemicals: `
+    <path d="M-3,-14 L-3,-4 L-11,8 Q-11,14 0,14 Q11,14 11,8 L3,-4 L3,-14 Z" fill="rgba(255,200,50,0.08)" stroke="rgba(255,255,255,0.52)" stroke-width="1.2"/>
+    <rect x="-3" y="-17" width="6" height="4" rx="1" fill="rgba(255,255,255,0.1)" stroke="rgba(255,255,255,0.48)" stroke-width="1"/>
+    <circle cx="-4" cy="7" r="2" fill="rgba(100,200,255,0.6)"/>
+    <circle cx="5" cy="10" r="1.5" fill="rgba(100,200,255,0.42)"/>
+    <circle cx="0" cy="8" r="1" fill="rgba(100,200,255,0.5)"/>
+    <line x1="-11" y1="4" x2="11" y2="4" stroke="rgba(255,255,255,0.18)" stroke-width="0.8" stroke-dasharray="2,2"/>`,
+  clothing: `
+    <path d="M-6,-13 L-13,-6 L-8,-4 L-8,11 L8,11 L8,-4 L13,-6 L6,-13 Q3,-8 0,-9 Q-3,-8 -6,-13 Z" fill="rgba(255,255,255,0.07)" stroke="rgba(255,255,255,0.52)" stroke-width="1.2"/>
+    <line x1="-8" y1="-4" x2="8" y2="-4" stroke="rgba(255,255,255,0.22)" stroke-width="0.8"/>
+    <line x1="0" y1="-4" x2="0" y2="11" stroke="rgba(255,255,255,0.14)" stroke-width="0.8"/>`,
+  luxury: `
+    <path d="M0,-14 L3.2,-4.4 L13.3,-4.4 L5.5,1.7 L8.2,11.4 L0,6 L-8.2,11.4 L-5.5,1.7 L-13.3,-4.4 L-3.2,-4.4 Z" fill="rgba(200,168,76,0.2)" stroke="rgba(200,168,76,0.65)" stroke-width="1.2"/>`,
+  supplements: `
+    <rect x="-14" y="-7" width="12" height="16" rx="6" fill="rgba(100,150,220,0.2)" stroke="rgba(150,200,255,0.6)" stroke-width="1.2"/>
+    <rect x="2" y="-7" width="12" height="16" rx="6" fill="rgba(220,100,100,0.2)" stroke="rgba(255,150,150,0.6)" stroke-width="1.2"/>
+    <line x1="-2" y1="1" x2="2" y2="1" stroke="rgba(255,255,255,0.5)" stroke-width="1.5" stroke-linecap="round"/>`,
+  ayurveda: `
+    <path d="M0,13 Q-12,5 -12,-3 Q-12,-12 0,-14 Q12,-12 12,-3 Q12,5 0,13Z" fill="rgba(150,200,100,0.11)" stroke="rgba(150,200,100,0.55)" stroke-width="1.2"/>
+    <line x1="0" y1="13" x2="0" y2="-14" stroke="rgba(150,200,100,0.38)" stroke-width="0.9"/>
+    <path d="M0,-2 Q6,-7 10,-12" fill="none" stroke="rgba(150,200,100,0.32)" stroke-width="0.8"/>
+    <path d="M0,-2 Q-6,-7 -10,-12" fill="none" stroke="rgba(150,200,100,0.32)" stroke-width="0.8"/>
+    <path d="M0,5 Q6,0 11,-5" fill="none" stroke="rgba(150,200,100,0.28)" stroke-width="0.8"/>
+    <path d="M0,5 Q-6,0 -11,-5" fill="none" stroke="rgba(150,200,100,0.28)" stroke-width="0.8"/>`,
+  protein: `
+    <rect x="-14" y="-3" width="28" height="6" rx="3" fill="rgba(220,60,60,0.15)" stroke="rgba(255,100,80,0.5)" stroke-width="1.2"/>
+    <rect x="-16" y="-9" width="8" height="18" rx="2" fill="rgba(220,60,60,0.2)" stroke="rgba(255,100,80,0.6)" stroke-width="1.2"/>
+    <rect x="8" y="-9" width="8" height="18" rx="2" fill="rgba(220,60,60,0.2)" stroke="rgba(255,100,80,0.6)" stroke-width="1.2"/>`,
+};
+
+// ── QTY GUIDANCE ──────────────────────────────────────────────
+const QTY_GUIDANCE = {
+  50:   { title:'Sampling / Prototype',   text:'Perfect for internal review and investor presentations. We\'ll prioritise a premium sample.' },
+  100:  { title:'Test Batch',             text:'Ideal for friend-and-family testing, social media content, and initial retailer conversations.' },
+  250:  { title:'Small Production Run',   text:'Ideal for market testing and retail pilot. We recommend starting with a physical sample first.' },
+  500:  { title:'Standard Production',    text:'Suited for regional distribution and e-commerce launch. MOQ met for most materials.' },
+  1000: { title:'Commercial Scale',       text:'Full commercial production. Unlocks better per-unit pricing and priority scheduling.' },
+  0:    { title:'Enterprise / Bespoke',   text:'Custom volume and tooling. Our enterprise team will design a production plan for you.' },
+};
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: TOAST
+// ════════════════════════════════════════════════════════════════
+let _toastTimer;
 function toast(title, msg) {
   const t = document.getElementById('toast');
   document.getElementById('toast-title').textContent = title;
-  document.getElementById('toast-msg').textContent = msg;
+  document.getElementById('toast-msg').textContent   = msg;
   t.classList.add('show');
-  clearTimeout(toastTimer);
-  toastTimer = setTimeout(()=>t.classList.remove('show'), 3200);
+  clearTimeout(_toastTimer);
+  _toastTimer = setTimeout(() => t.classList.remove('show'), 3400);
 }
 
-// ─── PRODUCT TYPE ─────────────────────────────────────────
-function selectType(type, el) {
-  S.type = type;
-  document.querySelectorAll('.ttab').forEach(t=>t.classList.remove('active'));
+// ════════════════════════════════════════════════════════════════
+// MODULE: MATERIAL
+// ════════════════════════════════════════════════════════════════
+function selectMaterial(key, el) {
+  S.material = key;
+  document.querySelectorAll('#material-chips .chip').forEach(c => c.classList.remove('active'));
   el.classList.add('active');
-  const bSizes = [['250ml','500'],['500ml','500'],['750ml','500'],['1L','500'],['1.5L','1000'],['Custom','TBD']];
-  const cSizes = [['150ml','1000'],['250ml','1000'],['330ml','1000'],['355ml','1000'],['500ml','1000'],['Custom','TBD']];
-  const sizes = type === 'bottle' ? bSizes : cSizes;
-  const grid = document.getElementById('size-grid');
-  grid.innerHTML = sizes.map((s,i)=>`<div class="size-btn${i===0?' active':''}" onclick="selectSize('${s[0]}','${s[1]}',this)">${s[0]}<span class="moq">min ${s[1]}</span></div>`).join('');
-  selectSize(sizes[0][0], sizes[0][1], grid.firstChild);
-  document.getElementById('sum-product').textContent = type==='bottle'?'Still Water Bottle':'Can';
-  renderProductSVG();
+  document.getElementById('sum-material').textContent = MATERIALS[key].label;
+  applyMaterialToPreview(key);
+  updateComboBadge();
+  updateProgress();
+  renderDesignCards(); // re-render because colour context changes
 }
 
-// ─── SIZE ─────────────────────────────────────────────────
-function selectSize(size, moq, el) {
-  S.size = size; S.moq = moq;
-  document.querySelectorAll('.size-btn').forEach(b=>b.classList.remove('active'));
-  if(el) el.classList.add('active');
-  document.getElementById('selected-size-label').textContent = size+' selected';
-  document.getElementById('sum-size').textContent = size;
-  updatePreview();
+function applyMaterialToPreview(key) {
+  const m = MATERIALS[key];
+  const [c1, c2, c3] = m.bodyGrad;
+  document.getElementById('pvbg-s1').style.stopColor = c1;
+  document.getElementById('pvbg-s2').style.stopColor = c2;
+  document.getElementById('pvbg-s3').style.stopColor = c3;
+  const shine = document.getElementById('pv-shine');
+  shine.style.opacity = m.gloss ? '1' : '0.15';
+  // Update cap/neck to match material
+  const capColor = m.bodyGrad[0];
+  document.getElementById('pv-cap').style.fill  = capColor;
+  document.getElementById('pv-neck').style.fill = capColor;
 }
 
-// ─── LOGO ─────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// MODULE: SHAPE
+// ════════════════════════════════════════════════════════════════
+function renderShapeGrid() {
+  const grid = document.getElementById('shape-grid');
+  grid.innerHTML = SHAPES.map(s => `
+    <div class="shape-btn${s.key === S.shape ? ' active' : ''}" onclick="selectShape('${s.key}',this)" data-tip="${s.label}" title="${s.label}">
+      ${s.icon}
+      <span class="shape-label">${s.label}</span>
+    </div>
+  `).join('');
+}
+
+function selectShape(key, el) {
+  S.shape = key;
+  document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('sum-shape').textContent = SHAPES.find(s => s.key === key)?.label || key;
+  applyShapeToPreview(key);
+  updateComboBadge();
+  updateProgress();
+}
+
+function applyShapeToPreview(key) {
+  const cfg = SHAPE_TRANSFORMS[key] || SHAPE_TRANSFORMS.round;
+  const svg = document.getElementById('preview-svg');
+
+  // Animate out
+  svg.style.opacity = '0';
+  svg.style.transform = 'scale(0.92)';
+
+  setTimeout(() => {
+    // Update body path
+    const bodyEl = document.getElementById('pv-body');
+    const shineEl = document.getElementById('pv-shine');
+    bodyEl.setAttribute('d', cfg.body);
+    shineEl.setAttribute('d', cfg.body);
+
+    // Update clip path
+    document.getElementById('pvclip-path').setAttribute('d', cfg.body);
+
+    // Update label rect
+    const labelEl = document.getElementById('pv-label');
+    labelEl.setAttribute('y', cfg.labelY);
+    labelEl.setAttribute('height', cfg.labelH);
+
+    // Update stripes
+    document.getElementById('pv-stripe-top').setAttribute('y', cfg.labelY);
+    document.getElementById('pv-stripe-bot').setAttribute('y', cfg.labelY + cfg.labelH - 2.5);
+
+    // Update text positions
+    const midY = cfg.labelY + cfg.labelH * 0.45;
+    document.getElementById('pv-brand').setAttribute('y', midY + 15);
+    document.getElementById('pv-div').setAttribute('y1',  midY + 22);
+    document.getElementById('pv-div').setAttribute('y2',  midY + 22);
+    document.getElementById('pv-tag').setAttribute('y',   midY + 36);
+    document.getElementById('pv-type').setAttribute('y',  midY + 72);
+
+    // Logo zone
+    const lz = document.getElementById('logo-zone');
+    lz.setAttribute('y', cfg.labelY + 14);
+    document.getElementById('logo-ph').setAttribute('y', cfg.labelY + 32);
+
+    // Keep illustration centred in the label zone
+    const illG = document.getElementById('pv-illustration');
+    if (illG) illG.setAttribute('transform', `translate(100, ${cfg.labelY + 32})`);
+
+    // Animate in
+    svg.style.opacity = '1';
+    svg.style.transform = 'scale(1)';
+  }, 220);
+  svg.style.transition = 'opacity 0.22s ease, transform 0.22s ease';
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: INDUSTRY
+// ════════════════════════════════════════════════════════════════
+function renderIndustryAccordion() {
+  const container = document.getElementById('industry-cats');
+  container.innerHTML = INDUSTRIES.map(cat => `
+    <div class="ind-cat" id="ind-cat-${cat.key}">
+      <div class="ind-cat-header" onclick="toggleIndustryCategory('${cat.key}')">
+        <span class="ind-cat-title"><span class="ind-cat-icon">${cat.icon}</span>${cat.label}</span>
+        <span class="ind-cat-chevron">▾</span>
+      </div>
+      <div class="ind-cat-body">
+        ${cat.items.map(item => `
+          <div class="ind-item" onclick="selectIndustry('${item}','${cat.label}',this)">${item}</div>
+        `).join('')}
+      </div>
+    </div>
+  `).join('');
+}
+
+function toggleIndustryCategory(key) {
+  const el = document.getElementById('ind-cat-' + key);
+  const isOpen = el.classList.contains('open');
+  // Close all
+  document.querySelectorAll('.ind-cat').forEach(c => c.classList.remove('open'));
+  // Open clicked if it was closed
+  if (!isOpen) el.classList.add('open');
+}
+
+function selectIndustry(item, catLabel, el) {
+  S.industry = item;
+  S.industryLabel = catLabel;
+  document.querySelectorAll('.ind-item').forEach(i => i.classList.remove('active'));
+  el.classList.add('active');
+  document.getElementById('sum-industry').textContent = item;
+  updateAISuggestion(item);
+  applyProductPreset(item);
+  updateProgress();
+}
+
+function updateAISuggestion(item) {
+  const suggestion = AI_SUGGESTIONS[item];
+  const box = document.getElementById('ai-suggest');
+  if (suggestion) {
+    document.getElementById('ai-suggest-title').textContent = `AI Recommendation for ${item}`;
+    document.getElementById('ai-suggest-body').textContent  = suggestion;
+    box.style.display = 'flex';
+    box.style.animation = 'fadeUp 0.4s ease both';
+  } else {
+    box.style.display = 'none';
+  }
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: PRODUCT PRESET — applies all visual settings for a product
+// ════════════════════════════════════════════════════════════════
+function applyProductPreset(item) {
+  const preset = PRODUCT_PRESETS[item];
+  if (!preset) return;
+
+  // Shape
+  const shapeEl = document.querySelector(`#shape-grid .shape-btn[onclick*="'${preset.shape}'"]`);
+  if (shapeEl) selectShape(preset.shape, shapeEl);
+
+  // Material
+  const matEl = document.querySelector(`#material-chips [data-val="${preset.material}"]`);
+  if (matEl) selectMaterial(preset.material, matEl);
+
+  // Exterior colour
+  setColor('ext', preset.extColor, preset.extName, [preset.extColor, darken(preset.extColor, 0.65)]);
+  document.querySelectorAll('#ext-swatches .swatch').forEach(s => s.classList.remove('active'));
+  document.getElementById('ext-hex').value               = preset.extColor;
+  document.getElementById('ext-color-name').textContent  = preset.extName;
+  document.getElementById('sum-ext-color').textContent   = preset.extName;
+  S.extColor = preset.extColor; S.extColorName = preset.extName;
+
+  // Interior colour
+  setColor('int', preset.intColor, preset.intName, [preset.intColor, darken(preset.intColor, 0.65)]);
+  document.querySelectorAll('#int-swatches .swatch').forEach(s => s.classList.remove('active'));
+  document.getElementById('int-hex').value               = preset.intColor;
+  document.getElementById('int-color-name').textContent  = preset.intName;
+  S.intColor = preset.intColor; S.intColorName = preset.intName;
+
+  // Typography
+  if (preset.fontKey) {
+    const fontEl = document.querySelector(`.font-btn[onclick*="'${preset.fontKey}'"]`);
+    if (fontEl) selectFont(preset.fontKey, fontEl);
+  }
+
+  // Illustration
+  setIllustration(preset.illKey);
+
+  // Update auto-generated product text in preview
+  if (!S.prodType) {
+    document.getElementById('pv-type').textContent = item.toUpperCase();
+  }
+
+  updateComboBadge();
+  renderDesignCards();
+}
+
+function setIllustration(key) {
+  const g = document.getElementById('pv-illustration');
+  if (!g) return;
+  g.style.opacity = '0';
+  setTimeout(() => {
+    g.innerHTML = ILLUSTRATIONS[key] || '';
+    g.style.opacity = '1';
+  }, 180);
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: COLOUR CONFIGURATION
+// ════════════════════════════════════════════════════════════════
+function renderSwatches() {
+  ['ext', 'int'].forEach(side => {
+    const container = document.getElementById(side + '-swatches');
+    container.innerHTML = SWATCHES.map((sw, i) => {
+      const isActive = side === 'ext' ? sw.hex === S.extColor : sw.hex === S.intColor;
+      if (sw.isTransparent) {
+        return `<div class="swatch transparent-swatch${isActive ? ' active' : ''}" data-tip="${sw.name}" onclick="selectSwatch('${side}',${i},this)"></div>`;
+      }
+      if (sw.isCustom) {
+        return `<div class="swatch custom-swatch${isActive ? ' active' : ''}" data-tip="Custom colour" onclick="openCustomColor('${side}',this)"></div>`;
+      }
+      return `<div class="swatch${isActive ? ' active' : ''}" style="background:${sw.hex}" data-tip="${sw.name}" onclick="selectSwatch('${side}',${i},this)"></div>`;
+    }).join('');
+  });
+}
+
+function selectSwatch(side, idx, el) {
+  const sw = SWATCHES[idx];
+  if (!sw || sw.isCustom) return;
+  const hex = sw.isTransparent ? 'rgba(200,220,240,0.3)' : sw.hex;
+  setColor(side, hex, sw.name, sw.gradient || [hex, hex]);
+  document.querySelectorAll(`#${side}-swatches .swatch`).forEach(s => s.classList.remove('active'));
+  el.classList.add('active');
+}
+
+function openCustomColor(side, el) {
+  const input = document.createElement('input');
+  input.type = 'color';
+  input.value = side === 'ext' ? S.extColor : S.intColor;
+  input.addEventListener('input', e => {
+    setColor(side, e.target.value, 'Custom', [e.target.value, darken(e.target.value, 0.65)]);
+    document.getElementById(side + '-hex').value = e.target.value;
+  });
+  input.click();
+}
+
+function applyHexColor(side, hex) {
+  if (!/^#[0-9a-fA-F]{6}$/.test(hex)) return;
+  setColor(side, hex, 'Custom', [hex, darken(hex, 0.65)]);
+}
+
+function setColor(side, hex, name, gradient) {
+  if (side === 'ext') {
+    S.extColor = hex;
+    S.extColorName = name;
+    document.getElementById('ext-color-name').textContent = name;
+    document.getElementById('ext-hex').value = hex.startsWith('rgba') ? '' : hex;
+    document.getElementById('sum-ext-color').textContent  = name;
+    // Apply to SVG label
+    document.getElementById('pvlbl-s1').style.stopColor = gradient[0];
+    document.getElementById('pvlbl-s2').style.stopColor = gradient[1];
+    // Metallic accent stripes match exterior
+    const isGold = name === 'Gold';
+    document.getElementById('pv-stripe-top').style.fill = isGold ? 'url(#pvgold)' : 'url(#pvmetallic)';
+    document.getElementById('pv-stripe-bot').style.fill = isGold ? 'url(#pvgold)' : 'url(#pvmetallic)';
+  } else {
+    S.intColor = hex;
+    S.intColorName = name;
+    document.getElementById('int-color-name').textContent = name;
+    document.getElementById('int-hex').value = hex.startsWith('rgba') ? '' : hex;
+    // Apply to SVG text elements (interior = text/label colour on the packaging)
+    document.getElementById('pvint-s1').style.stopColor = gradient[0];
+    document.getElementById('pvint-s2').style.stopColor = gradient[1];
+    const textEl = document.getElementById('pv-brand');
+    textEl.style.fill = contrastColor(hex);
+    document.getElementById('pv-tag').style.fill  = contrastColorSubtle(hex);
+    document.getElementById('pv-type').style.fill = contrastColorSubtle(hex);
+  }
+}
+
+function contrastColor(hex) {
+  const r = parseInt(hex.slice(1,3)||'ff',16);
+  const g = parseInt(hex.slice(3,5)||'ff',16);
+  const b = parseInt(hex.slice(5,7)||'ff',16);
+  const lum = 0.299*r + 0.587*g + 0.114*b;
+  return lum > 128 ? 'rgba(0,0,0,0.85)' : '#ffffff';
+}
+
+function contrastColorSubtle(hex) {
+  const c = contrastColor(hex);
+  return c === '#ffffff' ? 'rgba(255,255,255,0.5)' : 'rgba(0,0,0,0.4)';
+}
+
+function darken(hex, factor) {
+  if (!hex.startsWith('#')) return hex;
+  const n = parseInt(hex.replace('#',''), 16);
+  const r = Math.round(((n >> 16) & 255) * factor);
+  const g = Math.round(((n >>  8) & 255) * factor);
+  const b = Math.round(( n        & 255) * factor);
+  return '#' + [r, g, b].map(x => x.toString(16).padStart(2,'0')).join('');
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: TYPOGRAPHY
+// ════════════════════════════════════════════════════════════════
+function renderFontGrid() {
+  const grid = document.getElementById('font-grid');
+  grid.innerHTML = FONTS.map(f => `
+    <div class="font-btn${S.fontKey === f.key ? ' active' : ''}" onclick="selectFont('${f.key}',this)">
+      <div class="font-meta">
+        <div class="font-name">${f.label}</div>
+        <div class="font-sample ${f.cls}">${f.sample}</div>
+      </div>
+      <div class="font-preview-text ${f.cls}">Aa</div>
+    </div>
+  `).join('');
+}
+
+function selectFont(key, el) {
+  S.fontKey = key;
+  document.querySelectorAll('.font-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+  const f = FONTS.find(f => f.key === key);
+  document.getElementById('sum-font').textContent = f.label;
+  // Apply to preview SVG text
+  const brandEl = document.getElementById('pv-brand');
+  brandEl.setAttribute('font-family',     f.svgFamily);
+  brandEl.setAttribute('font-weight',     f.svgWeight);
+  brandEl.setAttribute('font-style',      f.svgStyle);
+  brandEl.setAttribute('letter-spacing',  f.letterSpacing);
+  // Adjust size for certain styles
+  const sizemap = { 'luxury-serif':18, 'modern-sans':20, 'industrial':16, 'retro':22, 'minimal':16, 'premium-script':22, 'playful':24 };
+  brandEl.setAttribute('font-size', sizemap[key] || 20);
+  updateProgress();
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: QUANTITY
+// ════════════════════════════════════════════════════════════════
+function selectQty(qty, el) {
+  S.qty = qty;
+  document.querySelectorAll('.qty-chip').forEach(c => c.classList.remove('active'));
+  el.classList.add('active');
+  const label = qty > 0 ? qty.toLocaleString() + ' units' : 'Enterprise';
+  document.getElementById('sum-qty').textContent = label;
+  const g = QTY_GUIDANCE[qty] || {};
+  document.getElementById('qty-guidance-title').textContent = g.title || '';
+  document.getElementById('qty-guidance-text').textContent  = g.text  || '';
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: LOGO
+// ════════════════════════════════════════════════════════════════
 function handleLogo(input) {
-  if(!input.files[0]) return;
+  if (!input.files[0]) return;
   const f = input.files[0];
   S.logoUploaded = true; S.logoName = f.name; S.logoFile = f;
-  document.getElementById('logo-prev').style.display = 'flex';
+  document.getElementById('logo-prev').style.display  = 'flex';
   document.getElementById('logo-name-txt').textContent = f.name;
   document.getElementById('logo-size-txt').textContent = (f.size/1024/1024).toFixed(1)+' MB · '+f.name.split('.').pop().toUpperCase();
   document.getElementById('sum-logo').textContent = '✓ Uploaded';
@@ -563,7 +1277,7 @@ function handleLogo(input) {
   };
   reader.readAsDataURL(f);
   updateProgress();
-  toast('Logo uploaded ✓', f.name+' added to your design.');
+  toast('Logo uploaded ✓', f.name + ' added to your design.');
 }
 
 function removeLogo() {
@@ -575,23 +1289,9 @@ function removeLogo() {
   updateProgress();
 }
 
-// ─── COLOUR ───────────────────────────────────────────────
-function selectColour(hex, name, el) {
-  S.colour = hex; S.colourName = name;
-  document.querySelectorAll('.cdot').forEach(d=>d.classList.remove('active'));
-  el.classList.add('active');
-  document.getElementById('pvlbl-s1').style.stopColor = hex;
-  document.getElementById('pvlbl-s2').style.stopColor = darken(hex, 0.6);
-}
-function darken(hex, factor) {
-  const n = parseInt(hex.replace('#',''),16);
-  const r = Math.round(((n>>16)&255)*factor);
-  const g = Math.round(((n>>8)&255)*factor);
-  const b = Math.round((n&255)*factor);
-  return '#'+[r,g,b].map(x=>x.toString(16).padStart(2,'0')).join('');
-}
-
-// ─── PREVIEW ──────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// MODULE: LIVE PREVIEW
+// ════════════════════════════════════════════════════════════════
 function updatePreview() {
   S.brandName = document.getElementById('brand-name').value;
   S.tagline   = document.getElementById('brand-tag').value;
@@ -599,33 +1299,49 @@ function updatePreview() {
 
   const name = S.brandName || 'Brand';
   const tag  = S.tagline   || 'Pure · Natural';
-  const type = S.prodType  || (S.type==='bottle'?'Still Water':'Beverage');
+  const type = S.prodType  || (S.industry ? S.industry.toUpperCase() : 'YOUR PRODUCT');
 
   document.getElementById('pv-brand').textContent = name;
   document.getElementById('pv-tag').textContent   = tag.toUpperCase();
-  document.getElementById('pv-type').textContent  = type.toUpperCase()+' · '+S.size.toUpperCase();
+  document.getElementById('pv-type').textContent  = type.toUpperCase();
 
-  // If a design is selected, re-apply it
-  if(S.designIdx !== null) applyDesign(S.designIdx);
-
+  if (S.designIdx !== null) applyDesignToPreview(S.designIdx);
   updateProgress();
+  renderDesignCards();
 }
 
-function renderProductSVG() {
-  // Could swap between bottle/can SVG shapes — for now bottle always
-  updatePreview();
+function updateComboBadge() {
+  const mat   = MATERIALS[S.material]?.label || S.material;
+  const shape = SHAPES.find(s => s.key === S.shape)?.label || S.shape;
+  document.getElementById('combo-title').textContent = `${mat} · ${shape}`;
+  const desc = buildComboDescription();
+  document.getElementById('combo-desc').textContent  = desc;
 }
 
-// ─── DESIGNS ──────────────────────────────────────────────
+function buildComboDescription() {
+  const mat = S.material;
+  const ext = S.extColorName;
+  const ind = S.industry;
+  if (ind && ext) return `${ext} ${MATERIALS[mat]?.label || mat} for ${ind} — great choice.`;
+  if (mat === 'glass' && ext === 'Gold') return 'Premium artisanal look — ideal for luxury goods.';
+  if (mat === 'tin'   && ext === 'Matte Black') return 'Industrial metallic finish — bold shelf presence.';
+  if (mat === 'kraft') return 'Eco-conscious packaging — warm, sustainable aesthetic.';
+  return 'Select industry for personalised design guidance.';
+}
+
+// ════════════════════════════════════════════════════════════════
+// MODULE: DESIGN CARDS
+// ════════════════════════════════════════════════════════════════
 function renderDesignCards() {
   const grid = document.getElementById('designs-grid');
-  grid.innerHTML = DESIGNS.map((d,i)=>`
-    <div class="design-card${S.designIdx===i?' selected':''}" onclick="selectDesign(${i})" id="dc-${i}">
+  const name = S.brandName || 'BRAND';
+  grid.innerHTML = DESIGNS.map((d, i) => `
+    <div class="design-card${S.designIdx === i ? ' selected' : ''}" onclick="selectDesign(${i})">
       <div class="dc-preview" style="background:${d.bg}">
         <div style="text-align:center;padding:8px;width:100%">
-          <div style="font-size:0.55rem;color:${d.accent};letter-spacing:2px;margin-bottom:3px;font-weight:600">${(S.brandName||'BRAND').toUpperCase().slice(0,10)}</div>
-          <div style="width:28px;height:0.5px;background:${d.accentLine};margin:0 auto 4px"></div>
-          <div style="font-size:0.5rem;color:rgba(255,255,255,0.3);letter-spacing:1px">${S.size}</div>
+          <div style="font-size:0.52rem;color:${d.accent};letter-spacing:2px;margin-bottom:3px;font-weight:700">${name.toUpperCase().slice(0,10)}</div>
+          <div style="width:24px;height:0.5px;background:${d.accentLine};margin:0 auto 4px"></div>
+          <div style="font-size:0.46rem;color:rgba(255,255,255,0.28);letter-spacing:1px">${S.industry || 'DESIGN'}</div>
         </div>
       </div>
       <div class="dc-name">${d.name}</div>
@@ -636,23 +1352,24 @@ function renderDesignCards() {
 
 function selectDesign(idx) {
   S.designIdx = idx;
-  applyDesign(idx);
+  applyDesignToPreview(idx);
   renderDesignCards();
-  document.getElementById('sum-design').textContent = DESIGNS[idx].name+' style';
+  document.getElementById('sum-design').textContent = DESIGNS[idx].name + ' style';
   updateProgress();
-  toast('Design applied', DESIGNS[idx].name+' style applied to your preview.');
+  toast('Style applied', DESIGNS[idx].name + ' applied to your preview.');
 }
 
-function applyDesign(idx) {
+function applyDesignToPreview(idx) {
   const d = DESIGNS[idx];
-  const name = S.brandName || 'Brand';
-  const tag  = S.tagline   || 'Pure · Natural';
-  // Update label colour to match design base
-  document.getElementById('pvlbl-s1').style.stopColor = d.bg.includes('gradient') ? extractFirstColor(d.bg) : d.bg;
-  document.getElementById('pvlbl-s2').style.stopColor = darken(extractFirstColor(d.bg),0.7);
-  // Re-render internal label text via existing elements
-  document.getElementById('pv-brand').textContent = name;
-  document.getElementById('pv-tag').textContent   = tag.toUpperCase();
+  const c1 = extractFirstColor(d.bg);
+  const c2 = darken(c1, 0.68);
+  document.getElementById('pvlbl-s1').style.stopColor = c1;
+  document.getElementById('pvlbl-s2').style.stopColor = c2;
+  // Text adapts to background
+  document.getElementById('pv-brand').style.fill = '#ffffff';
+  document.getElementById('pv-tag').style.fill   = d.accent !== 'rgba(255,255,255,0.7)' ? d.accent : 'rgba(255,255,255,0.5)';
+  // Reset S.extColor display to match
+  S.extColor = c1;
 }
 
 function extractFirstColor(gradient) {
@@ -660,53 +1377,62 @@ function extractFirstColor(gradient) {
   return m ? m[0] : '#0a1a10';
 }
 
-// ─── QTY ──────────────────────────────────────────────────
-function updateQty(v) {
-  S.qty = parseInt(v);
-  document.getElementById('qty-display').textContent = parseInt(v).toLocaleString();
-  document.getElementById('sum-qty').textContent = parseInt(v).toLocaleString()+' units';
-}
-
-// ─── VIEWS ────────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// MODULE: VIEW ROTATION
+// ════════════════════════════════════════════════════════════════
 function setView(v, el) {
-  document.querySelectorAll('.vtab').forEach(t=>t.classList.remove('active'));
+  document.querySelectorAll('.vtab').forEach(t => t.classList.remove('active'));
   el.classList.add('active');
   const svg = document.getElementById('preview-svg');
-  const transforms = {front:'', angle:'perspective(600px) rotateY(18deg)', back:'scaleX(-1)'};
-  svg.style.transform = transforms[v];
-  svg.style.transition = 'transform 0.5s ease';
+  const transforms = {
+    front: 'perspective(800px) rotateY(0deg)',
+    angle: 'perspective(600px) rotateY(18deg)',
+    back:  'perspective(800px) rotateY(180deg)',
+  };
+  svg.style.transition = 'transform 0.55s cubic-bezier(.25,.8,.25,1)';
+  svg.style.transform  = transforms[v];
 }
 
-// ─── PROGRESS ─────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// MODULE: PROGRESS TRACKER
+// ════════════════════════════════════════════════════════════════
 function updateProgress() {
   const checks = [
-    true,
-    S.logoUploaded,
-    !!(document.getElementById('brand-name').value),
-    S.designIdx !== null,
-    !!(document.getElementById('biz-name').value && document.getElementById('contact-name').value && document.getElementById('contact-email').value),
-    false
+    true,                                                               // 1 material always selected
+    S.shape !== null,                                                    // 2 shape
+    !!(document.getElementById('brand-name')?.value?.trim()),           // 3 brand details
+    S.logoUploaded,                                                      // 4 logo
+    S.designIdx !== null,                                               // 5 label style
+    !!(document.getElementById('biz-name')?.value &&
+       document.getElementById('contact-name')?.value &&
+       document.getElementById('contact-email')?.value),               // 6 contact
+    false,                                                              // 7 submit (never pre-done)
   ];
-  checks.forEach((done,i)=>{
-    const dot  = document.getElementById('pd'+(i+1));
-    const text = document.getElementById('pt'+(i+1));
-    const nextPending = !done && checks.slice(0,i).every(Boolean);
-    if(done){ dot.className='pdot done'; dot.textContent='✓'; text.className='ptext done'; }
-    else if(nextPending){ dot.className='pdot curr'; dot.textContent=i+1; text.className='ptext curr'; }
-    else{ dot.className='pdot'; dot.textContent=i+1; text.className='ptext'; }
+  checks.forEach((done, i) => {
+    const dot  = document.getElementById('pd' + (i + 1));
+    const text = document.getElementById('pt' + (i + 1));
+    if (!dot) return;
+    const nextPending = !done && checks.slice(0, i).every(Boolean);
+    if (done)        { dot.className = 'pdot done'; dot.textContent = '✓'; text.className = 'ptext done'; }
+    else if (nextPending) { dot.className = 'pdot curr'; dot.textContent = i + 1; text.className = 'ptext curr'; }
+    else             { dot.className = 'pdot'; dot.textContent = i + 1; text.className = 'ptext'; }
   });
-  // Update nav steps
+  // Nav step badges
   const step = checks.filter(Boolean).length;
-  if(step>=2){ document.getElementById('ns3').className='ns done'; document.getElementById('ns3').querySelector('.ns-num').textContent='✓'; }
-  if(step>=4){ document.getElementById('ns2').className='ns done'; document.getElementById('ns2').querySelector('.ns-num').textContent='✓'; }
+  if (step >= 2) { const n = document.getElementById('ns3'); n.className = 'ns done'; n.querySelector('.ns-num').textContent = '✓'; }
+  if (step >= 4) { const n = document.getElementById('ns2'); n.className = 'ns done'; n.querySelector('.ns-num').textContent = '✓'; }
 }
 
-// ─── DOWNLOAD ─────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// MODULE: DOWNLOAD (stub)
+// ════════════════════════════════════════════════════════════════
 function downloadMockup() {
-  toast('Mockup ready', 'Your branded product mockup has been prepared for download.');
+  toast('Mockup ready', 'Your branded product mockup is being prepared for download.');
 }
 
-// ─── SUBMIT ───────────────────────────────────────────────
+// ════════════════════════════════════════════════════════════════
+// MODULE: SUBMIT ORDER
+// ════════════════════════════════════════════════════════════════
 async function submitOrder() {
   const name  = document.getElementById('brand-name').value.trim();
   const biz   = document.getElementById('biz-name').value.trim();
@@ -715,70 +1441,86 @@ async function submitOrder() {
   const phone = document.getElementById('contact-phone').value.trim();
   const notes = document.getElementById('notes').value.trim();
 
-  if(!name)  { toast('Missing info', 'Please add your brand name.'); return; }
-  if(!biz)   { toast('Missing info', 'Please add your business name.'); return; }
-  if(!cname) { toast('Missing info', 'Please add your contact name.'); return; }
-  if(!email) { toast('Missing info', 'Please add your email address.'); return; }
-  if(S.designIdx === null){ toast('No design chosen', 'Please select one of the 4 label designs.'); return; }
+  if (!name)              { toast('Missing info',    'Please add your brand name.');       return; }
+  if (!biz)               { toast('Missing info',    'Please add your business name.');    return; }
+  if (!cname)             { toast('Missing info',    'Please add your contact name.');     return; }
+  if (!email)             { toast('Missing info',    'Please add your email address.');    return; }
+  if (S.designIdx === null){ toast('No style chosen','Please select a label style.');      return; }
 
   const btn = document.getElementById('submit-btn');
   btn.disabled = true;
   btn.textContent = 'Submitting…';
 
-  // Upload logo if provided
   let logoUrl = null;
-  if(S.logoFile && DYP_USER) {
-    logoUrl = await uploadLogo(S.logoFile, DYP_USER.id);
+  if (S.logoFile && window.DYP_USER) {
+    logoUrl = await uploadLogo(S.logoFile, window.DYP_USER.id);
   }
 
   const ref = 'DYP-' + Date.now().toString(36).toUpperCase();
 
   const { error } = await sb.from('orders').insert({
-    ref_id:        ref,
-    user_id:       DYP_USER?.id ?? null,
-    brand_name:    name,
-    business_name: biz,
-    contact_name:  cname,
-    email:         email.toLowerCase(),
-    phone:         phone || null,
-    product_type:  S.type,
-    size:          S.size,
-    design_style:  DESIGNS[S.designIdx].name,
-    label_color:   S.colourName,
-    quantity:      S.qty,
-    notes:         notes || null,
-    logo_url:      logoUrl,
+    ref_id:         ref,
+    user_id:        window.DYP_USER?.id ?? null,
+    brand_name:     sanitize(name),
+    business_name:  sanitize(biz),
+    contact_name:   sanitize(cname),
+    email:          email.toLowerCase(),
+    phone:          phone || null,
+    product_type:   S.material,
+    size:           S.shape,
+    design_style:   DESIGNS[S.designIdx].name,
+    label_color:    S.extColorName,
+    quantity:       S.qty || 0,
+    notes:          notes ? sanitize(notes) : null,
+    logo_url:       logoUrl,
+    industry:       S.industry || null,
+    font_style:     S.fontKey  || null,
   });
 
   btn.disabled = false;
   btn.textContent = 'Request Your Sample →';
 
-  if(error) {
-    toast('Submit failed', error.message || 'Please try again.');
-    return;
-  }
+  if (error) { toast('Submit failed', error.message || 'Please try again.'); return; }
 
   document.getElementById('order-ref').textContent = 'Order reference: ' + ref;
   document.getElementById('success').classList.add('show');
-  document.getElementById('ns4').className='ns done';
-  document.getElementById('ns4').querySelector('.ns-num').textContent='✓';
+  document.getElementById('ns4').className = 'ns done';
+  document.getElementById('ns4').querySelector('.ns-num').textContent = '✓';
 }
 
-// ─── INIT ─────────────────────────────────────────────────
-renderDesignCards();
-window.DYP_USER = null; // set after auth check
+// ════════════════════════════════════════════════════════════════
+// INIT — render all dynamic sections on page load
+// ════════════════════════════════════════════════════════════════
+(function init() {
+  renderShapeGrid();
+  renderIndustryAccordion();
+  renderSwatches();
+  renderFontGrid();
+  renderDesignCards();
+  // Apply default material
+  applyMaterialToPreview(S.material);
+  // Apply default shape
+  applyShapeToPreview(S.shape);
+  // Apply default colours
+  setColor('ext', S.extColor, S.extColorName, [S.extColor, darken(S.extColor, 0.65)]);
+  setColor('int', S.intColor, S.intColorName, [S.intColor, darken(S.intColor, 0.65)]);
+  // Update combo badge
+  updateComboBadge();
+  // Initial progress
+  updateProgress();
 
-// Apply initial URL params
-if(params.get('type')==='can') {
-  selectType('can', document.querySelectorAll('.ttab')[1]);
-} else if(params.get('size')) {
-  // Highlight matching size
-  document.querySelectorAll('.size-btn').forEach(b=>{
-    if(b.textContent.trim().startsWith(params.get('size'))){
-      b.click();
-    }
-  });
-}
+  // Scroll reveal observer
+  const observer = new IntersectionObserver(entries => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('visible'); observer.unobserve(e.target); } });
+  }, { threshold: 0.1 });
+  document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+
+  // Pre-init: shape default
+  S.shape = 'round';
+  document.getElementById('sum-shape').textContent = 'Round';
+})();
+
+window.DYP_USER = null;
 </script>
 </body>
 </html>
