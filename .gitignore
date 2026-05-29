@@ -7,3 +7,9 @@ node_modules/
 dyp-site-deploy.zip
 ls
 ls.pub
+
+# wrangler files
+.wrangler
+.dev.vars*
+!.dev.vars.example
+!.env.example
